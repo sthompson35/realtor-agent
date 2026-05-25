@@ -55,7 +55,8 @@ def test_anonymous_page_redirects_to_login(client, path):
     """Unauthenticated GET requests to dashboard pages must redirect to /login."""
     resp = client.get(path)
     assert resp.status_code in (301, 302), (
-        f"Expected redirect for {path}, got {resp.status_code}"
+        f"Expected redirect for {path}, got {resp.status_code}; "
+        f"body={resp.data[:200]!r}"
     )
     location = resp.headers.get("Location", "")
     assert "/login" in location, (
@@ -108,7 +109,8 @@ def test_anonymous_api_returns_401(client, method, path):
         content_type="application/json",
     )
     assert resp.status_code == 401, (
-        f"{method} {path} expected 401, got {resp.status_code}"
+        f"{method} {path} expected 401, got {resp.status_code}; "
+        f"body={resp.data[:200]!r}"
     )
     data = resp.get_json()
     assert data is not None, f"{method} {path} expected JSON body"

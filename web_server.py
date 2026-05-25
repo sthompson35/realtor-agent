@@ -45,10 +45,10 @@ app = Flask(
     static_folder=str(BASE_DIR / "web" / "static"),
 )
 _secret_key = os.environ.get("SECRET_KEY")
-_flask_debug = os.environ.get("FLASK_DEBUG", "").lower() in ("true", "1", "yes")
+_is_debug_mode = os.environ.get("FLASK_DEBUG", "").lower() in ("true", "1", "yes")
 if _secret_key:
     app.secret_key = _secret_key
-elif _flask_debug:
+elif _is_debug_mode:
     app.secret_key = "dev-secret-change-in-prod"
     logger.warning(
         "SECRET_KEY not set — using insecure development fallback. "
