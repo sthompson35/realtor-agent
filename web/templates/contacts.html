@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}Contacts - Realtor Agent{% endblock %}
+
+{% block extra_head %}
+<style>
+.contact-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem; color: #fff; flex-shrink: 0;
+}
+.type-owner   { background: #4472C4; }
+.type-lender  { background: #70AD47; }
+.type-vendor  { background: #ED7D31; }
+.type-agent   { background: #9E3F9E; }
+.dnc-badge { background: #dc3545; font-size: 0.7rem; }
+.consent-badge { background: #198754; font-size: 0.7rem; }
+.filter-bar { background: #f8f9fa; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; }
+#contacts-table-body tr:hover { background: #f0f4ff; cursor: pointer; }
+.stat-pill {
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color:#fff; border-radius:30px; padding:6px 18px; font-size:.85rem; font-weight:600;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Contacts</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Contacts</h1>
+        <p class="text-muted mb-0">Owners, lenders, vendors, and agents</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-secondary btn-sm" onclick="ContactsApp.exportCSV()">
+            <i class="fas fa-download me-1"></i>Export
+        </button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal" onclick="ContactsApp.openNew()">
+            <i class="fas fa-plus me-1"></i>Add Contact
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Stats row -->
+<div class="row g-3 mb-4" id="contact-stats">
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm">
+            <div class="card-body py-3">
+                <div class="h4 mb-0 fw-bold text-primary" id="stat-total">—</div>
+                <div class="small text-muted">Total</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm">
+            <div class="card-body py-3">
+                <div class="h4 mb-0 fw-bold text-success" id="stat-owners">—</div>
+                <div class="small text-muted">Owners</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm">
+            <div class="card-body py-3">
+                <div class="h4 mb-0 fw-bold text-warning" id="stat-skip-traced">—</div>
+                <div class="small text-muted">Skip Traced</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card text-center border-0 shadow-sm">
+            <div class="card-body py-3">
+                <div class="h4 mb-0 fw-bold text-danger" id="stat-dnc">—</div>
+                <div class="small text-muted">DNC</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter bar -->
+<div class="filter-bar d-flex flex-wrap gap-2 align-items-center">
+    <input type="text" class="form-control form-control-sm" style="max-width:240px"
+           id="search-input" placeholder="Search name, email, phone…" oninput="ContactsApp.search()">
+    <select class="form-select form-select-sm" style="max-width:140px" id="type-filter" onchange="ContactsApp.search()">
+        <option value="">All Types</option>
+        <option value="owner">Owner</option>
+        <option value="lender">Lender</option>
+        <option value="vendor">Vendor</option>
+        <option value="agent">Agent</option>
+    </select>
+    <select class="form-select form-select-sm" style="max-width:130px" id="dnc-filter" onchange="ContactsApp.search()">
+        <option value="">All</option>
+        <option value="false">Exclude DNC</option>
+        <option value="true">DNC Only</option>
+    </select>
+    <span class="ms-auto small text-muted" id="result-count"></span>
+</div>
+
+<!-- Table -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width:44px"></th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Flags</th>
+                        <th>Added</th>
+                        <th style="width:80px"></th>
+                    </tr>
+                </thead>
+                <tbody id="contacts-table-body">
+                    <tr><td colspan="8" class="text-center py-4 text-muted">Loading…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+    <button class="btn btn-outline-secondary btn-sm" id="prev-btn" onclick="ContactsApp.prevPage()" disabled>
+        <i class="fas fa-chevron-left"></i> Prev
+    </button>
+    <span class="small text-muted" id="page-info"></span>
+    <button class="btn btn-outline-secondary btn-sm" id="next-btn" onclick="ContactsApp.nextPage()" disabled>
+        Next <i class="fas fa-chevron-right"></i>
+    </button>
+</div>
+
+<!-- Add / Edit Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contact-modal-title">Add Contact</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="contact-id">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Full Name *</label>
+                        <input type="text" class="form-control" id="c-name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Type</label>
+                        <select class="form-select" id="c-type">
+                            <option value="owner">Owner</option>
+                            <option value="lender">Lender</option>
+                            <option value="vendor">Vendor</option>
+                            <option value="agent">Agent</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email" class="form-control" id="c-email">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Phone</label>
+                        <input type="tel" class="form-control" id="c-phone">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Mailing Address</label>
+                        <input type="text" class="form-control" id="c-address">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Ownership Type</label>
+                        <select class="form-select" id="c-ownership">
+                            <option value="">Unknown</option>
+                            <option value="individual">Individual</option>
+                            <option value="llc">LLC</option>
+                            <option value="trust">Trust</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Notes</label>
+                        <textarea class="form-control" id="c-notes" rows="2"></textarea>
+                    </div>
+                    <div class="col-12 d-flex gap-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="c-skip-traced">
+                            <label class="form-check-label" for="c-skip-traced">Skip Traced</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="c-consent">
+                            <label class="form-check-label" for="c-consent">Consent Given</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="c-dnc">
+                            <label class="form-check-label text-danger" for="c-dnc">Do Not Contact</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-danger mt-3 d-none" id="contact-modal-error"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="ContactsApp.save()">
+                    <i class="fas fa-save me-1"></i>Save Contact
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View / Delete Modal -->
+<div class="modal fade" id="viewContactModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Contact Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="view-contact-body">Loading…</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger btn-sm" id="delete-contact-btn">
+                    <i class="fas fa-trash me-1"></i>Delete
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="edit-contact-btn">
+                    <i class="fas fa-edit me-1"></i>Edit
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const ContactsApp = (() => {
+    const PAGE = 50;
+    let _all = [], _filtered = [], _offset = 0, _editingId = null;
+
+    const TYPE_COLORS = { owner: 'type-owner', lender: 'type-lender', vendor: 'type-vendor', agent: 'type-agent' };
+    const initials = n => (n || '?').split(' ').map(p => p[0]).join('').slice(0,2).toUpperCase();
+    const fmt_date = s => s ? new Date(s).toLocaleDateString() : '—';
+
+    async function load() {
+        try {
+            const r = await fetch('/api/contacts?limit=500');
+            const d = await r.json();
+            _all = d.contacts || [];
+            _updateStats();
+            _applyFilter();
+        } catch { _tbody().innerHTML = '<tr><td colspan="8" class="text-center text-danger">Failed to load contacts</td></tr>'; }
+    }
+
+    function _updateStats() {
+        document.getElementById('stat-total').textContent = _all.length;
+        document.getElementById('stat-owners').textContent = _all.filter(c => c.contact_type === 'owner').length;
+        document.getElementById('stat-skip-traced').textContent = _all.filter(c => c.skip_traced).length;
+        document.getElementById('stat-dnc').textContent = _all.filter(c => c.dnc).length;
+    }
+
+    function _applyFilter() {
+        const q    = document.getElementById('search-input').value.toLowerCase();
+        const type = document.getElementById('type-filter').value;
+        const dnc  = document.getElementById('dnc-filter').value;
+        _filtered = _all.filter(c => {
+            if (type && c.contact_type !== type) return false;
+            if (dnc === 'false' && c.dnc) return false;
+            if (dnc === 'true'  && !c.dnc) return false;
+            if (q && !`${c.name} ${c.email||''} ${c.phone||''}`.toLowerCase().includes(q)) return false;
+            return true;
+        });
+        _offset = 0;
+        _render();
+    }
+
+    function _render() {
+        const page = _filtered.slice(_offset, _offset + PAGE);
+        document.getElementById('result-count').textContent = `${_filtered.length} contact${_filtered.length !== 1 ? 's' : ''}`;
+        document.getElementById('page-info').textContent =
+            _filtered.length > PAGE ? `${_offset + 1}–${Math.min(_offset + PAGE, _filtered.length)} of ${_filtered.length}` : '';
+        document.getElementById('prev-btn').disabled = _offset === 0;
+        document.getElementById('next-btn').disabled = _offset + PAGE >= _filtered.length;
+
+        if (!page.length) {
+            _tbody().innerHTML = '<tr><td colspan="8" class="text-center py-4 text-muted">No contacts found</td></tr>';
+            return;
+        }
+        _tbody().innerHTML = page.map(c => `
+            <tr onclick="ContactsApp.viewContact(${c.id})" data-id="${c.id}">
+                <td><div class="contact-avatar ${TYPE_COLORS[c.contact_type]||'type-owner'}">${initials(c.name)}</div></td>
+                <td><div class="fw-semibold">${c.name}</div></td>
+                <td><span class="badge bg-secondary text-capitalize">${c.contact_type}</span></td>
+                <td class="text-nowrap">${c.phone || '<span class="text-muted">—</span>'}</td>
+                <td>${c.email || '<span class="text-muted">—</span>'}</td>
+                <td>
+                    ${c.dnc ? '<span class="badge dnc-badge">DNC</span> ' : ''}
+                    ${c.skip_traced ? '<span class="badge bg-info text-dark" style="font-size:.7rem">ST</span> ' : ''}
+                    ${c.consent_given ? '<span class="badge consent-badge">Consent</span>' : ''}
+                </td>
+                <td class="text-nowrap small text-muted">${fmt_date(c.created_at)}</td>
+                <td>
+                    <button class="btn btn-link btn-sm p-0 text-primary" onclick="event.stopPropagation();ContactsApp.openEdit(${c.id})" title="Edit">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>`).join('');
+    }
+
+    function _tbody() { return document.getElementById('contacts-table-body'); }
+
+    function openNew() {
+        _editingId = null;
+        document.getElementById('contact-modal-title').textContent = 'Add Contact';
+        ['c-name','c-email','c-phone','c-address','c-notes'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('c-type').value = 'owner';
+        document.getElementById('c-ownership').value = '';
+        document.getElementById('c-skip-traced').checked = false;
+        document.getElementById('c-consent').checked = false;
+        document.getElementById('c-dnc').checked = false;
+        document.getElementById('contact-modal-error').classList.add('d-none');
+        document.getElementById('contact-id').value = '';
+    }
+
+    function openEdit(id) {
+        const c = _all.find(x => x.id === id);
+        if (!c) return;
+        _editingId = id;
+        document.getElementById('contact-modal-title').textContent = 'Edit Contact';
+        document.getElementById('contact-id').value = id;
+        document.getElementById('c-name').value = c.name || '';
+        document.getElementById('c-email').value = c.email || '';
+        document.getElementById('c-phone').value = c.phone || '';
+        document.getElementById('c-address').value = c.mailing_address || '';
+        document.getElementById('c-notes').value = c.notes || '';
+        document.getElementById('c-type').value = c.contact_type || 'owner';
+        document.getElementById('c-ownership').value = c.ownership_type || '';
+        document.getElementById('c-skip-traced').checked = !!c.skip_traced;
+        document.getElementById('c-consent').checked = !!c.consent_given;
+        document.getElementById('c-dnc').checked = !!c.dnc;
+        document.getElementById('contact-modal-error').classList.add('d-none');
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('contactModal')).show();
+    }
+
+    async function save() {
+        const name = document.getElementById('c-name').value.trim();
+        if (!name) { _showModalError('Name is required'); return; }
+        const payload = {
+            name, contact_type: document.getElementById('c-type').value,
+            email: document.getElementById('c-email').value.trim() || null,
+            phone: document.getElementById('c-phone').value.trim() || null,
+            mailing_address: document.getElementById('c-address').value.trim() || null,
+            ownership_type: document.getElementById('c-ownership').value || null,
+            notes: document.getElementById('c-notes').value.trim() || null,
+            skip_traced: document.getElementById('c-skip-traced').checked,
+            consent_given: document.getElementById('c-consent').checked,
+            dnc: document.getElementById('c-dnc').checked,
+        };
+        const id = _editingId;
+        const url    = id ? `/api/contacts/${id}` : '/api/contacts';
+        const method = id ? 'PATCH' : 'POST';
+        try {
+            const r = await fetch(url, { method, headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+            const d = await r.json();
+            if (!r.ok) { _showModalError(d.error || 'Save failed'); return; }
+            bootstrap.Modal.getInstance(document.getElementById('contactModal')).hide();
+            load();
+        } catch { _showModalError('Network error'); }
+    }
+
+    function viewContact(id) {
+        const c = _all.find(x => x.id === id);
+        if (!c) return;
+        document.getElementById('view-contact-body').innerHTML = `
+            <dl class="row mb-0">
+                <dt class="col-4">Name</dt><dd class="col-8">${c.name}</dd>
+                <dt class="col-4">Type</dt><dd class="col-8 text-capitalize">${c.contact_type}</dd>
+                <dt class="col-4">Phone</dt><dd class="col-8">${c.phone || '—'}</dd>
+                <dt class="col-4">Email</dt><dd class="col-8">${c.email || '—'}</dd>
+                <dt class="col-4">Address</dt><dd class="col-8">${c.mailing_address || '—'}</dd>
+                <dt class="col-4">Ownership</dt><dd class="col-8 text-capitalize">${c.ownership_type || '—'}</dd>
+                <dt class="col-4">Skip Traced</dt><dd class="col-8">${c.skip_traced ? '<span class="badge bg-info text-dark">Yes</span>' : 'No'}</dd>
+                <dt class="col-4">Consent</dt><dd class="col-8">${c.consent_given ? '<span class="badge bg-success">Yes</span>' : 'No'}</dd>
+                <dt class="col-4">DNC</dt><dd class="col-8">${c.dnc ? '<span class="badge bg-danger">Yes</span>' : 'No'}</dd>
+                <dt class="col-4">Notes</dt><dd class="col-8">${c.notes || '—'}</dd>
+                <dt class="col-4">Added</dt><dd class="col-8">${new Date(c.created_at).toLocaleString()}</dd>
+            </dl>`;
+        document.getElementById('edit-contact-btn').onclick   = () => { bootstrap.Modal.getInstance(document.getElementById('viewContactModal')).hide(); openEdit(id); };
+        document.getElementById('delete-contact-btn').onclick = () => deleteContact(id);
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('viewContactModal')).show();
+    }
+
+    async function deleteContact(id) {
+        if (!confirm('Delete this contact? This cannot be undone.')) return;
+        const r = await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
+        if (r.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('viewContactModal')).hide();
+            load();
+        }
+    }
+
+    function exportCSV() { window.open('/api/deals/export?format=csv', '_blank'); }
+    function search() { _applyFilter(); }
+    function prevPage() { _offset = Math.max(0, _offset - PAGE); _render(); }
+    function nextPage() { if (_offset + PAGE < _filtered.length) { _offset += PAGE; _render(); } }
+    function _showModalError(msg) {
+        const el = document.getElementById('contact-modal-error');
+        el.textContent = msg; el.classList.remove('d-none');
+    }
+
+    document.addEventListener('DOMContentLoaded', load);
+    return { load, openNew, openEdit, save, viewContact, deleteContact, exportCSV, search, prevPage, nextPage };
+})();
+</script>
+{% endblock %}

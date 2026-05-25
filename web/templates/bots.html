@@ -1,0 +1,2200 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Bot Management - Realtor Agent{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Bot-themed color scheme */
+:root {
+    --bot-primary: #2563eb;
+    --bot-success: #059669;
+    --bot-warning: #d97706;
+    --bot-danger: #dc2626;
+    --bot-info: #0891b2;
+    --bot-secondary: #6b7280;
+    --bot-dark: #1f2937;
+    --bot-light: #f9fafb;
+    --bot-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Enhanced stats cards with bot theme */
+.stats-card {
+    background: var(--bot-gradient);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.stats-card .card-body {
+    padding: 2rem 1.5rem;
+}
+
+.stats-card .display-4 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card .card-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.stats-card .card-text {
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+/* Bot cards enhancement */
+.bot-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.bot-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.bot-card .card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.bot-card .card-body {
+    padding: 1.5rem;
+}
+
+.bot-card .card-footer {
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 0 0 12px 12px !important;
+    padding: 1rem 1.5rem;
+}
+
+/* Status badges */
+.status-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-inactive {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Sidebar enhancements */
+.sidebar {
+    background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border: none;
+}
+
+.sidebar .sidebar-header {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar .sidebar-content {
+    padding: 1.5rem;
+}
+
+.activity-feed {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--bot-primary);
+    transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(2px);
+}
+
+.activity-item.success {
+    border-left-color: var(--bot-success);
+}
+
+.activity-item.warning {
+    border-left-color: var(--bot-warning);
+}
+
+.activity-item.error {
+    border-left-color: var(--bot-danger);
+}
+
+/* Modal enhancements */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: var(--bot-gradient);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    padding: 1.5rem 2rem;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Form enhancements */
+.form-control:focus {
+    border-color: var(--bot-primary);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+.btn-bot-primary {
+    background: var(--bot-gradient);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-bot-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+}
+
+/* Notification system */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+/* Loading animations */
+.spinner-border {
+    border-color: var(--bot-primary);
+    border-right-color: transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-card .card-body {
+        padding: 1.5rem 1rem;
+    }
+
+    .sidebar {
+        margin-top: 2rem;
+    }
+
+    .modal-dialog {
+        margin: 1rem;
+    }
+}
+
+/* Bot toggle switches */
+.form-check-input:checked {
+    background-color: var(--bot-primary);
+    border-color: var(--bot-primary);
+}
+
+/* Progress bars for bot status */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e5e7eb;
+}
+
+.progress-bar {
+    background: var(--bot-gradient);
+    border-radius: 4px;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Bot Management</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        {% if show_run_interface %}
+        <h1 class="h3 mb-1">Bot Execution Center</h1>
+        <p class="text-muted mb-0">Run and monitor your AI bots with advanced controls</p>
+        {% else %}
+        <h1 class="h3 mb-1">AI Bot Management Dashboard</h1>
+        <p class="text-muted mb-0">Monitor, control, and optimize your real estate acquisition bots</p>
+        {% endif %}
+    </div>
+    <div class="d-flex gap-2">
+        {% if show_run_interface %}
+        <button class="btn btn-bot-primary" id="run-selected-bots" data-action="run-selected-bots">
+            <i class="fas fa-play-circle me-1"></i>Run Selected Bots
+        </button>
+        <button class="btn btn-outline-success" id="schedule-run" data-action="schedule-run">
+            <i class="fas fa-clock me-1"></i>Schedule Run
+        </button>
+        {% else %}
+        <button class="btn btn-bot-primary" id="run-all-bots" data-action="run-all-bots">
+            <i class="fas fa-rocket me-1"></i>Run All Bots
+        </button>
+        {% endif %}
+        <button class="btn btn-outline-secondary" id="refresh-status">
+            <i class="fas fa-sync-alt me-1"></i>Refresh Status
+        </button>
+        <button class="btn btn-outline-info" id="auto-refresh-toggle" data-auto-refresh="false">
+            <i class="fas fa-clock me-1"></i>Auto Refresh: OFF
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    {% if show_run_interface %}
+    <!-- Bot Run Interface -->
+    <div class="row">
+        <!-- Main Run Panel -->
+        <div class="col-lg-8">
+            <!-- Run Configuration Panel -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-sliders-h me-2"></i>Execution Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="runConfigurationForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="runMode" class="form-label">Run Mode</label>
+                                    <select class="form-select" id="runMode">
+                                        <option value="parallel">Parallel Execution</option>
+                                        <option value="sequential">Sequential Execution</option>
+                                        <option value="priority">Priority-Based</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="maxConcurrency" class="form-label">Max Concurrent Bots</label>
+                                    <input type="number" class="form-control" id="maxConcurrency" value="3" min="1" max="8">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="timeout" class="form-label">Timeout per Bot (minutes)</label>
+                                    <input type="number" class="form-control" id="timeout" value="30" min="5" max="120">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="retryAttempts" class="form-label">Retry Attempts</label>
+                                    <input type="number" class="form-control" id="retryAttempts" value="2" min="0" max="5">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Execution Options</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="continueOnError" checked>
+                                        <label class="form-check-label" for="continueOnError">
+                                            Continue on Error
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sendNotifications" checked>
+                                        <label class="form-check-label" for="sendNotifications">
+                                            Send Notifications
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="generateReport" checked>
+                                        <label class="form-check-label" for="generateReport">
+                                            Generate Report
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="saveResults">
+                                        <label class="form-check-label" for="saveResults">
+                                            Save Results to Database
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bot Selection Grid -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-check-square me-2"></i>Select Bots to Run
+                    </h5>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary" id="select-all-bots">
+                            <i class="fas fa-check-double me-1"></i>Select All
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="clear-selection">
+                            <i class="fas fa-times me-1"></i>Clear All
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="run-bot-selection">
+                        <!-- Bot selection cards will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Run Monitor Sidebar -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-tachometer-alt me-2"></i>Execution Monitor
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="execution-status" class="text-center mb-3">
+                        <div class="h6 text-muted">Ready to Execute</div>
+                        <small class="text-muted">No active executions</small>
+                    </div>
+
+                    <div id="execution-progress" style="display: none;">
+                        <div class="mb-2">
+                            <small class="text-muted">Overall Progress</small>
+                        </div>
+                        <div class="progress mb-3">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="overall-progress"></div>
+                        </div>
+                        <div class="text-center">
+                            <small id="progress-text">0 of 0 bots completed</small>
+                        </div>
+                    </div>
+
+                    <div id="active-executions" style="display: none;">
+                        <h6 class="mb-3">Active Executions</h6>
+                        <div id="execution-list" class="small">
+                            <!-- Active executions will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.showRunHistory()">
+                            <i class="fas fa-history me-1"></i>View Run History
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="RealtorAgent.saveRunConfiguration()">
+                            <i class="fas fa-save me-1"></i>Save Configuration
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="RealtorAgent.loadRunConfiguration()">
+                            <i class="fas fa-folder-open me-1"></i>Load Configuration
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm" onclick="RealtorAgent.showRunTemplates()">
+                            <i class="fas fa-file-alt me-1"></i>Run Templates
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Bot Management Interface -->
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- System Overview Stats -->
+            <div class="row mb-4" id="stats-row">
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card text-center">
+                        <div class="card-body">
+                            <div class="display-4 text-white mb-2">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h5 class="card-title" id="total-bots">8</h5>
+                            <p class="card-text">Total Bots</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card text-center">
+                        <div class="card-body">
+                            <div class="display-4 text-white mb-2">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <h5 class="card-title" id="active-bots">6</h5>
+                            <p class="card-text">Active Bots</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card text-center">
+                        <div class="card-body">
+                            <div class="display-4 text-white mb-2">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h5 class="card-title" id="total-deals">47</h5>
+                            <p class="card-text">Deals Generated</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card text-center">
+                        <div class="card-body">
+                            <div class="display-4 text-white mb-2">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h5 class="card-title" id="success-rate">78.5%</h5>
+                            <p class="card-text">Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bot Grid -->
+            <div class="row" id="bots-grid">
+</div>
+                <!-- Web Scout Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-search me-2 text-primary"></i>Web Scout
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="web-scout-toggle" checked data-bot="web_scout">
+                                <label class="form-check-label" for="web-scout-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Scans real estate websites and APIs for new property listings
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="web-scout-deals">15</div>
+                                    <small class="text-muted">Deals Found</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="web-scout-success">85%</div>
+                                    <small class="text-muted">Success Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="web-scout-status">
+                                        <span class="status-active">Active</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('web_scout')" type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="web_scout">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="web-scout-last-run">5 minutes ago</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Clean Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-broom me-2 text-info"></i>Data Clean
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="data-clean-toggle" checked data-bot="data_clean">
+                                <label class="form-check-label" for="data-clean-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Cleans and validates property data, removes duplicates
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="data-clean-deals">12</div>
+                                    <small class="text-muted">Records Cleaned</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="data-clean-success">92%</div>
+                                    <small class="text-muted">Accuracy</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="data-clean-status">
+                                        <span class="status-active">Active</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('data_clean')" type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="data_clean">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="data-clean-last-run">12 minutes ago</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Underwriter Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-calculator me-2 text-success"></i>Underwriter
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="underwriter-toggle" checked data-bot="underwriter">
+                                <label class="form-check-label" for="underwriter-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Analyzes financial viability and calculates maximum offer prices
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="underwriter-deals">8</div>
+                                    <small class="text-muted">Deals Analyzed</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="underwriter-success">78%</div>
+                                    <small class="text-muted">Profit Margin</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="underwriter-status">
+                                        <span class="status-active">Active</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('underwriter')" type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="underwriter">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="underwriter-last-run">1 hour ago</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deal Desk Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-gavel me-2 text-warning"></i>Deal Desk
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="deal-desk-toggle" data-bot="deal_desk">
+                                <label class="form-check-label" for="deal-desk-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Manages deal approval workflow and contract generation
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="deal-desk-deals">5</div>
+                                    <small class="text-muted">Deals Processed</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="deal-desk-success">88%</div>
+                                    <small class="text-muted">Approval Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="deal-desk-status">
+                                        <span class="status-inactive">Inactive</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 88%" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('deal_desk')" disabled type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="deal_desk">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="deal-desk-last-run">Never</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Owner Finder Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-user-friends me-2 text-primary"></i>Owner Finder
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="owner-finder-toggle" checked data-bot="owner_finder">
+                                <label class="form-check-label" for="owner-finder-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Finds and verifies property owner contact information
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="owner-finder-deals">18</div>
+                                    <small class="text-muted">Owners Found</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="owner-finder-success">76%</div>
+                                    <small class="text-muted">Contact Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="owner-finder-status">
+                                        <span class="status-active">Active</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 76%" aria-valuenow="76" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('owner_finder')" type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="owner_finder">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="owner-finder-last-run">30 minutes ago</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outreach Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-envelope me-2 text-info"></i>Outreach
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="outreach-toggle" checked data-bot="outreach">
+                                <label class="form-check-label" for="outreach-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Manages communication campaigns and follow-up sequences
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="outreach-deals">22</div>
+                                    <small class="text-muted">Messages Sent</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="outreach-success">81%</div>
+                                    <small class="text-muted">Response Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="outreach-status">
+                                        <span class="status-active">Active</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 81%" aria-valuenow="81" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('outreach')" type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="outreach">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="outreach-last-run">15 minutes ago</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Negotiator Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-handshake me-2 text-success"></i>Negotiator
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="negotiator-toggle" checked data-bot="negotiator">
+                                <label class="form-check-label" for="negotiator-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Handles price negotiations and counter-offer strategies
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="negotiator-deals">9</div>
+                                    <small class="text-muted">Negotiations</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="negotiator-success">73%</div>
+                                    <small class="text-muted">Win Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="negotiator-status">
+                                        <span class="status-active">Active</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 73%" aria-valuenow="73" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('negotiator')" type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="negotiator">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="negotiator-last-run">2 hours ago</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compliance QA Bot -->
+                <div class="col-lg-6 col-xl-4 mb-4">
+                    <div class="card h-100 bot-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-shield-alt me-2 text-warning"></i>Compliance QA
+                            </h5>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input bot-toggle" type="checkbox" id="compliance-qa-toggle" checked data-bot="compliance_qa">
+                                <label class="form-check-label" for="compliance-qa-toggle"></label>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text text-muted mb-3">
+                                Ensures all activities comply with legal and regulatory requirements
+                            </p>
+
+                            <div class="row text-center mb-3">
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="compliance-qa-deals">25</div>
+                                    <small class="text-muted">Checks Performed</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="compliance-qa-success">95%</div>
+                                    <small class="text-muted">Compliance Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="h5 mb-1" id="compliance-qa-status">
+                                        <span class="status-active">Active</span>
+                                    </div>
+                                    <small class="text-muted">Status</small>
+                                </div>
+                            </div>
+
+                            <div class="progress mb-3">
+                                <div class="progress-bar" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.runBot('compliance_qa')" type="button">
+                                    <i class="fas fa-play me-1"></i>Run Now
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#botConfigModal" data-bot="compliance_qa">
+                                    <i class="fas fa-cog me-1"></i>Configure
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>Last run: <span id="compliance-qa-last-run">8 minutes ago</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h5 class="mb-0 text-white">
+                        <i class="fas fa-tachometer-alt me-2"></i>Bot Dashboard
+                    </h5>
+                </div>
+                <div class="sidebar-content">
+                    <!-- Activity Feed -->
+                    <div class="mb-4">
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-history me-1"></i>Activity Feed
+                        </h6>
+                        <div class="activity-feed" id="activity-feed">
+                            <div class="activity-item success">
+                                <small class="text-white-50">2 min ago</small>
+                                <div class="text-white">Web Scout found 3 new deals</div>
+                            </div>
+                            <div class="activity-item info">
+                                <small class="text-white-50">5 min ago</small>
+                                <div class="text-white">Data Clean processed 47 records</div>
+                            </div>
+                            <div class="activity-item warning">
+                                <small class="text-white-50">12 min ago</small>
+                                <div class="text-white">Underwriter completed analysis</div>
+                            </div>
+                            <div class="activity-item success">
+                                <small class="text-white-50">18 min ago</small>
+                                <div class="text-white">Outreach sent 12 messages</div>
+                            </div>
+                            <div class="activity-item error">
+                                <small class="text-white-50">25 min ago</small>
+                                <div class="text-white">Negotiator encountered API limit</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mb-4">
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-bolt me-1"></i>Quick Actions
+                        </h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showQuickAnalysisModal()">
+                                <i class="fas fa-chart-bar me-1"></i>Bot Performance Analysis
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showResourceModal()">
+                                <i class="fas fa-tools me-1"></i>Bot Resources
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.exportBotData()">
+                                <i class="fas fa-file-excel me-1"></i>Export Bot Data
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showBotGuide()">
+                                <i class="fas fa-book me-1"></i>Bot Management Guide
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Status -->
+                    <div class="mb-4">
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-server me-1"></i>System Status
+                        </h6>
+                        <div class="text-center">
+                            <div class="mb-2">
+                                <span class="badge bg-success">All Systems Operational</span>
+                            </div>
+                            <small class="text-white-50">Last updated: Just now</small>
+                        </div>
+                    </div>
+
+                    <!-- Performance Metrics -->
+                    <div>
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-chart-pie me-1"></i>Performance
+                        </h6>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="h6 mb-1 text-white">98.2%</div>
+                                <small class="text-white-50">Uptime</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h6 mb-1 text-white">1.2s</div>
+                                <small class="text-white-50">Avg Response</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bot Configuration Modal -->
+<div class="modal fade" id="botConfigModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="botConfigModalTitle">
+                    <i class="fas fa-cog me-2"></i>Bot Configuration
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="botConfigModalBody">
+                <!-- Configuration form will be loaded here -->
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading configuration...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-bot-primary" id="saveBotConfig">
+                    <i class="fas fa-save me-1"></i>Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Analysis Modal -->
+<div class="modal fade" id="quickAnalysisModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-chart-bar me-2"></i>Bot Performance Analysis
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quickAnalysisForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="analysisBot" class="form-label">Select Bot</label>
+                                <select class="form-select" id="analysisBot" required>
+                                    <option value="">Choose a bot...</option>
+                                    <option value="web_scout">Web Scout</option>
+                                    <option value="data_clean">Data Clean</option>
+                                    <option value="underwriter">Underwriter</option>
+                                    <option value="deal_desk">Deal Desk</option>
+                                    <option value="owner_finder">Owner Finder</option>
+                                    <option value="outreach">Outreach</option>
+                                    <option value="negotiator">Negotiator</option>
+                                    <option value="compliance_qa">Compliance QA</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="analysisPeriod" class="form-label">Analysis Period</label>
+                                <select class="form-select" id="analysisPeriod" required>
+                                    <option value="24h">Last 24 Hours</option>
+                                    <option value="7d">Last 7 Days</option>
+                                    <option value="30d">Last 30 Days</option>
+                                    <option value="90d">Last 90 Days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Analysis Metrics</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="metricSuccess" checked>
+                                    <label class="form-check-label" for="metricSuccess">Success Rate</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="metricVolume" checked>
+                                    <label class="form-check-label" for="metricVolume">Processing Volume</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="metricEfficiency" checked>
+                                    <label class="form-check-label" for="metricEfficiency">Efficiency Score</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="metricErrors">
+                                    <label class="form-check-label" for="metricErrors">Error Analysis</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div id="analysisResults" class="mt-4" style="display: none;">
+                    <h6>Analysis Results</h6>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 id="analysisSuccessRate">-</h5>
+                                    <small class="text-muted">Success Rate</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 id="analysisVolume">-</h5>
+                                    <small class="text-muted">Total Processed</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 id="analysisEfficiency">-</h5>
+                                    <small class="text-muted">Efficiency</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5 id="analysisErrors">-</h5>
+                                    <small class="text-muted">Errors</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+                <button type="button" class="btn btn-bot-primary" onclick="RealtorAgent.runAnalysis()">
+                    <i class="fas fa-play me-1"></i>Run Analysis
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resource Finder Modal -->
+<div class="modal fade" id="resourceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-tools me-2"></i>Bot Resources & Tools
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="resourceState" class="form-label">Select State</label>
+                    <select class="form-select" id="resourceState">
+                        <option value="">All States</option>
+                        <option value="CA">California</option>
+                        <option value="TX">Texas</option>
+                        <option value="FL">Florida</option>
+                        <option value="AZ">Arizona</option>
+                        <option value="NV">Nevada</option>
+                        <option value="GA">Georgia</option>
+                        <option value="NC">North Carolina</option>
+                        <option value="TN">Tennessee</option>
+                    </select>
+                </div>
+
+                <div id="resourceList">
+                    <div class="resource-category mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-database me-1"></i>Data Sources
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openResource('county_records')">
+                                    <div class="card h-100 border-primary">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">County Records</h6>
+                                            <small class="text-muted">Property tax records and ownership data</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openResource('mls_data')">
+                                    <div class="card h-100 border-info">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">MLS Data</h6>
+                                            <small class="text-muted">Multiple listing service integration</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resource-category mb-4">
+                        <h6 class="text-success mb-3">
+                            <i class="fas fa-tools me-1"></i>Development Tools
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openResource('api_docs')">
+                                    <div class="card h-100 border-success">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">API Documentation</h6>
+                                            <small class="text-muted">Real estate API integration guides</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openResource('web_scraping')">
+                                    <div class="card h-100 border-warning">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Web Scraping Tools</h6>
+                                            <small class="text-muted">Legal web scraping frameworks</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resource-category">
+                        <h6 class="text-info mb-3">
+                            <i class="fas fa-graduation-cap me-1"></i>Training & Support
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openResource('bot_training')">
+                                    <div class="card h-100 border-info">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Bot Training Guide</h6>
+                                            <small class="text-muted">Complete bot setup and optimization</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openResource('support_forum')">
+                                    <div class="card h-100 border-secondary">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Support Forum</h6>
+                                            <small class="text-muted">Community support and troubleshooting</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// RealtorAgent Bot Management Namespace
+const RealtorAgent = {
+    // Configuration
+    config: {
+        autoRefreshInterval: 30000, // 30 seconds
+        maxActivityItems: 20,
+        apiBaseUrl: '/api/bots',
+        runInterface: {% if show_run_interface %}true{% else %}false{% endif %}
+    },
+
+    // State management
+    state: {
+        autoRefreshEnabled: false,
+        autoRefreshTimer: null,
+        activeBots: [],
+        botMetrics: {},
+        activityFeed: [],
+        selectedBots: [],
+        executionStatus: 'idle'
+    },
+
+    // Initialize the appropriate interface
+    init: function() {
+        console.log('Initializing RealtorAgent Bot System...');
+
+        if (this.config.runInterface) {
+            this.initRunInterface();
+        } else {
+            this.initManagementInterface();
+        }
+
+        console.log('Bot System initialized successfully');
+    },
+
+    // Initialize Run Interface
+    initRunInterface: function() {
+        console.log('Initializing Run Interface...');
+
+        this.setupRunEventListeners();
+        this.loadBotSelectionGrid();
+        this.initializeExecutionMonitor();
+        this.setupTooltips();
+    },
+
+    // Initialize Management Interface
+    initManagementInterface: function() {
+        console.log('Initializing Management Interface...');
+
+        this.setupManagementEventListeners();
+        this.loadInitialData();
+        this.initializeAutoRefresh();
+        this.setupTooltips();
+    },
+
+    // Run Interface Methods
+    setupRunEventListeners: function() {
+        // Run selected bots button
+        document.getElementById('run-selected-bots').addEventListener('click', () => this.runSelectedBots());
+
+        // Schedule run button
+        document.getElementById('schedule-run').addEventListener('click', () => this.showScheduleModal());
+
+        // Select all/clear buttons
+        document.getElementById('select-all-bots').addEventListener('click', () => this.selectAllBots());
+        document.getElementById('clear-selection').addEventListener('click', () => this.clearSelection());
+
+        // Refresh status
+        document.getElementById('refresh-status').addEventListener('click', () => this.refreshBotStatus());
+
+        // Auto refresh toggle
+        document.getElementById('auto-refresh-toggle').addEventListener('click', () => this.toggleAutoRefresh());
+    },
+
+    loadBotSelectionGrid: function() {
+        const grid = document.getElementById('run-bot-selection');
+        const bots = [
+            { id: 'web_scout', name: 'Web Scout', description: 'Scans real estate websites', icon: 'search', active: true },
+            { id: 'data_clean', name: 'Data Clean', description: 'Cleans and validates data', icon: 'broom', active: true },
+            { id: 'underwriter', name: 'Underwriter', description: 'Analyzes financial viability', icon: 'calculator', active: true },
+            { id: 'deal_desk', name: 'Deal Desk', description: 'Manages deal workflow', icon: 'gavel', active: false },
+            { id: 'owner_finder', name: 'Owner Finder', description: 'Finds property owners', icon: 'user-friends', active: true },
+            { id: 'outreach', name: 'Outreach', description: 'Manages communications', icon: 'envelope', active: true },
+            { id: 'negotiator', name: 'Negotiator', description: 'Handles negotiations', icon: 'handshake', active: true },
+            { id: 'compliance_qa', name: 'Compliance QA', description: 'Ensures regulatory compliance', icon: 'shield-alt', active: true }
+        ];
+
+        grid.innerHTML = bots.map(bot => `
+            <div class="col-md-6 mb-3">
+                <div class="card h-100 ${bot.active ? 'border-primary' : 'border-secondary'}">
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input class="form-check-input bot-selection" type="checkbox"
+                                   id="select-${bot.id}" data-bot="${bot.id}"
+                                   ${bot.active ? 'checked' : ''} ${bot.active ? '' : 'disabled'}>
+                            <label class="form-check-label" for="select-${bot.id}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-${bot.icon} me-2 text-${bot.active ? 'primary' : 'secondary'}"></i>
+                                    <div>
+                                        <strong>${bot.name}</strong>
+                                        <br>
+                                        <small class="text-muted">${bot.description}</small>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                        ${bot.active ? '' : '<small class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i>Inactive</small>'}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        // Setup selection event listeners
+        document.querySelectorAll('.bot-selection').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => this.updateSelectedBots(e.target));
+        });
+
+        this.updateSelectedBotsDisplay();
+    },
+
+    updateSelectedBots: function(checkbox) {
+        const botId = checkbox.dataset.bot;
+        if (checkbox.checked) {
+            if (!this.state.selectedBots.includes(botId)) {
+                this.state.selectedBots.push(botId);
+            }
+        } else {
+            this.state.selectedBots = this.state.selectedBots.filter(id => id !== botId);
+        }
+        this.updateSelectedBotsDisplay();
+    },
+
+    updateSelectedBotsDisplay: function() {
+        const button = document.getElementById('run-selected-bots');
+        const count = this.state.selectedBots.length;
+        button.innerHTML = `<i class="fas fa-play-circle me-1"></i>Run ${count} Selected Bot${count !== 1 ? 's' : ''}`;
+        button.disabled = count === 0;
+    },
+
+    selectAllBots: function() {
+        document.querySelectorAll('.bot-selection:not([disabled])').forEach(checkbox => {
+            checkbox.checked = true;
+            this.updateSelectedBots(checkbox);
+        });
+    },
+
+    clearSelection: function() {
+        document.querySelectorAll('.bot-selection').forEach(checkbox => {
+            checkbox.checked = false;
+            this.updateSelectedBots(checkbox);
+        });
+    },
+
+    runSelectedBots: function() {
+        if (this.state.selectedBots.length === 0) {
+            this.showAlert('Please select at least one bot to run', 'warning');
+            return;
+        }
+
+        const config = this.getRunConfiguration();
+        this.startExecution(this.state.selectedBots, config);
+    },
+
+    getRunConfiguration: function() {
+        return {
+            mode: document.getElementById('runMode').value,
+            maxConcurrency: parseInt(document.getElementById('maxConcurrency').value),
+            timeout: parseInt(document.getElementById('timeout').value),
+            retryAttempts: parseInt(document.getElementById('retryAttempts').value),
+            continueOnError: document.getElementById('continueOnError').checked,
+            sendNotifications: document.getElementById('sendNotifications').checked,
+            generateReport: document.getElementById('generateReport').checked,
+            saveResults: document.getElementById('saveResults').checked
+        };
+    },
+
+    startExecution: function(botIds, config) {
+        console.log('Starting execution:', botIds, config);
+
+        this.state.executionStatus = 'running';
+        this.showExecutionProgress();
+
+        // Simulate execution
+        let completed = 0;
+        const total = botIds.length;
+
+        botIds.forEach((botId, index) => {
+            setTimeout(() => {
+                this.updateExecutionProgress(botId, 'running');
+                this.addExecutionActivity(`Started ${this.formatBotName(botId)}`, 'info');
+
+                // Simulate completion
+                setTimeout(() => {
+                    const success = Math.random() > 0.2; // 80% success rate
+                    this.updateExecutionProgress(botId, success ? 'completed' : 'failed');
+                    this.addExecutionActivity(
+                        `${this.formatBotName(botId)} ${success ? 'completed successfully' : 'failed'}`,
+                        success ? 'success' : 'error'
+                    );
+
+                    completed++;
+                    this.updateOverallProgress(completed, total);
+
+                    if (completed === total) {
+                        this.finishExecution();
+                    }
+                }, 2000 + Math.random() * 3000);
+            }, index * 500); // Stagger start times
+        });
+    },
+
+    showExecutionProgress: function() {
+        document.getElementById('execution-status').style.display = 'none';
+        document.getElementById('execution-progress').style.display = 'block';
+        document.getElementById('active-executions').style.display = 'block';
+        document.getElementById('execution-list').innerHTML = '';
+    },
+
+    updateExecutionProgress: function(botId, status) {
+        const list = document.getElementById('execution-list');
+        const existingItem = list.querySelector(`[data-bot="${botId}"]`);
+
+        if (existingItem) {
+            existingItem.className = `execution-item ${status}`;
+            existingItem.querySelector('.status').textContent = this.formatStatus(status);
+        } else {
+            const item = document.createElement('div');
+            item.className = `execution-item ${status}`;
+            item.setAttribute('data-bot', botId);
+            item.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span>${this.formatBotName(botId)}</span>
+                    <span class="status">${this.formatStatus(status)}</span>
+                </div>
+                <div class="progress" style="height: 4px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         style="width: ${status === 'running' ? '50%' : '100%'}"></div>
+                </div>
+            `;
+            list.appendChild(item);
+        }
+    },
+
+    updateOverallProgress: function(completed, total) {
+        const percentage = (completed / total) * 100;
+        document.getElementById('overall-progress').style.width = `${percentage}%`;
+        document.getElementById('progress-text').textContent = `${completed} of ${total} bots completed`;
+    },
+
+    finishExecution: function() {
+        this.state.executionStatus = 'completed';
+        this.showAlert('All selected bots have completed execution', 'success');
+
+        setTimeout(() => {
+            document.getElementById('execution-status').style.display = 'block';
+            document.getElementById('execution-progress').style.display = 'none';
+            document.getElementById('active-executions').style.display = 'none';
+        }, 3000);
+    },
+
+    showScheduleModal: function() {
+        this.showAlert('Scheduling feature coming soon!', 'info');
+    },
+
+    showRunHistory: function() {
+        this.showAlert('Run history feature coming soon!', 'info');
+    },
+
+    saveRunConfiguration: function() {
+        const config = this.getRunConfiguration();
+        localStorage.setItem('realtorAgentRunConfig', JSON.stringify(config));
+        this.showAlert('Run configuration saved successfully', 'success');
+    },
+
+    loadRunConfiguration: function() {
+        const saved = localStorage.getItem('realtorAgentRunConfig');
+        if (saved) {
+            const config = JSON.parse(saved);
+            // Apply configuration to form
+            Object.keys(config).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    if (element.type === 'checkbox') {
+                        element.checked = config[key];
+                    } else {
+                        element.value = config[key];
+                    }
+                }
+            });
+            this.showAlert('Run configuration loaded successfully', 'success');
+        } else {
+            this.showAlert('No saved configuration found', 'warning');
+        }
+    },
+
+    showRunTemplates: function() {
+        this.showAlert('Run templates feature coming soon!', 'info');
+    },
+
+    // Management Interface Methods (existing code continues below)
+    setupManagementEventListeners: function() {
+
+    // Load initial data
+    loadInitialData: function() {
+        this.loadBotMetrics();
+        this.loadActivityFeed();
+        this.updateStatsCards();
+    },
+
+    // Bot toggle handler
+    handleBotToggle: function(event) {
+        const toggle = event.target;
+        const botName = toggle.dataset.bot;
+        const isEnabled = toggle.checked;
+
+        this.updateBotStatusUI(botName, isEnabled);
+        this.toggleBot(botName, isEnabled);
+
+        // Update active bots list
+        if (isEnabled) {
+            if (!this.state.activeBots.includes(botName)) {
+                this.state.activeBots.push(botName);
+            }
+        } else {
+            this.state.activeBots = this.state.activeBots.filter(bot => bot !== botName);
+        }
+
+        this.updateStatsCards();
+        this.addActivityItem(`${this.formatBotName(botName)} ${isEnabled ? 'activated' : 'deactivated'}`, isEnabled ? 'success' : 'warning');
+    },
+
+    // Update bot status UI
+    updateBotStatusUI: function(botName, isEnabled) {
+        const statusElement = document.getElementById(`${botName}-status`);
+        const runButton = document.querySelector(`[onclick="RealtorAgent.runBot('${botName}')"]`);
+
+        if (isEnabled) {
+            statusElement.innerHTML = '<span class="status-active">Active</span>';
+            runButton.disabled = false;
+            runButton.classList.remove('disabled');
+        } else {
+            statusElement.innerHTML = '<span class="status-inactive">Inactive</span>';
+            runButton.disabled = true;
+            runButton.classList.add('disabled');
+        }
+    },
+
+    // Run individual bot
+    runBot: function(botName) {
+        const button = event.target;
+        const originalText = button.innerHTML;
+
+        // Show loading state
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Running...';
+        button.disabled = true;
+
+        this.addActivityItem(`${this.formatBotName(botName)} execution started`, 'info');
+
+        // Simulate API call
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+
+            // Update last run time
+            const lastRunElement = document.getElementById(`${botName}-last-run`);
+            if (lastRunElement) {
+                lastRunElement.textContent = 'Just now';
+            }
+
+            // Update metrics
+            this.updateBotMetrics(botName);
+
+            // Show success message
+            this.showAlert(`${this.formatBotName(botName)} completed successfully`, 'success');
+            this.addActivityItem(`${this.formatBotName(botName)} completed successfully`, 'success');
+        }, 2000);
+    },
+
+    // Run all active bots
+    runAllBots: function() {
+        const button = document.getElementById('run-all-bots');
+        const originalText = button.innerHTML;
+
+        if (this.state.activeBots.length === 0) {
+            this.showAlert('No active bots to run', 'warning');
+            return;
+        }
+
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Running All Bots...';
+        button.disabled = true;
+
+        this.addActivityItem(`Starting execution of ${this.state.activeBots.length} bots`, 'info');
+
+        // Simulate running all bots
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+
+            // Update all bot metrics
+            this.state.activeBots.forEach(botName => this.updateBotMetrics(botName));
+
+            this.showAlert(`All ${this.state.activeBots.length} active bots completed successfully`, 'success');
+            this.addActivityItem(`All ${this.state.activeBots.length} bots completed successfully`, 'success');
+        }, 5000);
+    },
+
+    // Refresh bot status
+    refreshBotStatus: function() {
+        const button = document.getElementById('refresh-status');
+
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Refreshing...';
+        button.disabled = true;
+
+        setTimeout(() => {
+            button.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh Status';
+            button.disabled = false;
+
+            this.loadBotMetrics();
+            this.showAlert('Bot status refreshed', 'info');
+            this.addActivityItem('Bot status refreshed', 'info');
+        }, 1000);
+    },
+
+    // Toggle auto refresh
+    toggleAutoRefresh: function() {
+        const button = document.getElementById('auto-refresh-toggle');
+        this.state.autoRefreshEnabled = !this.state.autoRefreshEnabled;
+
+        if (this.state.autoRefreshEnabled) {
+            button.innerHTML = '<i class="fas fa-clock me-1"></i>Auto Refresh: ON';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-success');
+            this.startAutoRefresh();
+            this.addActivityItem('Auto refresh enabled', 'success');
+        } else {
+            button.innerHTML = '<i class="fas fa-clock me-1"></i>Auto Refresh: OFF';
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-secondary');
+            this.stopAutoRefresh();
+            this.addActivityItem('Auto refresh disabled', 'warning');
+        }
+    },
+
+    // Auto refresh functionality
+    initializeAutoRefresh: function() {
+        // Auto refresh is initially disabled
+    },
+
+    startAutoRefresh: function() {
+        this.stopAutoRefresh(); // Clear any existing timer
+        this.state.autoRefreshTimer = setInterval(() => {
+            this.loadBotMetrics();
+        }, this.config.autoRefreshInterval);
+    },
+
+    stopAutoRefresh: function() {
+        if (this.state.autoRefreshTimer) {
+            clearInterval(this.state.autoRefreshTimer);
+            this.state.autoRefreshTimer = null;
+        }
+    },
+
+    // Load bot metrics
+    loadBotMetrics: function() {
+        // Simulate loading metrics from API
+        const metrics = {
+            web_scout: { deals: 15, success: 85, status: 'active' },
+            data_clean: { deals: 12, success: 92, status: 'active' },
+            underwriter: { deals: 8, success: 78, status: 'active' },
+            deal_desk: { deals: 5, success: 88, status: 'inactive' },
+            owner_finder: { deals: 18, success: 76, status: 'active' },
+            outreach: { deals: 22, success: 81, status: 'active' },
+            negotiator: { deals: 9, success: 73, status: 'active' },
+            compliance_qa: { deals: 25, success: 95, status: 'active' }
+        };
+
+        this.state.botMetrics = metrics;
+        this.updateBotCards();
+        this.updateStatsCards();
+    },
+
+    // Update bot cards with metrics
+    updateBotCards: function() {
+        Object.keys(this.state.botMetrics).forEach(botName => {
+            const metrics = this.state.botMetrics[botName];
+
+            // Update deals count
+            const dealsElement = document.getElementById(`${botName}-deals`);
+            if (dealsElement) {
+                dealsElement.textContent = metrics.deals;
+            }
+
+            // Update success rate
+            const successElement = document.getElementById(`${botName}-success`);
+            if (successElement) {
+                successElement.textContent = `${metrics.success}%`;
+            }
+
+            // Update progress bar
+            const progressBar = document.querySelector(`#${botName.replace('_', '-')}-status`).closest('.card-body').querySelector('.progress-bar');
+            if (progressBar) {
+                progressBar.style.width = `${metrics.success}%`;
+                progressBar.setAttribute('aria-valuenow', metrics.success);
+            }
+        });
+    },
+
+    // Update stats cards
+    updateStatsCards: function() {
+        const metrics = this.state.botMetrics;
+        const totalBots = Object.keys(metrics).length;
+        const activeBots = Object.values(metrics).filter(m => m.status === 'active').length;
+        const totalDeals = Object.values(metrics).reduce((sum, m) => sum + m.deals, 0);
+        const avgSuccess = Math.round(Object.values(metrics).reduce((sum, m) => sum + m.success, 0) / totalBots);
+
+        document.getElementById('total-bots').textContent = totalBots;
+        document.getElementById('active-bots').textContent = activeBots;
+        document.getElementById('total-deals').textContent = totalDeals;
+        document.getElementById('success-rate').textContent = `${avgSuccess}%`;
+    },
+
+    // Update individual bot metrics after run
+    updateBotMetrics: function(botName) {
+        if (this.state.botMetrics[botName]) {
+            this.state.botMetrics[botName].deals += Math.floor(Math.random() * 3) + 1;
+            this.updateBotCards();
+            this.updateStatsCards();
+        }
+    },
+
+    // Toggle bot (API call simulation)
+    toggleBot: function(botName, enabled) {
+        console.log(`Toggling bot ${botName}: ${enabled ? 'ON' : 'OFF'}`);
+        // In a real implementation, this would make an API call
+    },
+
+    // Setup bot configuration modal
+    setupBotConfigModal: function() {
+        const modal = document.getElementById('botConfigModal');
+
+        modal.addEventListener('show.bs.modal', (event) => {
+            const button = event.relatedTarget;
+            const botName = button.dataset.bot;
+
+            document.getElementById('botConfigModalTitle').textContent = `${this.formatBotName(botName)} Configuration`;
+            this.loadBotConfigForm(botName);
+        });
+    },
+
+    // Load bot configuration form
+    loadBotConfigForm: function(botName) {
+        const modalBody = document.getElementById('botConfigModalBody');
+
+        const configForms = {
+            web_scout: `
+                <form id="web-scout-config">
+                    <div class="mb-3">
+                        <label class="form-label">Data Sources</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="realtor-check" checked>
+                                    <label class="form-check-label" for="realtor-check">Realtor.com</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="homes-check" checked>
+                                    <label class="form-check-label" for="homes-check">Homes.com</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="land-check" checked>
+                                    <label class="form-check-label" for="land-check">LandWatch</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="listings-limit" class="form-label">Max Listings per Run</label>
+                        <input type="number" class="form-control" id="listings-limit" value="100" min="10" max="1000">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="min-price" class="form-label">Min Price ($)</label>
+                            <input type="number" class="form-control" id="min-price" value="25000">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="max-price" class="form-label">Max Price ($)</label>
+                            <input type="number" class="form-control" id="max-price" value="1000000">
+                        </div>
+                    </div>
+                </form>
+            `,
+            data_clean: `
+                <form id="data-clean-config">
+                    <div class="mb-3">
+                        <label for="dedup-threshold" class="form-label">Duplicate Detection Threshold</label>
+                        <input type="number" class="form-control" id="dedup-threshold" value="0.9" min="0.1" max="1.0" step="0.1">
+                        <div class="form-text">Higher values are more strict about duplicates</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Enrichment Sources</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="county-check" checked>
+                            <label class="form-check-label" for="county-check">County Assessor</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="public-check" checked>
+                            <label class="form-check-label" for="public-check">Public Records</label>
+                        </div>
+                    </div>
+                </form>
+            `,
+            underwriter: `
+                <form id="underwriter-config">
+                    <div class="mb-3">
+                        <label for="comps-radius" class="form-label">Comps Search Radius (miles)</label>
+                        <input type="number" class="form-control" id="comps-radius" value="5" min="1" max="50">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rehab Tiers (% of ARV)</label>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="light-rehab" class="form-label">Light</label>
+                                <input type="text" class="form-control" id="light-rehab" value="5-10" placeholder="5-10">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="medium-rehab" class="form-label">Medium</label>
+                                <input type="text" class="form-control" id="medium-rehab" value="10-20" placeholder="10-20">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="heavy-rehab" class="form-label">Heavy</label>
+                                <input type="text" class="form-control" id="heavy-rehab" value="20-35" placeholder="20-35">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            `
+        };
+
+        modalBody.innerHTML = configForms[botName] || '<p class="text-center text-muted">Configuration form not available for this bot.</p>';
+    },
+
+    // Save bot configuration
+    saveBotConfig: function() {
+        this.showAlert('Bot configuration saved successfully', 'success');
+        this.addActivityItem('Bot configuration updated', 'success');
+        bootstrap.Modal.getInstance(document.getElementById('botConfigModal')).hide();
+    },
+
+    // Setup analysis modal
+    setupAnalysisModal: function() {
+        // Analysis modal is already set up in HTML
+    },
+
+    // Show quick analysis modal
+    showQuickAnalysisModal: function() {
+        const modal = new bootstrap.Modal(document.getElementById('quickAnalysisModal'));
+        modal.show();
+    },
+
+    // Run analysis
+    runAnalysis: function() {
+        const botSelect = document.getElementById('analysisBot');
+        const periodSelect = document.getElementById('analysisPeriod');
+
+        if (!botSelect.value) {
+            this.showAlert('Please select a bot to analyze', 'warning');
+            return;
+        }
+
+        const botName = botSelect.value;
+        const period = periodSelect.value;
+
+        // Show loading
+        const runButton = event.target;
+        const originalText = runButton.innerHTML;
+        runButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
+        runButton.disabled = true;
+
+        // Simulate analysis
+        setTimeout(() => {
+            runButton.innerHTML = originalText;
+            runButton.disabled = false;
+
+            // Show results
+            document.getElementById('analysisResults').style.display = 'block';
+            document.getElementById('analysisSuccessRate').textContent = '87%';
+            document.getElementById('analysisVolume').textContent = '1,247';
+            document.getElementById('analysisEfficiency').textContent = '94%';
+            document.getElementById('analysisErrors').textContent = '3';
+
+            this.showAlert('Analysis completed successfully', 'success');
+            this.addActivityItem(`Analysis completed for ${this.formatBotName(botName)}`, 'success');
+        }, 2000);
+    },
+
+    // Setup resource modal
+    setupResourceModal: function() {
+        // Resource modal is already set up in HTML
+    },
+
+    // Show resource modal
+    showResourceModal: function() {
+        const modal = new bootstrap.Modal(document.getElementById('resourceModal'));
+        modal.show();
+    },
+
+    // Open resource
+    openResource: function(resourceType) {
+        const resources = {
+            county_records: 'https://www.countyrecords.com',
+            mls_data: 'https://www.mls.com/developers',
+            api_docs: 'https://developer.realtor.com',
+            web_scraping: 'https://scrapy.org',
+            bot_training: '/static/docs/bot-training-guide.pdf',
+            support_forum: 'https://forum.realtoragent.com'
+        };
+
+        const url = resources[resourceType];
+        if (url) {
+            window.open(url, '_blank');
+            this.addActivityItem(`Opened ${resourceType.replace('_', ' ')} resource`, 'info');
+        }
+    },
+
+    // Export bot data
+    exportBotData: function() {
+        this.showAlert('Bot data export started. Download will begin shortly.', 'info');
+        this.addActivityItem('Bot data export initiated', 'info');
+
+        // Simulate export
+        setTimeout(() => {
+            // In a real implementation, this would trigger a file download
+            this.showAlert('Bot data exported successfully', 'success');
+            this.addActivityItem('Bot data export completed', 'success');
+        }, 2000);
+    },
+
+    // Show bot guide
+    showBotGuide: function() {
+        window.open('/static/docs/bot-management-guide.pdf', '_blank');
+        this.addActivityItem('Bot management guide opened', 'info');
+    },
+
+    // Activity feed management
+    loadActivityFeed: function() {
+        // Initial activity items are already in HTML
+        this.state.activityFeed = [
+            { time: '2 min ago', message: 'Web Scout found 3 new deals', type: 'success' },
+            { time: '5 min ago', message: 'Data Clean processed 47 records', type: 'info' },
+            { time: '12 min ago', message: 'Underwriter completed analysis', type: 'warning' },
+            { time: '18 min ago', message: 'Outreach sent 12 messages', type: 'success' },
+            { time: '25 min ago', message: 'Negotiator encountered API limit', type: 'error' }
+        ];
+    },
+
+    addActivityItem: function(message, type = 'info') {
+        const activityFeed = document.getElementById('activity-feed');
+        const item = document.createElement('div');
+        item.className = `activity-item ${type}`;
+        item.innerHTML = `
+            <small class="text-white-50">Just now</small>
+            <div class="text-white">${message}</div>
+        `;
+
+        // Add to top of feed
+        activityFeed.insertBefore(item, activityFeed.firstChild);
+
+        // Limit items
+        while (activityFeed.children.length > this.config.maxActivityItems) {
+            activityFeed.removeChild(activityFeed.lastChild);
+        }
+
+        // Add to state
+        this.state.activityFeed.unshift({
+            time: 'Just now',
+            message: message,
+            type: type
+        });
+    },
+
+    // Notification system
+    showAlert: function(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas ${this.getAlertIcon(type)} me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    },
+
+    getAlertIcon: function(type) {
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-triangle',
+            warning: 'fa-exclamation-circle',
+            info: 'fa-info-circle'
+        };
+        return icons[type] || 'fa-info-circle';
+    },
+
+    // Setup tooltips
+    setupTooltips: function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    },
+
+    // Utility methods
+    formatStatus: function(status) {
+        const statusMap = {
+            'idle': 'Idle',
+            'running': 'Running',
+            'completed': 'Completed',
+            'failed': 'Failed'
+        };
+        return statusMap[status] || status;
+    },
+
+    addExecutionActivity: function(message, type = 'info') {
+        // Add to execution activity feed (could be expanded)
+        console.log(`Execution: ${message}`);
+    },
+
+    // Management Interface Methods
+    setupManagementEventListeners: function() {
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    RealtorAgent.init();
+});
+</script>
+{% endblock %}

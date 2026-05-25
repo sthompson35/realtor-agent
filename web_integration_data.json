@@ -1,0 +1,102 @@
+{
+  "timestamp": "2026-01-10T15:10:39.300650",
+  "states": [
+    {
+      "name": "Texas",
+      "status": "Hot",
+      "counties": "Harris, Dallas, Tarrant",
+      "focus": "Multi-family, Land",
+      "resources_available": true
+    },
+    {
+      "name": "Florida",
+      "status": "Hot",
+      "counties": "Miami-Dade, Broward",
+      "focus": "Condo, Single-family",
+      "resources_available": true
+    },
+    {
+      "name": "Arizona",
+      "status": "Growing",
+      "counties": "Maricopa, Pima",
+      "focus": "Single-family, Land",
+      "resources_available": true
+    },
+    {
+      "name": "North Carolina",
+      "status": "Emerging",
+      "counties": "Mecklenburg, Wake",
+      "focus": "Single-family",
+      "resources_available": true
+    },
+    {
+      "name": "Georgia",
+      "status": "Hot",
+      "counties": "Fulton, Gwinnett",
+      "focus": "Multi-family",
+      "resources_available": true
+    }
+  ],
+  "formulas": [
+    {
+      "name": "Cap Rate",
+      "formula": "=(Annual NOI / Property Value) * 100",
+      "description": "Capitalization Rate"
+    },
+    {
+      "name": "Cash-on-Cash Return",
+      "formula": "=(Annual Cash Flow / Initial Investment) * 100",
+      "description": "Cash flow return on investment"
+    },
+    {
+      "name": "IRR",
+      "formula": "=IRR(Cash Flow Array)",
+      "description": "Internal Rate of Return"
+    },
+    {
+      "name": "DSCR",
+      "formula": "=Annual NOI / Annual Debt Service",
+      "description": "Debt Service Coverage Ratio"
+    },
+    {
+      "name": "NOI",
+      "formula": "=Gross Income - Operating Expenses",
+      "description": "Net Operating Income"
+    }
+  ],
+  "tips": [
+    {
+      "category": "Market Analysis",
+      "tip": "Always verify comps within 1-mile radius",
+      "impact": "High"
+    },
+    {
+      "category": "Due Diligence",
+      "tip": "Never skip environmental assessment",
+      "impact": "Critical"
+    },
+    {
+      "category": "Negotiation",
+      "tip": "Always have 3 exit strategies",
+      "impact": "High"
+    },
+    {
+      "category": "Financing",
+      "tip": "Shop rates 30 days before closing",
+      "impact": "Medium"
+    },
+    {
+      "category": "Property Management",
+      "tip": "Budget 1% of property value for maintenance",
+      "impact": "High"
+    }
+  ],
+  "market_data": {
+    "total_states": 5,
+    "hot_markets": 3,
+    "growing_markets": 1,
+    "total_formulas": 5,
+    "pro_tips_count": 5
+  },
+  "contact_count": 0
+}

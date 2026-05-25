@@ -1,0 +1,2965 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Dashboard - Realtor Agent{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Analytics-themed color scheme */
+:root {
+    --analytics-primary: #2563eb;
+    --analytics-success: #059669;
+    --analytics-warning: #d97706;
+    --analytics-danger: #dc2626;
+    --analytics-info: #0891b2;
+    --analytics-secondary: #6b7280;
+    --analytics-dark: #1f2937;
+    --analytics-light: #f9fafb;
+    --analytics-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Enhanced stats cards with analytics theme */
+.stats-card {
+    background: var(--analytics-gradient);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.stats-card .card-body {
+    padding: 2rem 1.5rem;
+}
+
+.stats-card .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.stats-card .display-4 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card .metric-change {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.stats-card .metric-change.success {
+    color: #10b981;
+}
+
+.stats-card .metric-change.warning {
+    color: #f59e0b;
+}
+
+.stats-card .metric-change.danger {
+    color: #ef4444;
+}
+
+/* Chart containers enhancement */
+.chart-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.chart-card .card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.chart-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Sidebar enhancements */
+.sidebar {
+    background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border: none;
+}
+
+.sidebar .sidebar-header {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar .sidebar-content {
+    padding: 1.5rem;
+}
+
+.activity-feed {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--analytics-primary);
+    transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(2px);
+}
+
+.activity-item.success {
+    border-left-color: var(--analytics-success);
+}
+
+.activity-item.warning {
+    border-left-color: var(--analytics-warning);
+}
+
+.activity-item.error {
+    border-left-color: var(--analytics-danger);
+}
+
+/* Modal enhancements */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: var(--analytics-gradient);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    padding: 1.5rem 2rem;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Table enhancements */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 2px solid #d1d5db;
+    font-weight: 600;
+    color: #374151;
+}
+
+.table tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+/* Progress bars */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e5e7eb;
+}
+
+.progress-bar {
+    background: var(--analytics-gradient);
+    border-radius: 4px;
+}
+
+/* Button enhancements */
+.btn-analytics-primary {
+    background: var(--analytics-gradient);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-analytics-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+}
+
+/* Efficiency metrics cards */
+.efficiency-card {
+    text-align: center;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+.efficiency-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.efficiency-card .card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+}
+
+.efficiency-card .display-4 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Notification system */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+/* Loading animations */
+.spinner-border {
+    border-color: var(--analytics-primary);
+    border-right-color: transparent;
+}
+
+/* Custom reports section */
+.custom-reports-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.custom-reports-card .card-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.5rem;
+}
+
+.custom-reports-card .btn {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-card .card-body {
+        padding: 1.5rem 1rem;
+    }
+
+    .sidebar {
+        margin-top: 2rem;
+    }
+
+    .modal-dialog {
+        margin: 1rem;
+    }
+
+    .chart-card .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Time range selector enhancement */
+#time-range {
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+
+#time-range:focus {
+    border-color: var(--analytics-primary);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+/* Gradient backgrounds for advanced analytics */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #fcb045 0%, #fd1d1d 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Dashboard widget cards */
+.dashboard-widget-card {
+    border: 2px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.dashboard-widget-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+/* Saved dashboard cards */
+.saved-dashboard-card {
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.saved-dashboard-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Benchmark items */
+.benchmark-item {
+    padding: 1rem;
+    border-radius: 8px;
+    background: #f9fafb;
+    margin-bottom: 1rem;
+}
+
+/* Insight items */
+.insight-item {
+    transition: all 0.3s ease;
+}
+
+.insight-item:hover {
+    background: #f3f4f6 !important;
+    transform: translateX(4px);
+}
+
+/* Alert enhancements */
+.alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+/* Alert configuration items */
+.alert-config-item {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: #f9fafb;
+    margin-bottom: 0.5rem;
+}
+
+/* Alert history items */
+.alert-history-item {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Purple color for AI elements */
+.text-purple {
+    color: #8b5cf6 !important;
+}
+</style>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Analytics</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Advanced Analytics Dashboard</h1>
+        <p class="text-muted mb-0">Comprehensive performance metrics and insights for your real estate acquisition pipeline</p>
+    </div>
+    <div class="d-flex gap-2">
+        <select class="form-select" id="time-range" style="width: auto;">
+            <option value="7d">Last 7 Days</option>
+            <option value="30d" selected>Last 30 Days</option>
+            <option value="90d">Last 90 Days</option>
+            <option value="1y">Last Year</option>
+        </select>
+        <button class="btn btn-analytics-primary" id="export-data">
+            <i class="fas fa-download me-1"></i>Export Data
+        </button>
+        <button class="btn btn-outline-secondary" id="auto-refresh-toggle" data-auto-refresh="false">
+            <i class="fas fa-clock me-1"></i>Auto Refresh: OFF
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <!-- Key Metrics Row -->
+            <div class="row mb-4" id="stats-row">
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title">Total Deals</h6>
+                                    <div class="display-4" id="total-deals">247</div>
+                                    <div class="metric-change success">
+                                        <i class="fas fa-arrow-up me-1"></i>+12% from last month
+                                    </div>
+                                </div>
+                                <div class="text-white-50">
+                                    <i class="fas fa-handshake fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title">Average MAO</h6>
+                                    <div class="display-4" id="avg-mao">$185,420</div>
+                                    <div class="metric-change success">
+                                        <i class="fas fa-arrow-up me-1"></i>+8% from last month
+                                    </div>
+                                </div>
+                                <div class="text-white-50">
+                                    <i class="fas fa-dollar-sign fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title">Conversion Rate</h6>
+                                    <div class="display-4" id="conversion-rate">23.4%</div>
+                                    <div class="metric-change warning">
+                                        <i class="fas fa-arrow-down me-1"></i>-2% from last month
+                                    </div>
+                                </div>
+                                <div class="text-white-50">
+                                    <i class="fas fa-chart-line fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card stats-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title">Avg Days to Close</h6>
+                                    <div class="display-4" id="avg-days">42</div>
+                                    <div class="metric-change success">
+                                        <i class="fas fa-arrow-down me-1"></i>-5 days from last month
+                                    </div>
+                                </div>
+                                <div class="text-white-50">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row mb-4">
+                <div class="col-lg-8 mb-4">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-line me-2 text-primary"></i>Deal Pipeline Over Time
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="pipelineChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-pie me-2 text-info"></i>Deal Status Distribution
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="statusChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Charts -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-4">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-robot me-2 text-success"></i>Bot Performance Metrics
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="botPerformanceChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-dollar-sign me-2 text-warning"></i>Revenue by Property Type
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="revenueChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geographic Analysis -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-4">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-map-marked-alt me-2 text-primary"></i>Deals by County
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>County</th>
+                                            <th>Deals</th>
+                                            <th>Avg Price</th>
+                                            <th>% of Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="county-table">
+                                        <tr>
+                                            <td><strong>Orange County</strong></td>
+                                            <td>45</td>
+                                            <td>$245,000</td>
+                                            <td><span class="badge bg-primary">18.2%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Los Angeles</strong></td>
+                                            <td>38</td>
+                                            <td>$320,000</td>
+                                            <td><span class="badge bg-info">15.4%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>San Bernardino</strong></td>
+                                            <td>32</td>
+                                            <td>$198,000</td>
+                                            <td><span class="badge bg-success">12.9%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Riverside</strong></td>
+                                            <td>28</td>
+                                            <td>$275,000</td>
+                                            <td><span class="badge bg-warning">11.3%</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>San Diego</strong></td>
+                                            <td>22</td>
+                                            <td>$290,000</td>
+                                            <td><span class="badge bg-secondary">8.9%</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-trending-up me-2 text-info"></i>Market Trends Analysis
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="marketTrendsChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Efficiency Metrics -->
+            <div class="row mb-4">
+                <div class="col-lg-4 mb-4">
+                    <div class="card efficiency-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-stopwatch me-2 text-primary"></i>Time to First Contact
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="display-4 text-primary mb-2" id="time-to-contact">2.3</div>
+                            <p class="text-muted mb-3">Average days</p>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-primary" style="width: 77%"></div>
+                            </div>
+                            <small class="text-muted">Target: 3 days</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card efficiency-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-handshake me-2 text-success"></i>Offer Acceptance Rate
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="display-4 text-success mb-2" id="offer-acceptance">68%</div>
+                            <p class="text-muted mb-3">Of offers made</p>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-success" style="width: 68%"></div>
+                            </div>
+                            <small class="text-muted">Industry avg: 45%</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card efficiency-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-calculator me-2 text-info"></i>Cost per Acquisition
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="display-4 text-info mb-2" id="cost-per-acquisition">$2,340</div>
+                            <p class="text-muted mb-3">Per successful deal</p>
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-info" style="width: 65%"></div>
+                            </div>
+                            <small class="text-muted">Target: $3,000</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Reports Section -->
+            <div class="card custom-reports-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-file-alt me-2 text-primary"></i>Custom Reports & Analysis
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-primary w-100" onclick="RealtorAgent.generateReport('monthly-summary')">
+                                <i class="fas fa-calendar-alt me-2"></i>Monthly Summary
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-primary w-100" onclick="RealtorAgent.generateReport('bot-performance')">
+                                <i class="fas fa-robot me-2"></i>Bot Performance
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-primary w-100" onclick="RealtorAgent.generateReport('market-analysis')">
+                                <i class="fas fa-chart-bar me-2"></i>Market Analysis
+                            </button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <button class="btn btn-outline-primary w-100" onclick="RealtorAgent.generateReport('roi-analysis')">
+                                <i class="fas fa-dollar-sign me-2"></i>ROI Analysis
+                            </button>
+                        </div>
+                    </div>
+                    <div id="report-status" class="mt-3" style="display: none;">
+                        <div class="alert alert-info">
+                            <i class="fas fa-spinner fa-spin me-2"></i>Generating report...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-3">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h5 class="mb-0 text-white">
+                        <i class="fas fa-chart-bar me-2"></i>Analytics Hub
+                    </h5>
+                </div>
+                <div class="sidebar-content">
+                    <!-- Activity Feed -->
+                    <div class="mb-4">
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-history me-1"></i>Activity Feed
+                        </h6>
+                        <div class="activity-feed" id="activity-feed">
+                            <div class="activity-item success">
+                                <small class="text-white-50">2 min ago</small>
+                                <div class="text-white">Analytics data refreshed</div>
+                            </div>
+                            <div class="activity-item info">
+                                <small class="text-white-50">5 min ago</small>
+                                <div class="text-white">Monthly report generated</div>
+                            </div>
+                            <div class="activity-item warning">
+                                <small class="text-white-50">12 min ago</small>
+                                <div class="text-white">Conversion rate alert triggered</div>
+                            </div>
+                            <div class="activity-item success">
+                                <small class="text-white-50">18 min ago</small>
+                                <div class="text-white">Bot performance analyzed</div>
+                            </div>
+                            <div class="activity-item error">
+                                <small class="text-white-50">25 min ago</small>
+                                <div class="text-white">Data export completed</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mb-4">
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-bolt me-1"></i>Quick Actions
+                        </h6>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showDeepAnalysisModal()">
+                                <i class="fas fa-search-plus me-1"></i>Deep Analysis
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showAnalyticsResourcesModal()">
+                                <i class="fas fa-tools me-1"></i>Analytics Tools
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.exportAdvancedData()">
+                                <i class="fas fa-file-excel me-1"></i>Advanced Export
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showAnalyticsGuide()">
+                                <i class="fas fa-graduation-cap me-1"></i>Analytics Guide
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Status -->
+                    <div class="mb-4">
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-server me-1"></i>System Status
+                        </h6>
+                        <div class="text-center">
+                            <div class="mb-2">
+                                <span class="badge bg-success">All Systems Operational</span>
+                            </div>
+                            <small class="text-white-50">Last updated: Just now</small>
+                        </div>
+                    </div>
+
+                    <!-- Performance Indicators -->
+                    <div>
+                        <h6 class="text-white mb-3">
+                            <i class="fas fa-tachometer-alt me-1"></i>Performance
+                        </h6>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="h6 mb-1 text-white">99.7%</div>
+                                <small class="text-white-50">Uptime</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="h6 mb-1 text-white">1.1s</div>
+                                <small class="text-white-50">Response</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Analytics Sections -->
+<!-- Predictive Analytics -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-brain me-2 text-purple"></i>Predictive Analytics
+                </h5>
+                <small class="text-muted">AI-powered insights and forecasting</small>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <div class="card bg-gradient-primary text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-chart-line fa-2x me-3"></i>
+                                    <div>
+                                        <h6 class="card-title mb-0">Deal Volume Forecast</h6>
+                                        <small>Next 30 days</small>
+                                    </div>
+                                </div>
+                                <div class="display-4 mb-2">+18%</div>
+                                <p class="mb-0">Projected increase in deal volume</p>
+                                <div class="progress mt-3" style="height: 6px;">
+                                    <div class="progress-bar bg-white" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card bg-gradient-success text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-dollar-sign fa-2x me-3"></i>
+                                    <div>
+                                        <h6 class="card-title mb-0">Revenue Prediction</h6>
+                                        <small>Q4 2024</small>
+                                    </div>
+                                </div>
+                                <div class="display-4 mb-2">$2.4M</div>
+                                <p class="mb-0">Expected quarterly revenue</p>
+                                <div class="progress mt-3" style="height: 6px;">
+                                    <div class="progress-bar bg-white" style="width: 82%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card bg-gradient-warning text-white h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                                    <div>
+                                        <h6 class="card-title mb-0">Risk Alerts</h6>
+                                        <small>Market conditions</small>
+                                    </div>
+                                </div>
+                                <div class="display-4 mb-2">2</div>
+                                <p class="mb-0">Active risk indicators</p>
+                                <div class="progress mt-3" style="height: 6px;">
+                                    <div class="progress-bar bg-white" style="width: 40%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Predictive Charts -->
+                <div class="row mt-4">
+                    <div class="col-lg-8 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Revenue Forecasting Model</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="predictiveRevenueChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">AI Insights</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="insight-item mb-3 p-3 bg-light rounded">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-lightbulb text-warning me-2 mt-1"></i>
+                                        <div>
+                                            <strong>Market Trend:</strong> Single-family homes showing 15% price increase in Q4
+                                            <br><small class="text-muted">Confidence: 89%</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="insight-item mb-3 p-3 bg-light rounded">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-chart-pie text-info me-2 mt-1"></i>
+                                        <div>
+                                            <strong>Conversion Pattern:</strong> Weekends show 23% higher conversion rates
+                                            <br><small class="text-muted">Confidence: 94%</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="insight-item p-3 bg-light rounded">
+                                    <div class="d-flex align-items-start">
+                                        <i class="fas fa-users text-success me-2 mt-1"></i>
+                                        <div>
+                                            <strong>Lead Quality:</strong> Premium leads convert 2.3x faster than standard
+                                            <br><small class="text-muted">Confidence: 87%</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Dashboard Builder -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-cogs me-2 text-primary"></i>Custom Dashboard Builder
+                        </h5>
+                        <small class="text-muted">Create personalized analytics views</small>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="showDashboardBuilder()">
+                        <i class="fas fa-plus me-1"></i>Build Dashboard
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-3 mb-3">
+                        <div class="card dashboard-widget-card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-bar fa-2x text-primary mb-2"></i>
+                                <h6>Performance Metrics</h6>
+                                <p class="text-muted small">Track key performance indicators</p>
+                                <button class="btn btn-outline-primary btn-sm w-100">Add Widget</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <div class="card dashboard-widget-card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-map-marked-alt fa-2x text-success mb-2"></i>
+                                <h6>Geographic Analysis</h6>
+                                <p class="text-muted small">Regional performance breakdown</p>
+                                <button class="btn btn-outline-success btn-sm w-100">Add Widget</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <div class="card dashboard-widget-card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-robot fa-2x text-info mb-2"></i>
+                                <h6>Bot Performance</h6>
+                                <p class="text-muted small">AI agent effectiveness metrics</p>
+                                <button class="btn btn-outline-info btn-sm w-100">Add Widget</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 mb-3">
+                        <div class="card dashboard-widget-card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-filter fa-2x text-warning mb-2"></i>
+                                <h6>Advanced Filters</h6>
+                                <p class="text-muted small">Custom segmentation and filtering</p>
+                                <button class="btn btn-outline-warning btn-sm w-100">Add Widget</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Dashboards -->
+                <div class="mt-4">
+                    <h6 class="mb-3">Saved Dashboards</h6>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card saved-dashboard-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="card-title mb-1">Executive Overview</h6>
+                                            <small class="text-muted">High-level KPIs and trends</small>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">Last modified: 2 days ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card saved-dashboard-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="card-title mb-1">Market Analysis</h6>
+                                            <small class="text-muted">Regional performance and trends</small>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">Last modified: 1 week ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card saved-dashboard-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="card-title mb-1">Bot Operations</h6>
+                                            <small class="text-muted">AI agent performance and efficiency</small>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-copy me-2"></i>Duplicate</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">Last modified: 3 days ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comparative Analysis -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-balance-scale me-2 text-info"></i>Comparative Analysis
+                </h5>
+                <small class="text-muted">Benchmark against industry standards and historical performance</small>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Performance vs Industry Average</h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="comparativeChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Benchmark Metrics</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="benchmark-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Conversion Rate</span>
+                                        <span class="badge bg-success">Above Average</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-3" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 68%"></div>
+                                        </div>
+                                        <small class="text-muted">23.4% vs 18.2%</small>
+                                    </div>
+                                </div>
+                                <div class="benchmark-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Time to Close</span>
+                                        <span class="badge bg-warning">Average</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-3" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" style="width: 52%"></div>
+                                        </div>
+                                        <small class="text-muted">42 days vs 38 days</small>
+                                    </div>
+                                </div>
+                                <div class="benchmark-item mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Cost per Acquisition</span>
+                                        <span class="badge bg-success">Above Average</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-3" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 72%"></div>
+                                        </div>
+                                        <small class="text-muted">$2,340 vs $2,850</small>
+                                    </div>
+                                </div>
+                                <div class="benchmark-item">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span>Customer Satisfaction</span>
+                                        <span class="badge bg-success">Excellent</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-3" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: 89%"></div>
+                                        </div>
+                                        <small class="text-muted">4.7/5 vs 4.2/5</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historical Comparison -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Historical Performance Comparison</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Period</th>
+                                                <th>Total Deals</th>
+                                                <th>Avg MAO</th>
+                                                <th>Conversion Rate</th>
+                                                <th>Avg Days</th>
+                                                <th>vs Previous</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Current Month</strong></td>
+                                                <td>247</td>
+                                                <td>$185,420</td>
+                                                <td>23.4%</td>
+                                                <td>42</td>
+                                                <td><span class="badge bg-success">+12.5%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Last Month</td>
+                                                <td>219</td>
+                                                <td>$170,850</td>
+                                                <td>21.8%</td>
+                                                <td>47</td>
+                                                <td><span class="badge bg-success">+8.2%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>3 Months Ago</td>
+                                                <td>203</td>
+                                                <td>$165,200</td>
+                                                <td>20.1%</td>
+                                                <td>52</td>
+                                                <td><span class="badge bg-success">+5.7%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>6 Months Ago</td>
+                                                <td>189</td>
+                                                <td>$158,900</td>
+                                                <td>18.9%</td>
+                                                <td>55</td>
+                                                <td><span class="badge bg-warning">-2.1%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>1 Year Ago</td>
+                                                <td>176</td>
+                                                <td>$152,400</td>
+                                                <td>17.5%</td>
+                                                <td>58</td>
+                                                <td><span class="badge bg-success">+15.3%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Anomaly Detection & Alerts -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Anomaly Detection & Alerts
+                        </h5>
+                        <small class="text-muted">Real-time monitoring and automated alerts</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-danger">2 Active Alerts</span>
+                        <button class="btn btn-outline-danger btn-sm" onclick="configureAlerts()">
+                            <i class="fas fa-cog me-1"></i>Configure
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-8 mb-4">
+                        <div class="alert alert-danger border-danger">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-exclamation-triangle fa-2x me-3 text-danger"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="alert-heading mb-2">Critical: Conversion Rate Drop</h6>
+                                    <p class="mb-2">Conversion rate has dropped 15% below normal threshold in the last 24 hours. This may indicate issues with lead quality or bot performance.</p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-danger btn-sm">Investigate</button>
+                                        <button class="btn btn-outline-danger btn-sm">View Details</button>
+                                        <small class="text-muted ms-auto">Detected 2 hours ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning border-warning">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-exclamation-circle fa-2x me-3 text-warning"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="alert-heading mb-2">Warning: Unusual Bot Activity</h6>
+                                    <p class="mb-2">Owner Finder bot showing 40% higher than normal error rate. May require maintenance or configuration review.</p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-warning btn-sm">Check Bot</button>
+                                        <button class="btn btn-outline-warning btn-sm">View Logs</button>
+                                        <small class="text-muted ms-auto">Detected 4 hours ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info border-info">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
+                                <div class="flex-grow-1">
+                                    <h6 class="alert-heading mb-2">Info: Market Trend Detected</h6>
+                                    <p class="mb-2">Median home prices in Orange County showing upward trend of 8% over the last week. Consider adjusting pricing strategy.</p>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-info btn-sm">View Trend</button>
+                                        <button class="btn btn-outline-info btn-sm">Adjust Strategy</button>
+                                        <small class="text-muted ms-auto">Detected 6 hours ago</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Alert Configuration</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert-config-item mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="conversionAlert" checked>
+                                        <label class="form-check-label" for="conversionAlert">
+                                            <strong>Conversion Rate Alerts</strong>
+                                            <br><small class="text-muted">Notify when conversion drops below threshold</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="alert-config-item mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="performanceAlert" checked>
+                                        <label class="form-check-label" for="performanceAlert">
+                                            <strong>Bot Performance Alerts</strong>
+                                            <br><small class="text-muted">Alert on unusual bot behavior or errors</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="alert-config-item mb-3">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="marketAlert">
+                                        <label class="form-check-label" for="marketAlert">
+                                            <strong>Market Trend Alerts</strong>
+                                            <br><small class="text-muted">Notify on significant market changes</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="alert-config-item">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="revenueAlert" checked>
+                                        <label class="form-check-label" for="revenueAlert">
+                                            <strong>Revenue Alerts</strong>
+                                            <br><small class="text-muted">Alert on revenue targets or anomalies</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Alert History -->
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h6 class="card-title mb-0">Recent Alert History</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert-history-item mb-2 pb-2 border-bottom">
+                                    <small class="text-muted d-block">2 hours ago</small>
+                                    <span class="badge bg-danger me-2">Critical</span>
+                                    <span>Conversion rate anomaly detected</span>
+                                </div>
+                                <div class="alert-history-item mb-2 pb-2 border-bottom">
+                                    <small class="text-muted d-block">4 hours ago</small>
+                                    <span class="badge bg-warning me-2">Warning</span>
+                                    <span>Bot performance issue</span>
+                                </div>
+                                <div class="alert-history-item mb-2 pb-2 border-bottom">
+                                    <small class="text-muted d-block">1 day ago</small>
+                                    <span class="badge bg-info me-2">Info</span>
+                                    <span>Market trend notification</span>
+                                </div>
+                                <div class="alert-history-item">
+                                    <small class="text-muted d-block">2 days ago</small>
+                                    <span class="badge bg-success me-2">Resolved</span>
+                                    <span>Revenue target achieved</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Deep Analysis Modal -->
+<div class="modal fade" id="deepAnalysisModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-search-plus me-2"></i>Deep Analytics Analysis
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="deepAnalysisForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="analysisType" class="form-label">Analysis Type</label>
+                                <select class="form-select" id="analysisType" required>
+                                    <option value="">Choose analysis type...</option>
+                                    <option value="conversion-funnel">Conversion Funnel</option>
+                                    <option value="cohort-analysis">Cohort Analysis</option>
+                                    <option value="predictive-modeling">Predictive Modeling</option>
+                                    <option value="market-segmentation">Market Segmentation</option>
+                                    <option value="performance-trends">Performance Trends</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="analysisTimeframe" class="form-label">Time Frame</label>
+                                <select class="form-select" id="analysisTimeframe" required>
+                                    <option value="30d">Last 30 Days</option>
+                                    <option value="90d">Last 90 Days</option>
+                                    <option value="6m">Last 6 Months</option>
+                                    <option value="1y">Last Year</option>
+                                    <option value="custom">Custom Range</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Analysis Dimensions</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dimensionGeography" checked>
+                                    <label class="form-check-label" for="dimensionGeography">Geographic Analysis</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dimensionPropertyType" checked>
+                                    <label class="form-check-label" for="dimensionPropertyType">Property Type</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dimensionPriceRange">
+                                    <label class="form-check-label" for="dimensionPriceRange">Price Range</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="dimensionBotPerformance">
+                                    <label class="form-check-label" for="dimensionBotPerformance">Bot Performance</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div id="deepAnalysisResults" class="mt-4" style="display: none;">
+                    <h6>Analysis Results</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Key Insights</h6>
+                                    <ul class="list-unstyled" id="analysisInsights">
+                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Conversion rate improved by 15%</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Top performing county: Orange</li>
+                                        <li class="mb-2"><i class="fas fa-exclamation-triangle text-warning me-2"></i>Single-family homes underperforming</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">Recommendations</h6>
+                                    <ul class="list-unstyled" id="analysisRecommendations">
+                                        <li class="mb-2"><i class="fas fa-lightbulb text-info me-2"></i>Increase focus on Orange County</li>
+                                        <li class="mb-2"><i class="fas fa-lightbulb text-info me-2"></i>Optimize single-family pricing</li>
+                                        <li class="mb-2"><i class="fas fa-lightbulb text-info me-2"></i>Enhance bot targeting algorithms</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+                <button type="button" class="btn btn-analytics-primary" onclick="RealtorAgent.runDeepAnalysis()">
+                    <i class="fas fa-play me-1"></i>Run Deep Analysis
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analytics Resources Modal -->
+<div class="modal fade" id="analyticsResourcesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-tools me-2"></i>Analytics Tools & Resources
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="resourceCategory" class="form-label">Category</label>
+                    <select class="form-select" id="resourceCategory">
+                        <option value="all">All Resources</option>
+                        <option value="reporting">Reporting Tools</option>
+                        <option value="visualization">Data Visualization</option>
+                        <option value="analysis">Analysis Frameworks</option>
+                        <option value="integration">API Integrations</option>
+                    </select>
+                </div>
+
+                <div id="analyticsResourceList">
+                    <div class="resource-category mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="fas fa-chart-bar me-1"></i>Data Visualization
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openAnalyticsResource('tableau')">
+                                    <div class="card h-100 border-primary">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Tableau Integration</h6>
+                                            <small class="text-muted">Advanced dashboard creation</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openAnalyticsResource('powerbi')">
+                                    <div class="card h-100 border-info">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Power BI Connector</h6>
+                                            <small class="text-muted">Microsoft BI integration</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resource-category mb-4">
+                        <h6 class="text-success mb-3">
+                            <i class="fas fa-flask me-1"></i>Analysis Frameworks
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openAnalyticsResource('pandas')">
+                                    <div class="card h-100 border-success">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Pandas Analytics</h6>
+                                            <small class="text-muted">Python data analysis library</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openAnalyticsResource('scikit')">
+                                    <div class="card h-100 border-warning">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Scikit-learn Models</h6>
+                                            <small class="text-muted">Machine learning predictions</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="resource-category">
+                        <h6 class="text-info mb-3">
+                            <i class="fas fa-graduation-cap me-1"></i>Training & Documentation
+                        </h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openAnalyticsResource('analytics_guide')">
+                                    <div class="card h-100 border-info">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">Analytics Mastery Guide</h6>
+                                            <small class="text-muted">Complete analytics training</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <a href="#" class="text-decoration-none" onclick="RealtorAgent.openAnalyticsResource('api_docs')">
+                                    <div class="card h-100 border-secondary">
+                                        <div class="card-body p-3">
+                                            <h6 class="card-title mb-1">API Documentation</h6>
+                                            <small class="text-muted">Integration guides and examples</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// RealtorAgent Analytics Namespace
+const RealtorAgent = {
+    // Configuration
+    config: {
+        autoRefreshInterval: 60000, // 60 seconds for analytics
+        maxActivityItems: 20,
+        apiBaseUrl: '/api/analytics',
+        chartColors: {
+            primary: '#2563eb',
+            success: '#059669',
+            warning: '#d97706',
+            danger: '#dc2626',
+            info: '#0891b2'
+        }
+    },
+
+    // State management
+    state: {
+        autoRefreshEnabled: false,
+        autoRefreshTimer: null,
+        currentTimeRange: '30d',
+        analyticsData: {},
+        activityFeed: [],
+        charts: {}
+    },
+
+    // Initialize the analytics system
+    init: function() {
+        console.log('Initializing RealtorAgent Analytics System...');
+
+        this.setupEventListeners();
+        this.initializeCharts();
+        this.loadInitialData();
+        this.initializeAutoRefresh();
+        this.setupTooltips();
+
+        console.log('Analytics System initialized successfully');
+    },
+
+    // Setup event listeners
+    setupEventListeners: function() {
+        // Time range selector
+        document.getElementById('time-range').addEventListener('change', (e) => {
+            this.state.currentTimeRange = e.target.value;
+            this.updateAnalytics();
+        });
+
+        // Export button
+        document.getElementById('export-data').addEventListener('click', () => this.exportAnalyticsData());
+
+        // Auto refresh toggle
+        document.getElementById('auto-refresh-toggle').addEventListener('click', () => this.toggleAutoRefresh());
+
+        // Setup modal triggers
+        this.setupModalTriggers();
+    },
+
+    // Setup modal triggers
+    setupModalTriggers: function() {
+        // Deep analysis modal
+        document.getElementById('deepAnalysisModal').addEventListener('show.bs.modal', () => {
+            // Reset form
+            document.getElementById('deepAnalysisForm').reset();
+            document.getElementById('deepAnalysisResults').style.display = 'none';
+        });
+
+        // Analytics resources modal
+        document.getElementById('analyticsResourcesModal').addEventListener('show.bs.modal', () => {
+            // Reset filters
+            document.getElementById('resourceCategory').value = 'all';
+        });
+    },
+
+    // Initialize charts
+    initializeCharts: function() {
+        this.initializePipelineChart();
+        this.initializeStatusChart();
+        this.initializeBotPerformanceChart();
+        this.initializeRevenueChart();
+        this.initializeMarketTrendsChart();
+        this.initializePredictiveRevenueChart();
+        this.initializeComparativeChart();
+    },
+
+    // Initialize pipeline chart
+    initializePipelineChart: function() {
+        const ctx = document.getElementById('pipelineChart').getContext('2d');
+        this.state.charts.pipeline = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'New Deals',
+                    data: [],
+                    borderColor: this.config.chartColors.primary,
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Closed Deals',
+                    data: [],
+                    borderColor: this.config.chartColors.success,
+                    backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    },
+
+    // Initialize status chart
+    initializeStatusChart: function() {
+        const ctx = document.getElementById('statusChart').getContext('2d');
+        this.state.charts.status = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Under Contract', 'Closed', 'Lost'],
+                datasets: [{
+                    data: [45, 23, 18, 14],
+                    backgroundColor: [
+                        this.config.chartColors.primary,
+                        this.config.chartColors.warning,
+                        this.config.chartColors.success,
+                        this.config.chartColors.danger
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    // Initialize bot performance chart
+    initializeBotPerformanceChart: function() {
+        const ctx = document.getElementById('botPerformanceChart').getContext('2d');
+        this.state.charts.botPerformance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Web Scout', 'Data Clean', 'Underwriter', 'Owner Finder', 'Outreach', 'Negotiator'],
+                datasets: [{
+                    label: 'Success Rate (%)',
+                    data: [85, 92, 78, 76, 81, 73],
+                    backgroundColor: this.config.chartColors.primary,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    },
+
+    // Initialize revenue chart
+    initializeRevenueChart: function() {
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        this.state.charts.revenue = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Single Family', 'Multi-Family', 'Land', 'Commercial'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: [
+                        this.config.chartColors.primary,
+                        this.config.chartColors.success,
+                        this.config.chartColors.warning,
+                        this.config.chartColors.info
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    // Initialize market trends chart
+    initializeMarketTrendsChart: function() {
+        const ctx = document.getElementById('marketTrendsChart').getContext('2d');
+        this.state.charts.marketTrends = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Median Price',
+                    data: [280000, 285000, 290000, 295000, 300000, 305000],
+                    borderColor: this.config.chartColors.info,
+                    backgroundColor: 'rgba(8, 145, 178, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: this.config.chartColors.info,
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value / 1000) + 'K';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    // Initialize predictive revenue chart
+    initializePredictiveRevenueChart: function() {
+        const ctx = document.getElementById('predictiveRevenueChart').getContext('2d');
+        this.state.charts.predictiveRevenue = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Historical Revenue',
+                    data: [180000, 195000, 210000, 225000, 240000, 255000, 270000, 285000, 300000, 315000, 330000, 345000],
+                    borderColor: this.config.chartColors.primary,
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Predicted Revenue',
+                    data: [345000, 362000, 378000, 395000, 412000, 428000, 445000, 462000, 478000, 495000, 512000, 528000],
+                    borderColor: this.config.chartColors.success,
+                    backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                    borderDash: [5, 5],
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value / 1000) + 'K';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    // Initialize comparative chart
+    initializeComparativeChart: function() {
+        const ctx = document.getElementById('comparativeChart').getContext('2d');
+        this.state.charts.comparative = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['Conversion Rate', 'Time to Close', 'Cost per Acquisition', 'Customer Satisfaction', 'Lead Quality', 'Market Share'],
+                datasets: [{
+                    label: 'Your Performance',
+                    data: [85, 65, 78, 92, 88, 72],
+                    borderColor: this.config.chartColors.primary,
+                    backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                    pointBackgroundColor: this.config.chartColors.primary,
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Industry Average',
+                    data: [70, 75, 65, 78, 72, 68],
+                    borderColor: this.config.chartColors.warning,
+                    backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                    pointBackgroundColor: this.config.chartColors.warning,
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        },
+                        angleLines: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }
+                }
+            }
+        });
+    },
+    loadInitialData: function() {
+        this.loadAnalyticsData();
+        this.loadActivityFeed();
+        this.updateAnalytics();
+    },
+
+    // Load analytics data
+    loadAnalyticsData: function() {
+        // Simulate loading analytics data
+        this.state.analyticsData = {
+            totalDeals: 247,
+            avgMAO: 185420,
+            conversionRate: 23.4,
+            avgDays: 42,
+            timeToContact: 2.3,
+            offerAcceptance: 68,
+            costPerAcquisition: 2340
+        };
+    },
+
+    // Update analytics display
+    updateAnalytics: function() {
+        const timeRange = this.state.currentTimeRange;
+        const data = this.getAnalyticsDataForTimeRange(timeRange);
+
+        // Update metrics
+        this.updateMetricsDisplay(data);
+        this.updateChartsWithData(data);
+        this.updateEfficiencyMetrics(data);
+
+        this.addActivityItem(`Analytics updated for ${this.formatTimeRange(timeRange)}`, 'info');
+    },
+
+    // Get analytics data for specific time range
+    getAnalyticsDataForTimeRange: function(timeRange) {
+        const dataSets = {
+            '7d': {
+                totalDeals: 23,
+                avgMAO: 182000,
+                conversionRate: 21.7,
+                avgDays: 38,
+                timeToContact: 2.1,
+                offerAcceptance: 65,
+                costPerAcquisition: 2100,
+                pipelineData: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    newDeals: [3, 5, 2, 4, 6, 1, 2],
+                    closedDeals: [2, 3, 1, 4, 3, 0, 1]
+                }
+            },
+            '30d': {
+                totalDeals: 247,
+                avgMAO: 185420,
+                conversionRate: 23.4,
+                avgDays: 42,
+                timeToContact: 2.3,
+                offerAcceptance: 68,
+                costPerAcquisition: 2340,
+                pipelineData: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    newDeals: [45, 52, 48, 41],
+                    closedDeals: [32, 38, 35, 29]
+                }
+            },
+            '90d': {
+                totalDeals: 734,
+                avgMAO: 192000,
+                conversionRate: 24.8,
+                avgDays: 45,
+                timeToContact: 2.5,
+                offerAcceptance: 71,
+                costPerAcquisition: 2450,
+                pipelineData: {
+                    labels: ['Month 1', 'Month 2', 'Month 3'],
+                    newDeals: [234, 267, 233],
+                    closedDeals: [189, 201, 178]
+                }
+            },
+            '1y': {
+                totalDeals: 2847,
+                avgMAO: 198500,
+                conversionRate: 25.2,
+                avgDays: 48,
+                timeToContact: 2.7,
+                offerAcceptance: 73,
+                costPerAcquisition: 2580,
+                pipelineData: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    newDeals: [687, 723, 689, 748],
+                    closedDeals: [542, 589, 567, 612]
+                }
+            }
+        };
+
+        return dataSets[timeRange];
+    },
+
+    // Update metrics display
+    updateMetricsDisplay: function(data) {
+        document.getElementById('total-deals').textContent = data.totalDeals.toLocaleString();
+        document.getElementById('avg-mao').textContent = '$' + data.avgMAO.toLocaleString();
+        document.getElementById('conversion-rate').textContent = data.conversionRate + '%';
+        document.getElementById('avg-days').textContent = data.avgDays;
+    },
+
+    // Update charts with data
+    updateChartsWithData: function(data) {
+        // Update pipeline chart
+        this.state.charts.pipeline.data.labels = data.pipelineData.labels;
+        this.state.charts.pipeline.data.datasets[0].data = data.pipelineData.newDeals;
+        this.state.charts.pipeline.data.datasets[1].data = data.pipelineData.closedDeals;
+        this.state.charts.pipeline.update();
+
+        // Update other charts with simulated data based on time range
+        this.updateChartDataBasedOnTimeRange(data);
+    },
+
+    // Update chart data based on time range
+    updateChartDataBasedOnTimeRange: function(data) {
+        // Simulate different chart data based on time range
+        const timeRange = this.state.currentTimeRange;
+
+        if (timeRange === '7d') {
+            this.state.charts.status.data.datasets[0].data = [12, 6, 4, 1];
+            this.state.charts.botPerformance.data.datasets[0].data = [82, 89, 75, 73, 78, 70];
+            this.state.charts.revenue.data.datasets[0].data = [40, 30, 20, 10];
+        } else if (timeRange === '90d') {
+            this.state.charts.status.data.datasets[0].data = [120, 58, 45, 32];
+            this.state.charts.botPerformance.data.datasets[0].data = [87, 94, 80, 78, 83, 75];
+            this.state.charts.revenue.data.datasets[0].data = [48, 28, 18, 6];
+        } else if (timeRange === '1y') {
+            this.state.charts.status.data.datasets[0].data = [450, 220, 180, 120];
+            this.state.charts.botPerformance.data.datasets[0].data = [88, 95, 82, 80, 85, 77];
+            this.state.charts.revenue.data.datasets[0].data = [50, 25, 15, 10];
+        }
+
+        // Update all charts
+        Object.values(this.state.charts).forEach(chart => chart.update());
+    },
+
+    // Update efficiency metrics
+    updateEfficiencyMetrics: function(data) {
+        document.getElementById('time-to-contact').textContent = data.timeToContact;
+        document.getElementById('offer-acceptance').textContent = data.offerAcceptance + '%';
+        document.getElementById('cost-per-acquisition').textContent = '$' + data.costPerAcquisition.toLocaleString();
+
+        // Update progress bars
+        this.updateProgressBars(data);
+    },
+
+    // Update progress bars
+    updateProgressBars: function(data) {
+        const timeProgress = (3 - data.timeToContact) / 3 * 100;
+        const acceptanceProgress = data.offerAcceptance;
+        const costProgress = Math.min((3000 - data.costPerAcquisition) / 3000 * 100, 100);
+
+        document.querySelector('#time-to-contact').closest('.card-body').querySelector('.progress-bar').style.width = timeProgress + '%';
+        document.querySelector('#offer-acceptance').closest('.card-body').querySelector('.progress-bar').style.width = acceptanceProgress + '%';
+        document.querySelector('#cost-per-acquisition').closest('.card-body').querySelector('.progress-bar').style.width = costProgress + '%';
+    },
+
+    // Auto refresh functionality
+    initializeAutoRefresh: function() {
+        // Auto refresh is initially disabled
+    },
+
+    toggleAutoRefresh: function() {
+        const button = document.getElementById('auto-refresh-toggle');
+        this.state.autoRefreshEnabled = !this.state.autoRefreshEnabled;
+
+        if (this.state.autoRefreshEnabled) {
+            button.innerHTML = '<i class="fas fa-clock me-1"></i>Auto Refresh: ON';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-success');
+            this.startAutoRefresh();
+            this.addActivityItem('Auto refresh enabled', 'success');
+        } else {
+            button.innerHTML = '<i class="fas fa-clock me-1"></i>Auto Refresh: OFF';
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-secondary');
+            this.stopAutoRefresh();
+            this.addActivityItem('Auto refresh disabled', 'warning');
+        }
+    },
+
+    startAutoRefresh: function() {
+        this.stopAutoRefresh();
+        this.state.autoRefreshTimer = setInterval(() => {
+            this.updateAnalytics();
+        }, this.config.autoRefreshInterval);
+    },
+
+    stopAutoRefresh: function() {
+        if (this.state.autoRefreshTimer) {
+            clearInterval(this.state.autoRefreshTimer);
+            this.state.autoRefreshTimer = null;
+        }
+    },
+
+    // Export analytics data
+    exportAnalyticsData: function() {
+        const button = document.getElementById('export-data');
+        const originalText = button.innerHTML;
+
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Exporting...';
+        button.disabled = true;
+
+        this.addActivityItem('Analytics data export started', 'info');
+
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+
+            this.showAlert('Analytics data exported successfully to Excel format', 'success');
+            this.addActivityItem('Analytics data export completed', 'success');
+        }, 2000);
+    },
+
+    // Export advanced data
+    exportAdvancedData: function() {
+        this.showAlert('Advanced analytics export started. This may take a few moments.', 'info');
+        this.addActivityItem('Advanced analytics export initiated', 'info');
+
+        setTimeout(() => {
+            this.showAlert('Advanced analytics data exported successfully', 'success');
+            this.addActivityItem('Advanced analytics export completed', 'success');
+        }, 3000);
+    },
+
+    // Generate report
+    generateReport: function(reportType) {
+        const statusDiv = document.getElementById('report-status');
+        statusDiv.style.display = 'block';
+
+        this.addActivityItem(`${this.formatReportName(reportType)} report generation started`, 'info');
+
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+            this.showAlert(`${this.formatReportName(reportType)} report generated successfully`, 'success');
+            this.addActivityItem(`${this.formatReportName(reportType)} report completed`, 'success');
+        }, 3000);
+    },
+
+    // Show deep analysis modal
+    showDeepAnalysisModal: function() {
+        const modal = new bootstrap.Modal(document.getElementById('deepAnalysisModal'));
+        modal.show();
+    },
+
+    // Run deep analysis
+    runDeepAnalysis: function() {
+        const analysisType = document.getElementById('analysisType').value;
+        const timeframe = document.getElementById('analysisTimeframe').value;
+
+        if (!analysisType) {
+            this.showAlert('Please select an analysis type', 'warning');
+            return;
+        }
+
+        const runButton = event.target;
+        const originalText = runButton.innerHTML;
+        runButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
+        runButton.disabled = true;
+
+        this.addActivityItem(`Deep analysis started: ${this.formatAnalysisName(analysisType)}`, 'info');
+
+        setTimeout(() => {
+            runButton.innerHTML = originalText;
+            runButton.disabled = false;
+
+            document.getElementById('deepAnalysisResults').style.display = 'block';
+            this.showAlert('Deep analysis completed successfully', 'success');
+            this.addActivityItem(`Deep analysis completed: ${this.formatAnalysisName(analysisType)}`, 'success');
+        }, 4000);
+    },
+
+    // Show analytics resources modal
+    showAnalyticsResourcesModal: function() {
+        const modal = new bootstrap.Modal(document.getElementById('analyticsResourcesModal'));
+        modal.show();
+    },
+
+    // Open analytics resource
+    openAnalyticsResource: function(resourceType) {
+        const resources = {
+            tableau: 'https://www.tableau.com/solutions/real-estate',
+            powerbi: 'https://powerbi.microsoft.com/real-estate-analytics/',
+            pandas: 'https://pandas.pydata.org/docs/user_guide/10min.html',
+            scikit: 'https://scikit-learn.org/stable/user_guide.html',
+            analytics_guide: '/static/docs/advanced-analytics-guide.pdf',
+            api_docs: '/static/docs/analytics-api-documentation.pdf'
+        };
+
+        const url = resources[resourceType];
+        if (url) {
+            window.open(url, '_blank');
+            this.addActivityItem(`Opened ${resourceType.replace('_', ' ')} resource`, 'info');
+        }
+    },
+
+    // Show analytics guide
+    showAnalyticsGuide: function() {
+        window.open('/static/docs/analytics-mastery-guide.pdf', '_blank');
+        this.addActivityItem('Analytics mastery guide opened', 'info');
+    },
+
+    // Show dashboard builder modal
+    showDashboardBuilder: function() {
+        // Implementation for dashboard builder modal
+        this.showAlert('Dashboard builder feature coming soon!', 'info');
+        this.addActivityItem('Dashboard builder accessed', 'info');
+    },
+
+    // Configure alerts
+    configureAlerts: function() {
+        // Implementation for alert configuration
+        this.showAlert('Alert configuration panel opened', 'info');
+        this.addActivityItem('Alert configuration accessed', 'info');
+    },
+
+    // Activity feed management
+    loadActivityFeed: function() {
+        this.state.activityFeed = [
+            { time: '2 min ago', message: 'Analytics data refreshed', type: 'success' },
+            { time: '5 min ago', message: 'Monthly report generated', type: 'info' },
+            { time: '12 min ago', message: 'Conversion rate alert triggered', type: 'warning' },
+            { time: '18 min ago', message: 'Bot performance analyzed', type: 'success' },
+            { time: '25 min ago', message: 'Data export completed', type: 'error' }
+        ];
+    },
+
+    addActivityItem: function(message, type = 'info') {
+        const activityFeed = document.getElementById('activity-feed');
+        const item = document.createElement('div');
+        item.className = `activity-item ${type}`;
+        item.innerHTML = `
+            <small class="text-white-50">Just now</small>
+            <div class="text-white">${message}</div>
+        `;
+
+        activityFeed.insertBefore(item, activityFeed.firstChild);
+
+        while (activityFeed.children.length > this.config.maxActivityItems) {
+            activityFeed.removeChild(activityFeed.lastChild);
+        }
+
+        this.state.activityFeed.unshift({
+            time: 'Just now',
+            message: message,
+            type: type
+        });
+    },
+
+    // Notification system
+    showAlert: function(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas ${this.getAlertIcon(type)} me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    },
+
+    getAlertIcon: function(type) {
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-triangle',
+            warning: 'fa-exclamation-circle',
+            info: 'fa-info-circle'
+        };
+        return icons[type] || 'fa-info-circle';
+    },
+
+    // Setup tooltips
+    setupTooltips: function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    },
+
+    // Utility functions
+    formatTimeRange: function(timeRange) {
+        const ranges = {
+            '7d': 'Last 7 Days',
+            '30d': 'Last 30 Days',
+            '90d': 'Last 90 Days',
+            '1y': 'Last Year'
+        };
+        return ranges[timeRange] || timeRange;
+    },
+
+    formatReportName: function(reportType) {
+        return reportType.split('-').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    },
+
+    formatAnalysisName: function(analysisType) {
+        return analysisType.split('-').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    }
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    RealtorAgent.init();
+});
+</script>
+{% endblock %}
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Deal Pipeline Over Time</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="pipelineChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Deal Status Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Charts -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Bot Performance</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="botPerformanceChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Revenue by Property Type</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Geographic Analysis -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Deals by County</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>County</th>
+                                <th>Deals</th>
+                                <th>Avg Price</th>
+                                <th>% of Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="county-table">
+                            <tr>
+                                <td>Orange County</td>
+                                <td>45</td>
+                                <td>$245,000</td>
+                                <td>18.2%</td>
+                            </tr>
+                            <tr>
+                                <td>Los Angeles</td>
+                                <td>38</td>
+                                <td>$320,000</td>
+                                <td>15.4%</td>
+                            </tr>
+                            <tr>
+                                <td>San Bernardino</td>
+                                <td>32</td>
+                                <td>$198,000</td>
+                                <td>12.9%</td>
+                            </tr>
+                            <tr>
+                                <td>Riverside</td>
+                                <td>28</td>
+                                <td>$275,000</td>
+                                <td>11.3%</td>
+                            </tr>
+                            <tr>
+                                <td>San Diego</td>
+                                <td>22</td>
+                                <td>$290,000</td>
+                                <td>8.9%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Market Trends</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="marketTrendsChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Efficiency Metrics -->
+<div class="row mb-4">
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Time to First Contact</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="display-4 text-primary mb-2">2.3</div>
+                <p class="text-muted mb-0">Average days</p>
+                <div class="progress mt-3" style="block-size: 8px;">
+                    <div class="progress-bar bg-primary" style="inline-size: 77%"></div>
+                </div>
+                <small class="text-muted mt-2 d-block">Target: 3 days</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Offer Acceptance Rate</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="display-4 text-success mb-2">68%</div>
+                <p class="text-muted mb-0">Of offers made</p>
+                <div class="progress mt-3" style="block-size: 8px;">
+                    <div class="progress-bar bg-success" style="inline-size: 68%"></div>
+                </div>
+                <small class="text-muted mt-2 d-block">Industry avg: 45%</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Cost per Acquisition</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="display-4 text-info mb-2">$2,340</div>
+                <p class="text-muted mb-0">Per successful deal</p>
+                <div class="progress mt-3" style="block-size: 8px;">
+                    <div class="progress-bar bg-info" style="inline-size: 65%"></div>
+                </div>
+                <small class="text-muted mt-2 d-block">Target: $3,000</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Reports Section -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Custom Reports</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <button class="btn btn-outline-primary w-100" onclick="generateReport('monthly-summary')" type="button">
+                    <i class="fas fa-calendar-alt me-2"></i>Monthly Summary
+                </button>
+            </div>
+            <div class="col-md-3 mb-3">
+                <button class="btn btn-outline-primary w-100" onclick="generateReport('bot-performance')" type="button">
+                    <i class="fas fa-robot me-2"></i>Bot Performance
+                </button>
+            </div>
+            <div class="col-md-3 mb-3">
+                <button class="btn btn-outline-primary w-100" onclick="generateReport('market-analysis')" type="button">
+                    <i class="fas fa-chart-bar me-2"></i>Market Analysis
+                </button>
+            </div>
+            <div class="col-md-3 mb-3">
+                <button class="btn btn-outline-primary w-100" onclick="generateReport('roi-analysis')" type="button">
+                    <i class="fas fa-dollar-sign me-2"></i>ROI Analysis
+                </button>
+            </div>
+        </div>
+        <div id="report-status" class="mt-3" style="display: none;">
+            <div class="alert alert-info">
+                <i class="fas fa-spinner fa-spin me-2"></i>Generating report...
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    initializeAnalyticsPage();
+});
+
+function initializeAnalyticsPage() {
+    // Initialize charts
+    initializeCharts();
+
+    // Setup time range selector
+    document.getElementById('time-range').addEventListener('change', updateAnalytics);
+
+    // Setup export button
+    document.getElementById('export-data').addEventListener('click', exportAnalyticsData);
+
+    // Load initial data
+    updateAnalytics();
+}
+
+function initializeCharts() {
+    // Pipeline Chart
+    const pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
+    window.pipelineChart = new Chart(pipelineCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'New Deals',
+                data: [],
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Closed Deals',
+                data: [],
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    window.statusChart = new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Active', 'Under Contract', 'Closed', 'Lost'],
+            datasets: [{
+                data: [45, 23, 18, 14],
+                backgroundColor: ['#007bff', '#ffc107', '#28a745', '#dc3545'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Bot Performance Chart
+    const botCtx = document.getElementById('botPerformanceChart').getContext('2d');
+    window.botPerformanceChart = new Chart(botCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Web Scout', 'Data Clean', 'Underwriter', 'Owner Finder', 'Outreach', 'Negotiator'],
+            datasets: [{
+                label: 'Success Rate (%)',
+                data: [85, 92, 78, 76, 81, 73],
+                backgroundColor: '#007bff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    window.revenueChart = new Chart(revenueCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Single Family', 'Multi-Family', 'Land', 'Commercial'],
+            datasets: [{
+                data: [45, 25, 20, 10],
+                backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Market Trends Chart
+    const marketCtx = document.getElementById('marketTrendsChart').getContext('2d');
+    window.marketTrendsChart = new Chart(marketCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Median Price',
+                data: [280000, 285000, 290000, 295000, 300000, 305000],
+                borderColor: '#007bff',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateAnalytics() {
+    const timeRange = document.getElementById('time-range').value;
+
+    // Simulate loading data based on time range
+    const data = getAnalyticsData(timeRange);
+
+    // Update metrics
+    document.getElementById('total-deals').textContent = data.totalDeals.toLocaleString();
+    document.getElementById('avg-mao').textContent = '$' + data.avgMAO.toLocaleString();
+    document.getElementById('conversion-rate').textContent = data.conversionRate + '%';
+    document.getElementById('avg-days').textContent = data.avgDays;
+
+    // Update charts
+    updateCharts(data);
+}
+
+function getAnalyticsData(timeRange) {
+    // Simulate different data based on time range
+    const dataSets = {
+        '7d': {
+            totalDeals: 23,
+            avgMAO: 182000,
+            conversionRate: 21.7,
+            avgDays: 38,
+            pipelineData: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                newDeals: [3, 5, 2, 4, 6, 1, 2],
+                closedDeals: [2, 3, 1, 4, 3, 0, 1]
+            }
+        },
+        '30d': {
+            totalDeals: 247,
+            avgMAO: 185420,
+            conversionRate: 23.4,
+            avgDays: 42,
+            pipelineData: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                newDeals: [45, 52, 48, 41],
+                closedDeals: [32, 38, 35, 29]
+            }
+        },
+        '90d': {
+            totalDeals: 734,
+            avgMAO: 192000,
+            conversionRate: 24.8,
+            avgDays: 45,
+            pipelineData: {
+                labels: ['Month 1', 'Month 2', 'Month 3'],
+                newDeals: [234, 267, 233],
+                closedDeals: [189, 201, 178]
+            }
+        },
+        '1y': {
+            totalDeals: 2847,
+            avgMAO: 198500,
+            conversionRate: 25.2,
+            avgDays: 48,
+            pipelineData: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                newDeals: [687, 723, 689, 748],
+                closedDeals: [542, 589, 567, 612]
+            }
+        }
+    };
+
+    return dataSets[timeRange];
+}
+
+function updateCharts(data) {
+    // Update pipeline chart
+    window.pipelineChart.data.labels = data.pipelineData.labels;
+    window.pipelineChart.data.datasets[0].data = data.pipelineData.newDeals;
+    window.pipelineChart.data.datasets[1].data = data.pipelineData.closedDeals;
+    window.pipelineChart.update();
+
+    // Other charts remain static for this demo
+}
+
+function exportAnalyticsData() {
+    const button = document.getElementById('export-data');
+    const originalText = button.innerHTML;
+
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Exporting...';
+    button.disabled = true;
+
+    // Simulate export process
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.disabled = false;
+
+        RealtorAgent.showAlert('Analytics data exported successfully', 'success');
+    }, 2000);
+}
+
+function generateReport(reportType) {
+    const statusDiv = document.getElementById('report-status');
+    statusDiv.style.display = 'block';
+
+    // Simulate report generation
+    setTimeout(() => {
+        statusDiv.style.display = 'none';
+        RealtorAgent.showAlert(`${reportType.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())} report generated successfully`, 'success');
+    }, 3000);
+}
+
+// Global functions for advanced analytics
+function showDashboardBuilder() {
+    RealtorAgent.showDashboardBuilder();
+}
+
+function configureAlerts() {
+    RealtorAgent.configureAlerts();
+}
+</script>
+{% endblock %}

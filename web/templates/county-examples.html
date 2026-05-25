@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block title %}County Examples - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">County Examples</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">County Examples</h1>
+        <p class="text-muted mb-0">Detailed Analysis of Successful Real Estate Markets</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide/executive-summary" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Previous
+        </a>
+        <a href="/master-guide/resource-framework" class="btn btn-primary">
+            Next: Resource Framework <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h6><i class="fas fa-info-circle me-2"></i>Market Analysis Framework</h6>
+            <p>Each county example includes population trends, economic indicators, housing data, and investment opportunities. Use these examples as templates for evaluating markets in your target areas.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Featured County: Orange County, CA</h5>
+            </div>
+            <div class="card-body">
+                <div class="county-profile">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Demographics</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Population:</strong> 3.2M (2023)</li>
+                                <li><strong>Growth Rate:</strong> +0.8% annually</li>
+                                <li><strong>Median Age:</strong> 38.2 years</li>
+                                <li><strong>Median Income:</strong> $94,000</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Economic Indicators</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Unemployment:</strong> 3.2%</li>
+                                <li><strong>Job Growth:</strong> +2.1% annually</li>
+                                <li><strong>Cost of Living:</strong> 18% above national avg</li>
+                                <li><strong>Education Level:</strong> 42% college degree</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <h6>Housing Market</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value">$1.2M</div>
+                                <div class="metric-label">Median Home Price</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value">2.1</div>
+                                <div class="metric-label">Months of Inventory</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="metric-card">
+                                <div class="metric-value">+8.2%</div>
+                                <div class="metric-label">Annual Appreciation</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6>Investment Opportunities</h6>
+                    <div class="opportunities-list">
+                        <div class="opportunity-item">
+                            <h6>Single-Family Rentals</h6>
+                            <p>Strong rental demand from tech professionals and families. Focus on 3-4 bedroom homes in Irvine and Mission Viejo.</p>
+                            <div class="opportunity-metrics">
+                                <span class="badge bg-success">Cap Rate: 4.2-5.1%</span>
+                                <span class="badge bg-info">Cash-on-Cash: 6.8%</span>
+                            </div>
+                        </div>
+
+                        <div class="opportunity-item">
+                            <h6>Condo Conversions</h6>
+                            <p>Converting older condos in Newport Beach and Corona del Mar. High-end finishes and modern amenities.</p>
+                            <div class="opportunity-metrics">
+                                <span class="badge bg-success">ROI: 15-22%</span>
+                                <span class="badge bg-warning">Hold: 2-3 years</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Additional County Examples</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="countyAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#travis">
+                                Travis County, TX
+                            </button>
+                        </h2>
+                        <div id="travis" class="accordion-collapse collapse show" data-bs-parent="#countyAccordion">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Key Metrics:</strong>
+                                        <ul>
+                                            <li>Population: 1.3M (Austin metro)</li>
+                                            <li>Growth: +3.2% annually</li>
+                                            <li>Median Home Price: $485K</li>
+                                            <li>Job Growth: Tech sector boom</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Investment Focus:</strong>
+                                        <ul>
+                                            <li>Single-family homes east of I-35</li>
+                                            <li>Duplex conversions in East Austin</li>
+                                            <li>Short-term rental potential</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#denver">
+                                Denver County, CO
+                            </button>
+                        </h2>
+                        <div id="denver" class="accordion-collapse collapse" data-bs-parent="#countyAccordion">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <strong>Key Metrics:</strong>
+                                        <ul>
+                                            <li>Population: 715K</li>
+                                            <li>Growth: +1.8% annually</li>
+                                            <li>Median Home Price: $575K</li>
+                                            <li>Economy: Diverse, resilient</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>Investment Focus:</strong>
+                                        <ul>
+                                            <li>Urban infill development</li>
+                                            <li>Historic home renovations</li>
+                                            <li>Mixed-use properties</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Market Analysis Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="analyzeMarket()">
+                        <i class="fas fa-chart-line me-2"></i>Run Market Analysis
+                    </button>
+                    <button class="btn btn-outline-success" onclick="compareCounties()">
+                        <i class="fas fa-balance-scale me-2"></i>Compare Counties
+                    </button>
+                    <button class="btn btn-outline-info" onclick="viewTrends()">
+                        <i class="fas fa-chart-bar me-2"></i>View Trends
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Success Factors</h5>
+            </div>
+            <div class="card-body">
+                <div class="success-factors">
+                    <div class="factor-item">
+                        <i class="fas fa-users text-primary me-2"></i>
+                        <span>Population growth drives demand</span>
+                    </div>
+                    <div class="factor-item">
+                        <i class="fas fa-briefcase text-success me-2"></i>
+                        <span>Job creation supports prices</span>
+                    </div>
+                    <div class="factor-item">
+                        <i class="fas fa-home text-info me-2"></i>
+                        <span>Limited supply increases values</span>
+                    </div>
+                    <div class="factor-item">
+                        <i class="fas fa-shield-alt text-warning me-2"></i>
+                        <span>Stable regulations protect investments</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/resource-framework" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Next Section
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.county-profile .metric-card {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.opportunities-list {
+    margin-top: 1rem;
+}
+
+.opportunity-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.opportunity-item h6 {
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.opportunity-metrics {
+    margin-top: 10px;
+}
+
+.opportunity-metrics .badge {
+    margin-right: 5px;
+}
+
+.success-factors {
+    padding: 0;
+}
+
+.factor-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.factor-item:last-child {
+    border-bottom: none;
+}
+
+.factor-item span {
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function analyzeMarket() {
+    alert('Market analysis tool will be implemented');
+}
+
+function compareCounties() {
+    alert('County comparison tool will be implemented');
+}
+
+function viewTrends() {
+    alert('Trend visualization will be implemented');
+}
+</script>
+{% endblock %}

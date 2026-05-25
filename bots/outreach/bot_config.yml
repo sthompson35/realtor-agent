@@ -1,0 +1,69 @@
+# Outreach Bot Configuration
+# Handles owner contact scripts and follow-up sequences
+
+enabled: true
+
+# Contact Channels
+channels:
+  sms:
+    enabled: true
+    provider: "twilio"  # Configure API
+    api_key: ""
+    from_number: ""
+    rate_limit: 50  # per day
+  email:
+    enabled: true
+    provider: "sendgrid"
+    api_key: ""
+    from_email: ""
+    rate_limit: 100
+  call:
+    enabled: true
+    provider: "twilio"
+    api_key: ""
+    from_number: ""
+    rate_limit: 20
+
+# Cadence Settings
+cadence:
+  sequence_days: [0, 3, 7, 14, 30]  # Days after initial contact
+  max_attempts: 5
+  pause_on_response: true
+  respect_timezone: true
+
+# Script Templates
+scripts:
+  initial:
+    sms: "Hi [Name], I'm looking to buy in [Area]. If you own [Address], would you consider an offer? Reply STOP to opt out."
+    email_subject: "Question about [Address]"
+    email_body: "Hi [Name],\n\nI'm interested in buying property in [Area]. If you own [Address], would you be open to an offer (cash or terms)?"
+    call: "Hi, is this the owner of [Address]? Quick question—would you consider an offer if the numbers make sense?"
+  follow_up:
+    sms: "Following up on [Address] in [Area]. Still interested in hearing about your property?"
+    email_subject: "Follow-up on [Address]"
+    email_body: "Hi [Name],\n\nI wanted to follow up on [Address]. Have you considered selling?"
+    call: "Hi [Name], following up on our previous conversation about [Address]."
+
+# Personalization
+personalization:
+  use_property_details: true
+  use_owner_name: true
+  use_area_knowledge: true
+
+# Compliance
+compliance:
+  dnc_check: true
+  consent_required: true
+  opt_out_handling: true
+  fair_housing_safe: true
+  local_laws_check: true
+
+# Tracking
+tracking:
+  log_file: "../outputs/outreach_log.csv"
+  fields: ["contact_id", "channel", "timestamp", "message", "response", "next_action"]
+  response_detection: ["yes", "interested", "offer", "stop", "no"]
+
+# Output
+output:
+  summary_file: "../outputs/outreach_summary.md"

@@ -1,0 +1,13 @@
+FAIL Dashboard: http://localhost:5001/ - Status 500
+FAIL Master Guide Table of Contents: http://localhost:5001/master-guide - Status 500
+FAIL Executive Summary: http://localhost:5001/master-guide/executive-summary - Status 500
+FAIL County Examples: http://localhost:5001/master-guide/county-examples - Status 500
+FAIL Resource Framework: http://localhost:5001/master-guide/resource-framework - Status 500
+FAIL Investment Formulas: http://localhost:5001/master-guide/formulas - Status 500
+FAIL Contact Database: http://localhost:5001/master-guide/contact-database - Status 500
+FAIL Implementation Strategies: http://localhost:5001/master-guide/strategies - Status 500
+FAIL Action Plans: http://localhost:5001/master-guide/action-plans - Status 500
+FAIL Pro Tips: http://localhost:5001/master-guide/pro-tips - Status 500
+FAIL Common Pitfalls: http://localhost:5001/master-guide/pitfalls - Status 500
+==================================================
+Test Results: 0/11 routes working

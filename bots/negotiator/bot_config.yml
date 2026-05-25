@@ -1,0 +1,68 @@
+# Negotiator Bot Configuration
+# Handles counteroffers, concessions, and deal structuring
+
+enabled: true
+
+# Negotiation Strategy
+strategy:
+  batna_percent: 0.90  # % of target MAO to walk away
+  max_concessions: 0.05  # % of offer
+  concession_steps: [0.01, 0.02, 0.03, 0.05]  # Incremental offers
+  firmness_levels: ["firm", "flexible", "motivated"]
+
+# Concession Matrix
+concession_matrix:
+  price:
+    max_reduction: 0.05
+    triggers: ["motivated_seller", "quick_close_needed"]
+  terms:
+    interest_rate: 0.005  # Max increase
+    balloon_extension: 12  # Months
+  closing_costs:
+    seller_pays: 0.50  # % of costs
+  repairs:
+    seller_fixes: ["cosmetic_only"]
+
+# Objection Handling
+objections:
+  "too_low": "Based on recent comps, this is a fair offer. What price were you thinking?"
+  "not_selling": "Understood. Would you keep me in mind if you change your mind?"
+  "need_time": "Of course. When would be a good time to follow up?"
+  "counter_offer": "I appreciate that. Let me review and get back to you."
+
+# Deal Structure Preferences
+preferences:
+  order: ["cash", "owner_finance", "lease_option", "subject_to"]
+  cash:
+    when: ["clear_title", "quick_close", "deep_discount"]
+  owner_finance:
+    when: ["seller_income_needed", "low_debt"]
+    terms:
+      down_payment: 0.20
+      interest_rate: 0.08
+      amortization: 30
+      balloon: 60  # months
+  lease_option:
+    when: ["seller_uncertain", "tenant_pipeline"]
+    terms:
+      option_fee: 0.01  # % of purchase
+      rent_credit: 0.50  # % of rent
+  subject_to:
+    when: ["low_rate_mortgage", "seller_relief"]
+
+# Communication
+communication:
+  channel_preference: ["call", "email", "sms"]
+  response_time: 24  # hours
+  documentation: true
+
+# Risk Assessment
+risk_checks:
+  during_negotiation: true
+  flag_changes: true
+  legal_review_trigger: ["complex_terms", "high_value"]
+
+# Output
+output:
+  plan_file: "../outputs/counter_offer_plan.md"
+  log_file: "../outputs/negotiation_log.csv"

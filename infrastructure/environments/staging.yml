@@ -1,0 +1,85 @@
+# Staging Environment Configuration
+# Pre-production testing environment
+
+environment: staging
+
+# Database Configuration
+database:
+  host: "${DB_HOST:staging-db.example.com}"
+  port: 5432
+  name: realtor_agent_staging
+  user: "${DB_USER:realtor_staging}"
+  password: "${DB_PASSWORD}"  # Set via environment variable
+  ssl_mode: require
+  connection_pool_size: 10
+  connection_timeout: 60
+
+# API Keys (Staging/Test Keys)
+api_keys:
+  zillow:  # DEPRECATED - Zillow API discontinued
+    api_key: "DEPRECATED_ZILLOW_API_NO_LONGER_AVAILABLE"
+    rate_limit: 100  # requests per minute
+  realtor:
+    api_key: "${REALTOR_API_KEY}"
+    rate_limit: 50
+  homes:
+    api_key: "${HOMES_API_KEY}"
+    rate_limit: 25
+  land:
+    api_key: "${LAND_API_KEY}"
+    rate_limit: 15
+  discountlots:
+    api_key: "${DISCOUNTLOTS_API_KEY}"
+    rate_limit: 10
+  twilio:
+    account_sid: "${TWILIO_ACCOUNT_SID}"
+    auth_token: "${TWILIO_AUTH_TOKEN}"
+    from_number: "${TWILIO_FROM_NUMBER:+15551234567}"
+  sendgrid:
+    api_key: "${SENDGRID_API_KEY}"
+    from_email: "noreply@staging.realtoragent.com"
+
+# Logging Configuration
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/realtor_agent_staging.log"
+  max_file_size: 104857600  # 100MB
+  backup_count: 10
+
+# Security Configuration
+security:
+  secret_key: "${SECRET_KEY}"  # Must be set in environment
+  jwt_expiration: 3600  # 1 hour
+  password_min_length: 12
+  encryption_key: "${ENCRYPTION_KEY}"  # 32-character key
+  cors_origins: ["https://staging.realtoragent.com"]
+
+# Feature Flags
+features:
+  enable_audit_logging: true
+  enable_compliance_checks: true
+  enable_email_notifications: true
+  enable_sms_notifications: false  # Disabled for staging
+  enable_api_rate_limiting: true
+  enable_data_encryption: true
+
+# External Services
+external_services:
+  dnc_api: "https://api.dnc.example.com/check"
+  flood_data_api: "https://api.flood.example.com/lookup"
+  property_tax_api: "https://api.tax.example.com/lookup"
+
+# Monitoring
+monitoring:
+  enabled: true
+  metrics_port: 9090
+  health_check_endpoint: "/health"
+  datadog_api_key: "${DATADOG_API_KEY}"
+
+# Staging Specific
+staging:
+  test_mode: true
+  allow_test_numbers: true
+  mock_payment_processing: true
+  data_retention_days: 90

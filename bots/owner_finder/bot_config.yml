@@ -1,0 +1,65 @@
+# Owner Finder Bot Configuration
+# Handles private owner identification and contact verification
+
+enabled: true
+
+# Data Sources
+sources:
+  public_records:
+    - "county_assessor"
+    - "tax_records"
+    - "recorder_office"
+  skip_trace:
+    - "whitepages"
+    - "spokeo"
+    - "beenverified"
+  enrichment:
+    - "property_records"
+    - "court_records"
+
+# Skip Trace Rules
+skip_trace:
+  depth: 2  # Levels of connection tracing
+  legal_only: true
+  consent_check: true
+  dnc_verify: true
+
+# Owner Types
+target_owners:
+  - "absentee"
+  - "tired_landlord"
+  - "heir"
+  - "vacant_land"
+  - "motivated_seller"
+
+# Contact Enrichment
+enrichment:
+  phone: true
+  email: true
+  mailing_address: true
+  ownership_type: true  # individual, llc, trust
+
+# Verification Rules
+verification:
+  address_match: 0.9  # Fuzzy match threshold
+  name_match: 0.8
+  ownership_current: true  # Check if still owner
+  dnc_status: true
+
+# Output Format
+output:
+  format: "csv"
+  file: "../outputs/verified_owner_contacts.csv"
+  fields: ["property_address", "owner_name", "mailing_address", "phone", "email", "ownership_type", "contact_source", "consent_status", "dnc_status"]
+
+# Compliance
+compliance:
+  dnc_respect: true
+  consent_required: true
+  data_privacy: true
+  legal_sources_only: true
+
+# Rate Limiting
+rate_limiting:
+  requests_per_hour: 100
+  sources_per_property: 3

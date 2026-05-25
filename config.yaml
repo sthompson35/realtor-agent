@@ -1,0 +1,71 @@
+# Realtor Agent Configuration
+
+app:
+  name: "Realtor Agent"
+  version: "1.0.0"
+  debug: false
+  secret_key: "70c2256913f7ad7ac853d45e4cfa094493681acec18d38afd74b940ce2b9ef7a"
+  base_url: "http://localhost:5000"
+
+database:
+  url: "sqlite:///data/realtor_agent.db"
+  echo: false
+  pool_size: 5
+  max_overflow: 10
+
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: null
+
+celery:
+  broker_url: "redis://localhost:6379/0"
+  result_backend: "redis://localhost:6379/0"
+
+security:
+  jwt_secret: "61d1385154cc7c585f27693a2b2e48b1cb20ddf1bcb99df9ed5ddc599f3c0810"
+  jwt_algorithm: "HS256"
+  jwt_expiration_hours: 24
+  password_min_length: 8
+  max_login_attempts: 5
+  lockout_duration_minutes: 30
+
+api:
+  rate_limit_per_minute: 60
+  max_request_size_mb: 10
+
+bots:
+  max_retries: 3
+  retry_delay_seconds: 60
+  timeout_seconds: 300
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/realtor_agent.log"
+
+email:
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_user: "your-email@gmail.com"
+  smtp_password: "your-app-password"
+  from_email: "your-email@gmail.com"
+  from_name: "Realtor Agent"
+  notification_recipients:
+    - "admin@example.com"
+
+calendar:
+  type: "google"
+  api_key: "your-calendar-api-key"
+
+crm:
+  type: "salesforce"
+  api_key: "your-crm-api-key"
+  api_url: "https://your-instance.salesforce.com"
+
+sms:
+  provider: "twilio"
+  account_sid: "your-twilio-account-sid"
+  auth_token: "your-twilio-auth-token"
+  from_number: "+1234567890"

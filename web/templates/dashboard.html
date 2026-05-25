@@ -1,0 +1,1971 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Realtor Agent{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Dashboard</h1>
+        <p class="text-muted mb-0">Real-time overview of your real estate acquisition pipeline</p>
+    </div>
+    <div class="d-flex gap-2">
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="auto-refresh-toggle" checked>
+            <label class="form-check-label" for="auto-refresh-toggle">
+                Auto-refresh
+            </label>
+        </div>
+        <button class="btn btn-primary" onclick="RealtorAgent.loadDashboardData()" type="button">
+            <i class="fas fa-sync-alt me-1"></i>Refresh
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+        <div class="dashboard-card">
+            <div class="icon primary">
+                <i class="fas fa-handshake"></i>
+            </div>
+            <div id="total-deals">
+                <div class="stat-value">--</div>
+                <div class="stat-label">Total Deals</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+        <div class="dashboard-card">
+            <div class="icon success">
+                <i class="fas fa-play-circle"></i>
+            </div>
+            <div id="active-deals">
+                <div class="stat-value">--</div>
+                <div class="stat-label">Active Deals</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+        <div class="dashboard-card">
+            <div class="icon warning">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div id="monthly-revenue">
+                <div class="stat-value">--</div>
+                <div class="stat-label">Monthly Revenue</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+        <div class="dashboard-card">
+            <div class="icon info">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div id="success-rate">
+                <div class="stat-value">--</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+        <div class="dashboard-card">
+            <div class="icon primary">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <div id="avg-deal-size">
+                <div class="stat-value">--</div>
+                <div class="stat-label">Avg Deal Size</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-3">
+        <div class="dashboard-card">
+            <div class="icon danger">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div id="pending-offers">
+                <div class="stat-value">--</div>
+                <div class="stat-label">Pending Offers</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-lg-8 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-area me-2"></i>Deal Pipeline Overview
+                </h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        Last 30 Days
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Last 7 Days</a></li>
+                        <li><a class="dropdown-item" href="#">Last 30 Days</a></li>
+                        <li><a class="dropdown-item" href="#">Last 90 Days</a></li>
+                        <li><a class="dropdown-item" href="#">Last Year</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <canvas id="pipelineChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-pie-chart me-2"></i>Deal Status Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity and Bot Status -->
+<div class="row">
+    <!-- Recent Activity -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Recent Activity
+                </h5>
+                <div class="d-flex align-items-center gap-2">
+                    <small class="text-muted" id="activity-last-updated">Just now</small>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="activity-auto-refresh" checked>
+                        <label class="form-check-label small" for="activity-auto-refresh">Live</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="recent-activity-feed" class="activity-feed">
+                    <!-- Activity items will be loaded here -->
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                        <p>Loading recent activity...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Deals -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-clock me-2"></i>Recent Deals
+                </h5>
+                <a href="/deals" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                <div id="recent-deals-list" class="loading-placeholder">
+                    <!-- Deals will be loaded here -->
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                        <p>Loading recent deals...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Bot Status -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-robot me-2"></i>Bot Status
+                </h5>
+                <a href="/bots" class="btn btn-sm btn-outline-primary">Manage Bots</a>
+            </div>
+            <div class="card-body">
+                <div id="bot-status-grid" class="loading-placeholder">
+                    <!-- Bot status will be loaded here -->
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                        <p>Loading bot status...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Excel Data Integration -->
+<div class="row mb-4">
+    <!-- Excel Dashboard Metrics -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-file-excel me-2"></i>Excel Dashboard Metrics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div id="excel-dashboard-metrics">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                        <p>Loading Excel metrics...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Excel Leads -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>CRM Leads (Excel)
+                </h5>
+                <small class="text-muted" id="excel-leads-count">0 leads</small>
+            </div>
+            <div class="card-body">
+                <div id="excel-leads-list">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                        <p>Loading Excel leads...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Excel Team Contacts -->
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-address-book me-2"></i>Team Contacts (Excel)
+                </h5>
+                <small class="text-muted" id="excel-contacts-count">0 contacts</small>
+            </div>
+            <div class="card-body">
+                <div id="excel-contacts-list">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                        <p>Loading team contacts...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Excel Development Timeline -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-road me-2"></i>Development Timeline (Excel)
+                </h5>
+                <small class="text-muted" id="excel-timeline-count">0 phases</small>
+            </div>
+            <div class="card-body">
+                <div id="excel-development-timeline">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                        <p>Loading development timeline...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PDF Master Guide Integration -->
+<div class="row mb-4">
+    <!-- PDF Content Overview -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-book me-2"></i>Real Estate Investment Master Guide
+                </h5>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.loadPDFGuide()">
+                        <i class="fas fa-sync-alt me-1"></i>Load Guide
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" onclick="RealtorAgent.togglePDFView()">
+                        <i class="fas fa-eye me-1"></i>View
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="pdf-guide-overview">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-file-pdf fa-2x mb-3 text-danger"></i>
+                        <p>Click "Load Guide" to access the Real Estate Investment Master Guide</p>
+                        <small class="text-muted">Comprehensive instructions for real estate investment success</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PDF Search and Sections -->
+    <div class="col-lg-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-search me-2"></i>Guide Search & Sections
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Search Box -->
+                <div class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="pdf-search-input" placeholder="Search the master guide...">
+                        <button class="btn btn-outline-primary" onclick="RealtorAgent.searchPDFGuide()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Results -->
+                <div id="pdf-search-results" class="mb-3" style="display: none;">
+                    <h6 class="text-muted mb-2">Search Results:</h6>
+                    <div id="pdf-search-content"></div>
+                </div>
+
+                <!-- Key Sections -->
+                <div id="pdf-key-sections">
+                    <h6 class="text-muted mb-2">Key Sections:</h6>
+                    <div class="text-center text-muted py-3">
+                        <small>Load the guide to see available sections</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PDF Content Viewer (Hidden by default) -->
+<div class="row mb-4" id="pdf-content-viewer" style="display: none;">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-file-alt me-2"></i>Master Guide Content
+                </h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="RealtorAgent.togglePDFView()">
+                    <i class="fas fa-times me-1"></i>Close
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="pdf-full-content">
+                    <!-- Full PDF content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-2-4 col-sm-6">
+                        <button id="quick-new-deal" class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="create-deal">
+                            <i class="fas fa-plus fa-2x mb-2"></i>
+                            <span class="fw-bold">New Deal</span>
+                            <small class="text-muted">Add a new property</small>
+                        </button>
+                    </div>
+                    <div class="col-md-2-4 col-sm-6">
+                        <button id="quick-scrape-leads" class="btn btn-danger w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="scrape-leads">
+                            <i class="fas fa-spider fa-2x mb-2"></i>
+                            <span class="fw-bold">Scrape Leads</span>
+                            <small class="text-muted">Get test leads online</small>
+                        </button>
+                    </div>
+                    <div class="col-md-2-4 col-sm-6">
+                        <button id="quick-run-bots" class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="run-all-bots">
+                            <i class="fas fa-play fa-2x mb-2"></i>
+                            <span class="fw-bold">Run Bots</span>
+                            <small class="text-muted">Execute acquisition cycle</small>
+                        </button>
+                    </div>
+                    <div class="col-md-2-4 col-sm-6">
+                        <button id="quick-view-analytics" class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="view-analytics">
+                            <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                            <span class="fw-bold">View Analytics</span>
+                            <small class="text-muted">Performance analytics</small>
+                        </button>
+                    </div>
+                    <div class="col-md-2-4 col-sm-6">
+                        <button id="quick-add-lend" class="btn btn-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="add-lend">
+                            <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
+                            <span class="fw-bold">Add Lend</span>
+                            <small class="text-muted">Add lender financing</small>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- Quick Action Modals -->
+<!-- Create Deal Modal -->
+<div class="modal fade" id="createDealModal" tabindex="-1" aria-labelledby="createDealModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createDealModalLabel">Create New Deal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="createDealForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dealAddress" class="form-label">Property Address</label>
+                            <input type="text" class="form-control" id="dealAddress" name="address" required maxlength="200">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dealPrice" class="form-label">Price</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="dealPrice" name="price" required min="0" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dealType" class="form-label">Property Type</label>
+                            <select class="form-select" id="dealType" name="property_type" required>
+                                <option value="">Select Type</option>
+                                <option value="single_family">Single Family</option>
+                                <option value="multi_family">Multi Family</option>
+                                <option value="condo">Condo</option>
+                                <option value="townhouse">Townhouse</option>
+                                <option value="land">Land</option>
+                                <option value="commercial">Commercial</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="dealSource" class="form-label">Lead Source</label>
+                            <select class="form-select" id="dealSource" name="source">
+                                <option value="">Select Source</option>
+                                <option value="FSBO">FSBO</option>
+                                <option value="Expired">Expired</option>
+                                <option value="MLS">MLS</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Direct">Direct</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dealNotes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="dealNotes" name="notes" rows="3" placeholder="Additional notes about the deal..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Deal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Lead Modal -->
+<div class="modal fade" id="addLeadModal" tabindex="-1" aria-labelledby="addLeadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLeadModalLabel">Add New Lead</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addLeadForm" onsubmit="RealtorAgent.handleAddLeadForm(event)">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="leadName" class="form-label">Owner Name *</label>
+                            <input type="text" class="form-control" id="leadName" name="Owner Name" required maxlength="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="leadPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="leadPhone" name="Phone" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="leadEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="leadEmail" name="Email">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="leadSource" class="form-label">Lead Source *</label>
+                            <select class="form-select" id="leadSource" name="Source (List)" required>
+                                <option value="">Select Source</option>
+                                <option value="FSBO">FSBO</option>
+                                <option value="Expired">Expired</option>
+                                <option value="Referral">Referral</option>
+                                <option value="Website">Website</option>
+                                <option value="Social Media">Social Media</option>
+                                <option value="Direct Mail">Direct Mail</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="leadMailingAddress" class="form-label">Mailing Address</label>
+                            <input type="text" class="form-control" id="leadMailingAddress" name="Mailing Address" maxlength="200">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="leadPropertyAddress" class="form-label">Property Address/APN</label>
+                            <input type="text" class="form-control" id="leadPropertyAddress" name="Property Address/APN" maxlength="200" placeholder="Property address or APN...">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="leadMarket" class="form-label">Market</label>
+                            <input type="text" class="form-control" id="leadMarket" name="Market" placeholder="City, State or Market area...">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="leadEstimatedValue" class="form-label">Estimated Value</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="leadEstimatedValue" name="Estimated Value" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="leadNextFollowup" class="form-label">Next Follow-up</label>
+                            <input type="date" class="form-control" id="leadNextFollowup" name="Next Follow-up">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="leadOffer" class="form-label">Offer Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="leadOffer" name="Offer" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="leadNotes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="leadNotes" name="Notes" rows="3" placeholder="Additional information about the lead..."></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        <small><i class="fas fa-info-circle me-1"></i>Fields marked with * are required. Lead ID will be auto-generated. Status will be set to "New Lead" and Last Contact to today's date.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Lead</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Lend Modal -->
+<div class="modal fade" id="addLendModal" tabindex="-1" aria-labelledby="addLendModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLendModalLabel">Add Lender Financing</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addLendForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lendPropertyAddress" class="form-label">Property Address *</label>
+                            <input type="text" class="form-control" id="lendPropertyAddress" name="property_address" required maxlength="200">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lendLoanAmount" class="form-label">Loan Amount *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="number" class="form-control" id="lendLoanAmount" name="loan_amount" required min="0" step="0.01">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lendLenderName" class="form-label">Lender Name *</label>
+                            <input type="text" class="form-control" id="lendLenderName" name="lender_name" required maxlength="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lendInterestRate" class="form-label">Interest Rate (%)</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="lendInterestRate" name="interest_rate" min="0" step="0.01" max="50">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lendLoanTerm" class="form-label">Loan Term (Years)</label>
+                            <select class="form-select" id="lendLoanTerm" name="loan_term">
+                                <option value="">Select Term</option>
+                                <option value="5">5 Years</option>
+                                <option value="10">10 Years</option>
+                                <option value="15">15 Years</option>
+                                <option value="20">20 Years</option>
+                                <option value="25">25 Years</option>
+                                <option value="30">30 Years</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lendClosingDate" class="form-label">Expected Closing Date</label>
+                            <input type="date" class="form-control" id="lendClosingDate" name="closing_date">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lendNotes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="lendNotes" name="notes" rows="3" placeholder="Additional notes about the financing..."></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        <small><i class="fas fa-info-circle me-1"></i>Fields marked with * are required. This will create a new lender financing record associated with the property.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Add Financing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scrape Leads Modal -->
+<div class="modal fade" id="scrapeLeadsModal" tabindex="-1" aria-labelledby="scrapeLeadsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scrapeLeadsModalLabel">
+                    <i class="fas fa-spider me-2"></i>Scrape Real Estate Leads
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="scrapeLeadsForm" onsubmit="RealtorAgent.handleScrapeLeadsForm(event)">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Test Data Generator:</strong> This tool generates realistic test leads for system testing. It simulates scraping from real estate websites without actually accessing them.
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="scrapeNumLeads" class="form-label">Number of Leads to Generate</label>
+                            <select class="form-select" id="scrapeNumLeads" name="num_leads" required>
+                                <option value="5">5 Test Leads</option>
+                                <option value="10" selected>10 Test Leads</option>
+                                <option value="25">25 Test Leads</option>
+                                <option value="50">50 Test Leads (Max)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Estimated Processing Time</label>
+                            <p class="form-control-plaintext" id="estimatedTime">~2-3 seconds</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Lead Sources to Include</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sourceZillow" checked disabled>
+                                    <label class="form-check-label" for="sourceZillow">
+                                        Zillow Listings
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sourceRealtor" checked disabled>
+                                    <label class="form-check-label" for="sourceRealtor">
+                                        Realtor.com
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sourceFsbo" checked disabled>
+                                    <label class="form-check-label" for="sourceFsbo">
+                                        FSBO Listings
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sourceExpired" checked disabled>
+                                    <label class="form-check-label" for="sourceExpired">
+                                        Expired Listings
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Test Markets</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small class="text-muted">Texas: Austin, Dallas, Houston, San Antonio</small>
+                            </div>
+                            <div class="col-md-6">
+                                <small class="text-muted">Other: Denver, Phoenix, Raleigh, Nashville, Orlando, Tampa</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Disclaimer:</strong> This generates synthetic test data only. All leads are fictional and for testing purposes.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-spider me-1"></i>Generate Test Leads
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<!-- Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Enhanced Dashboard Styles -->
+<style>
+/* Dashboard color scheme */
+:root {
+    --dashboard-primary: #2563eb;
+    --dashboard-success: #10b981;
+    --dashboard-warning: #f59e0b;
+    --dashboard-danger: #ef4444;
+    --dashboard-info: #06b6d4;
+    --dashboard-secondary: #6b7280;
+    --dashboard-dark: #1f2937;
+    --dashboard-light: #f9fafb;
+    --dashboard-gradient: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+    --dashboard-accent: #60a5fa;
+}
+
+/* Enhanced dashboard styling */
+.dashboard-hero {
+    background: var(--dashboard-gradient);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);
+    color: white;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Enhanced stat cards */
+.dashboard-card {
+    background: white;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.dashboard-card .icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.dashboard-card .icon.primary { background: var(--dashboard-primary); }
+.dashboard-card .icon.success { background: var(--dashboard-success); }
+.dashboard-card .icon.warning { background: var(--dashboard-warning); }
+.dashboard-card .icon.danger { background: var(--dashboard-danger); }
+.dashboard-card .icon.info { background: var(--dashboard-info); }
+
+/* Activity feed enhancements */
+.activity-feed {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f8f9fa;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.activity-item:hover {
+    background-color: #f8f9fa;
+}
+
+.activity-item.new-activity {
+    background-color: #e0f2fe;
+    border-left: 4px solid var(--dashboard-primary);
+    animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.activity-live-indicator {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 8px;
+    height: 8px;
+    background: var(--dashboard-success);
+    border-radius: 50%;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Enhanced sidebar */
+.dashboard-sidebar {
+    position: fixed;
+    top: 56px;
+    right: 0;
+    width: 350px;
+    height: calc(100vh - 56px);
+    background: white;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1050;
+    overflow-y: auto;
+}
+
+.dashboard-sidebar.show {
+    transform: translateX(0);
+}
+
+.dashboard-sidebar .sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: var(--dashboard-gradient);
+    color: white;
+}
+
+.dashboard-sidebar .sidebar-content {
+    padding: 20px;
+}
+
+/* Modal enhancements */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: var(--dashboard-gradient);
+    color: white;
+    border: none;
+    border-radius: 15px 15px 0 0;
+}
+
+/* Quick action buttons */
+.quick-action-btn {
+    border: none;
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    text-align: center;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.quick-action-btn i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+/* Loading states */
+.loading-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    flex-direction: column;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid var(--dashboard-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Notification system */
+.notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 400px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    z-index: 1060;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success { background: var(--dashboard-success); color: white; }
+.notification.error { background: var(--dashboard-danger); color: white; }
+.notification.warning { background: var(--dashboard-warning); color: white; }
+.notification.info { background: var(--dashboard-info); color: white; }
+</style>
+
+<!-- Dashboard Sidebar -->
+<div class="dashboard-sidebar" id="dashboardSidebar">
+    <div class="sidebar-header">
+        <h5 class="mb-0">
+            <i class="fas fa-tachometer-alt me-2"></i>Dashboard Overview
+        </h5>
+        <button class="btn-close btn-close-white position-absolute top-50 end-0 translate-middle-y me-3" onclick="RealtorAgent.toggleSidebar()"></button>
+    </div>
+    <div class="sidebar-content">
+        <!-- Quick Stats -->
+        <div class="mb-4">
+            <h6 class="text-muted mb-3">Quick Stats</h6>
+            <div id="sidebar-quick-stats">
+                <div class="text-center py-4">
+                    <div class="loading-spinner mx-auto mb-2"></div>
+                    <small class="text-muted">Loading stats...</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Feed -->
+        <div class="mb-4">
+            <h6 class="text-muted mb-3">Recent Activity</h6>
+            <div id="sidebar-activity-feed" class="activity-feed">
+                <div class="text-center py-4">
+                    <div class="loading-spinner mx-auto mb-2"></div>
+                    <small class="text-muted">Loading activity...</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div>
+            <h6 class="text-muted mb-3">Quick Actions</h6>
+            <div class="d-grid gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.showModal('createDealModal')">
+                    <i class="fas fa-plus me-1"></i>New Deal
+                </button>
+                <button class="btn btn-outline-success btn-sm" onclick="RealtorAgent.showModal('addLeadModal')">
+                    <i class="fas fa-user-plus me-1"></i>Add Lead
+                </button>
+                <button class="btn btn-outline-warning btn-sm" onclick="RealtorAgent.showModal('addLendModal')">
+                    <i class="fas fa-hand-holding-usd me-1"></i>Add Financing
+                </button>
+                <button class="btn btn-outline-info btn-sm" onclick="RealtorAgent.showModal('scrapeLeadsModal')">
+                    <i class="fas fa-spider me-1"></i>Scrape Leads
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification Container -->
+<div id="notificationContainer"></div>
+
+<script>
+// RealtorAgent Dashboard Management System
+const RealtorAgent = {
+    // State management
+    state: {
+        autoRefresh: true,
+        refreshInterval: 30000, // 30 seconds
+        charts: {},
+        sidebarVisible: false,
+        activeModal: null,
+        lastUpdate: null
+    },
+
+    // Initialization
+    init: function() {
+        console.log('🚀 Initializing RealtorAgent Dashboard...');
+        this.setupEventListeners();
+        this.loadDashboardData();
+        this.initializeCharts();
+        this.initializeActivityFeed();
+        this.startAutoRefresh();
+        this.setupTooltips();
+        console.log('✅ RealtorAgent Dashboard initialized');
+    },
+
+    // Event listeners setup
+    setupEventListeners: function() {
+        // Auto-refresh toggle
+        const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
+        if (autoRefreshToggle) {
+            autoRefreshToggle.addEventListener('change', (e) => {
+                this.state.autoRefresh = e.target.checked;
+                if (this.state.autoRefresh) {
+                    this.startAutoRefresh();
+                } else {
+                    this.stopAutoRefresh();
+                }
+            });
+        }
+
+        // Activity auto-refresh toggle
+        const activityToggle = document.getElementById('activity-auto-refresh');
+        if (activityToggle) {
+            activityToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    this.startActivityAutoRefresh();
+                } else {
+                    this.stopActivityAutoRefresh();
+                }
+            });
+        }
+
+        // Quick action buttons
+        document.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = e.currentTarget.dataset.action;
+                this.handleQuickAction(action);
+            });
+        });
+
+        // Modal form submissions
+        this.setupModalForms();
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'r':
+                        e.preventDefault();
+                        this.loadDashboardData();
+                        break;
+                    case 'b':
+                        e.preventDefault();
+                        this.toggleSidebar();
+                        break;
+                }
+            }
+        });
+    },
+
+    // Data loading
+    loadDashboardData: function() {
+        console.log('📊 Loading dashboard data...');
+        this.showLoadingState();
+
+        // Simulate API calls - replace with actual API endpoints
+        Promise.all([
+            this.loadStats(),
+            this.loadRecentDeals(),
+            this.loadBotStatus(),
+            this.loadExcelData()
+        ]).then(() => {
+            this.updateLastRefresh();
+            this.hideLoadingState();
+            console.log('✅ Dashboard data loaded');
+
+            // Update sidebar stats if visible
+            if (this.state.sidebarVisible) {
+                this.loadSidebarStats();
+            }
+        }).catch(error => {
+            console.error('❌ Failed to load dashboard data:', error);
+            this.showError('Failed to load dashboard data');
+            this.hideLoadingState();
+        });
+    },
+
+    loadStats: async function() {
+        try {
+            const resp = await fetch('/api/stats');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+            this.updateStatsDisplay(data);
+            return data;
+        } catch (error) {
+            console.error('Failed to load stats:', error);
+            throw error;
+        }
+    },
+
+    loadRecentDeals: async function() {
+        try {
+            const resp = await fetch('/api/deals?limit=5');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+            const deals = data.deals || data;
+            this.updateRecentDeals(deals);
+            return deals;
+        } catch (error) {
+            console.error('Failed to load recent deals:', error);
+            throw error;
+        }
+    },
+
+    loadBotStatus: async function() {
+        try {
+            const resp = await fetch('/api/bots/status');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const bots = await resp.json();
+            this.updateBotStatus(bots);
+            return bots;
+        } catch (error) {
+            console.error('Failed to load bot status:', error);
+            throw error;
+        }
+    },
+
+    loadExcelData: async function() {
+        try {
+            const resp = await fetch('/api/analytics');
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const analytics = await resp.json();
+            this.updateExcelData(this._analyticsToExcelShape(analytics));
+            return analytics;
+        } catch (error) {
+            console.error('Failed to load analytics:', error);
+            throw error;
+        }
+    },
+
+    _analyticsToExcelShape: function(analytics) {
+        const closed = analytics.closed_summary || {};
+        const strategies = analytics.strategy_performance || [];
+        const assets = analytics.asset_breakdown || [];
+        return {
+            metrics: {
+                totalLeads: closed.total_closed || 0,
+                conversionRate: closed.avg_roi != null ? (closed.avg_roi * 100).toFixed(1) : '0.0',
+                avgResponseTime: closed.avg_profit != null ? (closed.avg_profit / 1000).toFixed(1) : '0.0'
+            },
+            leads: strategies.map(s => ({ name: s.strategy || s.name, phone: `${s.count || 0} deals`, status: s.viable_pct != null ? `${(s.viable_pct * 100).toFixed(0)}% viable` : '' })),
+            contacts: assets.map(a => ({ name: a.asset_type, role: `${a.count} deals`, company: `$${(a.total_value || 0).toLocaleString()}` })),
+            timeline: strategies.slice(0, 4).map(s => ({
+                phase: s.strategy || s.name,
+                progress: s.viable_pct != null ? Math.round(s.viable_pct * 100) : 0,
+                status: (s.viable_pct || 0) >= 0.5 ? 'Complete' : 'In Progress'
+            }))
+        };
+    },
+
+    // UI Updates
+    updateStatsDisplay: function(stats) {
+        const fmt$ = v => v != null ? '$' + Number(v).toLocaleString(undefined, {maximumFractionDigits: 0}) : '—';
+        const fmtPct = v => v != null ? (v * 100).toFixed(1) + '%' : '—';
+
+        const setText = (id, value) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const target = el.querySelector('.stat-value') || el;
+            target.textContent = value;
+        };
+
+        setText('total-deals', stats.total_deals ?? stats.totalDeals ?? '—');
+        setText('active-deals', stats.active_deals ?? stats.activeDeals ?? '—');
+        setText('monthly-revenue', fmt$(stats.monthly_revenue ?? stats.totalRevenue));
+        setText('success-rate', fmtPct(stats.avg_roi));
+        setText('avg-deal-size', fmt$(stats.avg_deal_size ?? stats.avgDealSize));
+        setText('pending-offers', stats.closed_deals ?? '—');
+    },
+
+    updateRecentDeals: function(deals) {
+        const container = document.getElementById('recent-deals-list');
+        if (!container) return;
+
+        if (!deals || deals.length === 0) {
+            container.innerHTML = '<div class="text-center text-muted py-4">No recent deals</div>';
+            return;
+        }
+
+        const dealsHtml = deals.map(deal => {
+            const price = deal.contract_price ?? deal.price ?? 0;
+            const date = (deal.created_at || deal.date || '').slice(0, 10);
+            const status = deal.status || deal.pipeline_status || 'New';
+            return `
+            <div class="deal-item p-3 border-bottom" style="cursor:pointer" onclick="window.location='/deals/${deal.id || ''}'">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">${deal.address || 'Unknown address'}</h6>
+                        <p class="mb-1 text-muted">$${Number(price).toLocaleString()}</p>
+                        <small class="text-muted">${date}</small>
+                    </div>
+                    <span class="badge bg-${this.getStatusColor(status)}">${status}</span>
+                </div>
+            </div>`;
+        }).join('');
+
+        container.innerHTML = dealsHtml;
+    },
+
+    updateBotStatus: function(bots) {
+        const container = document.getElementById('bot-status-grid');
+        if (!container) return;
+
+        if (!bots || bots.length === 0) {
+            container.innerHTML = '<div class="text-center text-muted py-3">No bot data available</div>';
+            return;
+        }
+
+        const statusColor = s => ({ running: 'success', idle: 'secondary', error: 'danger' }[s] || 'secondary');
+        const botsHtml = bots.map(bot => `
+            <div class="bot-item p-3 border rounded mb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${bot.name}</h6>
+                        <small class="text-muted">Last run: ${bot.last_run || bot.lastRun || 'Never'}</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-${statusColor(bot.status)}">${bot.status || 'idle'}</span>
+                        ${bot.deals_processed != null ? `<br><small class="text-muted">${bot.deals_processed} deals</small>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = botsHtml;
+    },
+
+    updateExcelData: function(data) {
+        // Update metrics
+        const metricsEl = document.getElementById('excel-dashboard-metrics');
+        if (metricsEl) {
+            metricsEl.innerHTML = `
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="h4 mb-0">${data.metrics.totalLeads}</div>
+                            <small class="text-muted">Total Leads</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="h4 mb-0">${data.metrics.conversionRate}%</div>
+                            <small class="text-muted">Conversion</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Update leads count
+        const leadsCountEl = document.getElementById('excel-leads-count');
+        if (leadsCountEl) {
+            leadsCountEl.textContent = `${data.leads.length} leads`;
+        }
+
+        // Update contacts count
+        const contactsCountEl = document.getElementById('excel-contacts-count');
+        if (contactsCountEl) {
+            contactsCountEl.textContent = `${data.contacts.length} contacts`;
+        }
+
+        // Update timeline count
+        const timelineCountEl = document.getElementById('excel-timeline-count');
+        if (timelineCountEl) {
+            timelineCountEl.textContent = `${data.timeline.length} phases`;
+        }
+
+        // Update leads list
+        const leadsListEl = document.getElementById('excel-leads-list');
+        if (leadsListEl && data.leads.length > 0) {
+            const leadsHtml = data.leads.map(lead => `
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div>
+                        <div class="fw-bold">${lead.name}</div>
+                        <small class="text-muted">${lead.phone}</small>
+                    </div>
+                    <span class="badge bg-secondary">${lead.status}</span>
+                </div>
+            `).join('');
+            leadsListEl.innerHTML = leadsHtml;
+        }
+
+        // Update contacts list
+        const contactsListEl = document.getElementById('excel-contacts-list');
+        if (contactsListEl && data.contacts.length > 0) {
+            const contactsHtml = data.contacts.map(contact => `
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <div>
+                        <div class="fw-bold">${contact.name}</div>
+                        <small class="text-muted">${contact.role} at ${contact.company}</small>
+                    </div>
+                </div>
+            `).join('');
+            contactsListEl.innerHTML = contactsHtml;
+        }
+
+        // Update timeline
+        const timelineEl = document.getElementById('excel-development-timeline');
+        if (timelineEl && data.timeline.length > 0) {
+            const timelineHtml = data.timeline.map(phase => `
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold">${phase.phase}</span>
+                        <span class="badge bg-${phase.status === 'Complete' ? 'success' : 'warning'}">${phase.status}</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-${phase.status === 'Complete' ? 'success' : 'warning'}"
+                             style="width: ${phase.progress}%"></div>
+                    </div>
+                </div>
+            `).join('');
+            timelineEl.innerHTML = timelineHtml;
+        }
+    },
+
+    // Chart Management
+    initializeCharts: function() {
+        console.log('📈 Initializing charts...');
+        this.initializePipelineChart();
+        this.initializeStatusChart();
+    },
+
+    initializePipelineChart: function() {
+        const ctx = document.getElementById('pipelineChart');
+        if (!ctx) return;
+
+        this.state.charts.pipeline = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Deals Acquired',
+                    data: [12, 19, 15, 25, 22, 30, 28, 35, 32, 38, 42, 47],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Revenue ($K)',
+                    data: [85, 120, 95, 180, 165, 220, 195, 280, 250, 320, 380, 450],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: { legend: { display: true, position: 'top' } },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Number of Deals' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Revenue ($K)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+    },
+
+    initializeStatusChart: function() {
+        const ctx = document.getElementById('statusChart');
+        if (!ctx) return;
+
+        this.state.charts.status = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Lead', 'Under Contract', 'Closed', 'Rejected'],
+                datasets: [{
+                    data: [25, 8, 12, 2],
+                    backgroundColor: ['#06b6d4', '#f59e0b', '#10b981', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
+                }
+            }
+        });
+    },
+
+    // Activity Feed Management
+    initializeActivityFeed: function() {
+        this.loadRecentActivity();
+        if (document.getElementById('activity-auto-refresh')?.checked) {
+            this.startActivityAutoRefresh();
+        }
+    },
+
+    loadRecentActivity: async function(since = null) {
+        try {
+            const url = since ? `/api/recent-activity?since=${encodeURIComponent(since)}` : '/api/recent-activity';
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const activities = await resp.json();
+            this.displayActivityFeed(activities);
+            this.updateSidebarActivity(activities.slice(0, 5));
+            if (activities.length) this.state.lastActivityTimestamp = activities[0].timestamp || null;
+        } catch (error) {
+            console.error('Failed to load activity:', error);
+            this.showActivityError();
+        }
+    },
+
+    displayActivityFeed: function(activities) {
+        const container = document.getElementById('recent-activity-feed');
+        if (!container) return;
+
+        if (!activities || activities.length === 0) {
+            container.innerHTML = '<div class="activity-empty"><i class="fas fa-inbox"></i><p>No recent activity</p></div>';
+            return;
+        }
+
+        const activityHtml = activities.map(activity => this.createActivityItemHtml(activity)).join('');
+        container.innerHTML = activityHtml;
+    },
+
+    createActivityItemHtml: function(activity, isNew = false) {
+        const newClass = isNew ? 'new-activity' : '';
+        const icon = activity.icon || 'fas fa-circle';
+        const color = activity.color || 'secondary';
+        const message = activity.message || activity.description || '';
+        const timestamp = activity.timestamp || activity.relative_time || '';
+
+        return `
+            <div class="activity-item ${newClass}" data-activity-id="${activity.id || ''}">
+                <div class="activity-icon">
+                    <i class="${icon} text-${color}"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">${message}</div>
+                    <div class="activity-meta">
+                        <div class="activity-timestamp">
+                            <i class="fas fa-clock"></i>
+                            ${timestamp}
+                        </div>
+                    </div>
+                </div>
+                ${isNew ? '<div class="activity-live-indicator"></div>' : ''}
+            </div>
+        `;
+    },
+
+    updateSidebarActivity: function(activities) {
+        const container = document.getElementById('sidebar-activity-feed');
+        if (!container) return;
+
+        const activityHtml = activities.map(activity => this.createActivityItemHtml(activity)).join('');
+        container.innerHTML = activityHtml;
+    },
+
+    // Modal Management
+    showModal: function(modalId) {
+        const modal = new bootstrap.Modal(document.getElementById(modalId));
+        this.state.activeModal = modalId;
+        modal.show();
+    },
+
+    hideModal: function(modalId) {
+        const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+        if (modal) {
+            modal.hide();
+            this.state.activeModal = null;
+        }
+    },
+
+    setupModalForms: function() {
+        // Create Deal Form
+        const createDealForm = document.getElementById('createDealForm');
+        if (createDealForm) {
+            createDealForm.addEventListener('submit', (e) => this.handleCreateDealForm(e));
+        }
+
+        // Add Lead Form
+        const addLeadForm = document.getElementById('addLeadForm');
+        if (addLeadForm) {
+            addLeadForm.addEventListener('submit', (e) => this.handleAddLeadForm(e));
+        }
+
+        // Add Lend Form
+        const addLendForm = document.getElementById('addLendForm');
+        if (addLendForm) {
+            addLendForm.addEventListener('submit', (e) => this.handleAddLendForm(e));
+        }
+
+        // Scrape Leads Form
+        const scrapeLeadsForm = document.getElementById('scrapeLeadsForm');
+        if (scrapeLeadsForm) {
+            scrapeLeadsForm.addEventListener('submit', (e) => this.handleScrapeLeadsForm(e));
+        }
+    },
+
+    // Form Handlers
+    handleCreateDealForm: async function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const dealData = Object.fromEntries(formData);
+
+        try {
+            const resp = await fetch('/api/deals', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dealData)
+            });
+            if (!resp.ok) {
+                const err = await resp.json().catch(() => ({}));
+                throw new Error(err.error || `HTTP ${resp.status}`);
+            }
+            this.showNotification('Deal created and underwritten successfully!', 'success');
+            this.hideModal('createDealModal');
+            event.target.reset();
+            this.loadDashboardData();
+        } catch (e) {
+            this.showNotification('Failed to create deal: ' + e.message, 'error');
+        }
+    },
+
+    handleAddLeadForm: async function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const leadData = Object.fromEntries(formData);
+
+        try {
+            const resp = await fetch('/api/deals', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ address: leadData['Property Address/APN'] || leadData['Mailing Address'], ...leadData })
+            });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            this.showNotification('Lead added successfully!', 'success');
+            this.hideModal('addLeadModal');
+            event.target.reset();
+            this.loadDashboardData();
+        } catch (e) {
+            this.showNotification('Failed to add lead: ' + e.message, 'error');
+        }
+    },
+
+    handleAddLendForm: function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const lendData = Object.fromEntries(formData);
+
+        console.log('Financing recorded:', lendData);
+        this.showNotification('Financing details saved!', 'success');
+        this.hideModal('addLendModal');
+        event.target.reset();
+    },
+
+    handleScrapeLeadsForm: async function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const scrapeData = Object.fromEntries(formData);
+
+        this.showNotification('Pipeline started — scraping leads...', 'info');
+        this.hideModal('scrapeLeadsModal');
+        event.target.reset();
+
+        try {
+            const resp = await fetch('/api/bots/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ num_leads: parseInt(scrapeData.num_leads || 10) })
+            });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            const runId = result.run_id;
+            this._pollRunStatus(runId);
+        } catch (e) {
+            this.showNotification('Failed to start pipeline: ' + e.message, 'error');
+        }
+    },
+
+    _pollRunStatus: async function(runId, attempts = 0) {
+        if (!runId || attempts > 30) return;
+        try {
+            const resp = await fetch(`/api/bots/run/${runId}`);
+            if (!resp.ok) return;
+            const data = await resp.json();
+            if (data.status === 'completed') {
+                this.showNotification('Pipeline completed! Leads processed and underwritten.', 'success');
+                this.loadDashboardData();
+            } else if (data.status === 'error') {
+                this.showNotification('Pipeline encountered an error.', 'error');
+            } else {
+                setTimeout(() => this._pollRunStatus(runId, attempts + 1), 3000);
+            }
+        } catch (e) {
+            console.error('Poll error:', e);
+        }
+    },
+
+    // Quick Actions
+    handleQuickAction: function(action) {
+        switch(action) {
+            case 'create-deal':
+                this.showModal('createDealModal');
+                break;
+            case 'scrape-leads':
+                this.showModal('scrapeLeadsModal');
+                break;
+            case 'run-all-bots':
+                this.runAllBots();
+                break;
+            case 'view-analytics':
+                window.location.href = '/analytics';
+                break;
+            case 'add-lend':
+                this.showModal('addLendModal');
+                break;
+            default:
+                console.log('Unknown action:', action);
+        }
+    },
+
+    runAllBots: async function() {
+        this.showNotification('Starting full pipeline...', 'info');
+        try {
+            const resp = await fetch('/api/bots/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const result = await resp.json();
+            this._pollRunStatus(result.run_id);
+        } catch (e) {
+            this.showNotification('Failed to start bots: ' + e.message, 'error');
+        }
+    },
+
+    // Sidebar Management
+    // Sidebar Management
+    toggleSidebar: function() {
+        const sidebar = document.getElementById('dashboardSidebar');
+        if (!sidebar) return;
+
+        this.state.sidebarVisible = !this.state.sidebarVisible;
+
+        if (this.state.sidebarVisible) {
+            sidebar.classList.add('show');
+            this.loadSidebarStats(); // Load stats when opening sidebar
+        } else {
+            sidebar.classList.remove('show');
+        }
+    },
+
+    // Auto-refresh Management
+    startAutoRefresh: function() {
+        if (this.state.autoRefreshInterval) {
+            clearInterval(this.state.autoRefreshInterval);
+        }
+
+        this.state.autoRefreshInterval = setInterval(() => {
+            if (this.state.autoRefresh) {
+                this.loadDashboardData();
+            }
+        }, this.state.refreshInterval);
+    },
+
+    stopAutoRefresh: function() {
+        if (this.state.autoRefreshInterval) {
+            clearInterval(this.state.autoRefreshInterval);
+            this.state.autoRefreshInterval = null;
+        }
+    },
+
+    startActivityAutoRefresh: function() {
+        if (this.state.activityInterval) {
+            clearInterval(this.state.activityInterval);
+        }
+
+        this.state.activityInterval = setInterval(() => {
+            this.loadRecentActivity(this.state.lastActivityTimestamp);
+        }, 10000); // 10 seconds
+    },
+
+    stopActivityAutoRefresh: function() {
+        if (this.state.activityInterval) {
+            clearInterval(this.state.activityInterval);
+            this.state.activityInterval = null;
+        }
+    },
+
+    // Notification System
+    showNotification: function(message, type = 'info') {
+        const container = document.getElementById('notificationContainer');
+        if (!container) return;
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas ${this.getAlertIcon(type)} me-2"></i>
+                <span>${message}</span>
+                <button class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+
+        container.appendChild(notification);
+
+        // Show notification
+        setTimeout(() => notification.classList.add('show'), 100);
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
+    },
+
+    // Utility Functions
+    getStatusColor: function(status) {
+        const colors = {
+            'New Lead': 'secondary',
+            'Under Contract': 'warning',
+            'Closed': 'success',
+            'Rejected': 'danger'
+        };
+        return colors[status] || 'secondary';
+    },
+
+    getActivityStatusClass: function(status) {
+        const classes = {
+            'success': 'text-success',
+            'error': 'text-danger',
+            'warning': 'text-warning',
+            'info': 'text-info'
+        };
+        return classes[status] || 'text-muted';
+    },
+
+    getAlertIcon: function(type) {
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-triangle',
+            warning: 'fa-exclamation-circle',
+            info: 'fa-info-circle'
+        };
+        return icons[type] || 'fa-info-circle';
+    },
+
+    setupTooltips: function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    },
+
+    showLoadingState: function() {
+        // Add loading indicators to key sections
+        const loadingElements = document.querySelectorAll('.loading-placeholder');
+        loadingElements.forEach(el => {
+            el.innerHTML = `
+                <div class="loading-spinner mx-auto mb-2"></div>
+                <small class="text-muted">Loading...</small>
+            `;
+        });
+    },
+
+    hideLoadingState: function() {
+        // Loading states are replaced when data loads
+    },
+
+    showError: function(message) {
+        this.showNotification(message, 'error');
+    },
+
+    updateLastRefresh: function() {
+        this.state.lastUpdate = new Date();
+        const refreshBtn = document.querySelector('[onclick="RealtorAgent.loadDashboardData()"]');
+        if (refreshBtn) {
+            refreshBtn.innerHTML = '<i class="fas fa-sync-alt me-1"></i>Refresh';
+        }
+    },
+
+    showActivityError: function() {
+        const container = document.getElementById('recent-activity-feed');
+        if (container) {
+            container.innerHTML = `
+                <div class="activity-empty">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Failed to load activity feed</p>
+                    <small class="text-muted">Please refresh the page to try again</small>
+                </div>
+            `;
+        }
+    },
+
+    // PDF Guide functionality
+    loadPDFGuide: async function() {
+        try {
+            this.showLoading('pdf-guide-overview', 'Loading PDF guide...');
+            // PDF loading logic would go here
+            this.showAlert('PDF Guide loading functionality coming soon!', 'info');
+        } catch (error) {
+            console.error('Error loading PDF guide:', error);
+            this.showError('Failed to load PDF guide');
+        }
+    },
+
+    searchPDFGuide: function() {
+        const searchTerm = document.getElementById('pdf-search-input')?.value || '';
+        if (!searchTerm.trim()) {
+            this.showAlert('Please enter a search term', 'warning');
+            return;
+        }
+        this.showAlert(`Searching for "${searchTerm}" in guides...`, 'info');
+        // PDF search logic would go here
+    },
+
+    togglePDFView: function() {
+        const viewer = document.getElementById('pdf-content-viewer');
+        if (viewer) {
+            viewer.style.display = viewer.style.display === 'none' ? 'block' : 'none';
+        }
+    },
+
+    // Excel data export functionality
+    exportToExcel: function() {
+        this.showModal('exportModal');
+    },
+
+    // Additional utility functions
+    refreshActivityFeed: function() {
+        this.loadRecentActivity();
+        this.showNotification('Activity feed refreshed', 'success');
+    },
+
+    // Sidebar quick stats
+    loadSidebarStats: function() {
+        const container = document.getElementById('sidebar-quick-stats');
+        if (!container) return;
+
+        // Get current stats from main dashboard
+        const totalDeals = document.querySelector('#total-deals .stat-value')?.textContent || '0';
+        const activeDeals = document.querySelector('#active-deals .stat-value')?.textContent || '0';
+        const monthlyRevenue = document.querySelector('#monthly-revenue')?.textContent || '$0';
+
+        container.innerHTML = `
+            <div class="p-2">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">Total Deals</small>
+                    <span class="fw-bold">${totalDeals}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">Active</small>
+                    <span class="fw-bold text-success">${activeDeals}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">Revenue</small>
+                    <span class="fw-bold text-primary">${monthlyRevenue}</span>
+                </div>
+            </div>
+        `;
+    }
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    RealtorAgent.init();
+});
+
+// Clean up intervals when page unloads
+window.addEventListener('beforeunload', function() {
+    if (RealtorAgent.state.autoRefreshInterval) {
+        clearInterval(RealtorAgent.state.autoRefreshInterval);
+    }
+    if (RealtorAgent.state.activityInterval) {
+        clearInterval(RealtorAgent.state.activityInterval);
+    }
+});
+</script>
+{% endblock %}

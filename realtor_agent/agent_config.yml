@@ -1,0 +1,88 @@
+# Realtor Agent Configuration
+# This file defines your specific goals, markets, and settings for the acquisition system.
+
+# Human Goals (from the diagram)
+goals:
+  deal_criteria:
+    - "Positive MAO with 20%+ profit margin"
+    - "Low to medium risk flags"
+    - "Cash or owner-finance preferred"
+    - "Quick close (30-60 days)"
+  target_markets:
+    - state: "TX"
+      counties: ["Harris", "Fort Bend", "Montgomery"]
+      property_types: ["land", "single_family", "duplex"]
+      price_range: [50000, 500000]
+    - state: "FL"
+      counties: ["Orange", "Seminole"]
+      property_types: ["land", "single_family"]
+      price_range: [75000, 400000]
+  max_offer_rules:
+    mao_flip: "MAO = (ARV * 0.8) - rehab - holding - closing"
+    mao_rental: "Based on DSCR 1.25+ and 8% CoC"
+    land_pricing: "Comps-driven with utility/zoning adjustments"
+  risk_tolerance:
+    max_risk_flags: 2
+    escalate_on: ["title_issues", "floodway", "no_access"]
+    auto_approve_under: 1
+
+# Bot Configurations
+bots:
+  web_scout:
+    enabled: true
+    sources: ["realtor", "homes", "land", "discountlots"]
+    max_listings_per_run: 100
+    filters:
+      min_price: 25000
+      max_price: 1000000
+  data_clean:
+    enabled: true
+    dedup_threshold: 0.9
+    enrichment_sources: ["county_assessor", "public_records"]
+  underwriter:
+    enabled: true
+    comps_radius: 5  # miles
+    rehab_tiers:
+      light: [0.05, 0.10]  # % of ARV
+      medium: [0.10, 0.20]
+      heavy: [0.20, 0.35]
+    holding_costs_monthly: 0.01  # % of purchase price
+    closing_costs: 0.03  # % of purchase price
+  deal_desk:
+    enabled: true
+    attorney_review_required: true
+    templates: ["cash_offer", "owner_finance", "lease_option"]
+  owner_finder:
+    enabled: true
+    skip_trace_depth: 2
+    dnc_check: true
+  outreach:
+    enabled: true
+    channels: ["sms", "email", "call"]
+    cadence_days: [0, 3, 7, 14]
+    max_contacts_per_day: 50
+  negotiator:
+    enabled: true
+    max_concessions: 0.05  # % of offer
+    batna_threshold: 0.90  # % of target MAO
+  compliance_qa:
+    enabled: true
+    fair_housing_check: true
+    spam_check: true
+    tos_check: true
+
+# Compliance Settings
+compliance:
+  fair_housing: true
+  anti_spam: true
+  dnc_respect: true
+  tos_compliance: true
+  attorney_review: true
+
+# System Settings
+system:
+  log_level: "INFO"
+  database_path: "../data/crm/"
+  outputs_path: "../outputs/"
+  memory_path: "./memory/"
+  prompts_path: "./prompts/"

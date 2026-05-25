@@ -1,0 +1,80 @@
+# Underwriter Bot Configuration
+# Handles valuation, MAO calculations, and risk assessment
+
+enabled: true
+
+# Valuation Settings
+valuation:
+  comps:
+    radius_miles: 5
+    max_comps: 10
+    age_limit_days: 90
+    sources: ["../data/market_data/sales_comps.csv", "../data/market_data/rent_estimates.csv"]
+  adjustments:
+    age: -0.005  # % per year
+    condition: 0.05  # % for excellent condition
+    location: 0.10  # % for premium location
+
+# Rehab Estimation
+rehab:
+  tiers:
+    light:
+      range: [0.05, 0.10]  # % of ARV
+      items: ["cosmetic", "minor_repairs"]
+    medium:
+      range: [0.10, 0.20]
+      items: ["kitchen_bath", "roof", "hvac"]
+    heavy:
+      range: [0.20, 0.35]
+      items: ["foundation", "structural", "full_renovation"]
+  contingencies: 0.05  # % buffer
+
+# Cost Assumptions
+costs:
+  holding:
+    monthly_percent: 0.01  # % of purchase price
+    months: 6
+  closing:
+    percent: 0.03  # % of purchase price
+  financing:
+    interest_rate: 0.08
+    points: 0.02
+
+# MAO Formulas
+formulas:
+  flip:
+    formula: "MAO = (ARV * 0.8) - rehab - holding - closing"
+    profit_margin: 0.20
+  rental:
+    dscr_target: 1.25
+    coc_target: 0.08
+    vacancy_rate: 0.05
+    maintenance_rate: 0.01
+    management_rate: 0.08
+  land:
+    comps_weight: 0.7
+    constraints_weight: 0.3
+
+# Risk Assessment
+risk:
+  flags_threshold: 3  # Escalate if > this
+  critical_flags: ["no_access", "clouded_title", "floodway"]
+  weights:
+    title_issues: 5
+    physical: 4
+    land_specific: 5
+    deal_structure: 3
+
+# Exit Strategies
+exit_strategies:
+  - "flip"
+  - "brrrr"
+  - "wholesale"
+  - "land_note"
+
+# Output
+output:
+  format: "markdown"
+  file: "../outputs/underwriting_summary.md"
+  include_comps: true
+  include_flags: true

@@ -1,0 +1,134 @@
+{
+  "Harris County, TX": {
+    "gis_system_url": "https://www.hcfcd.org/Resources/Interactive-Mapping-Tools",
+    "assessor_site_url": "https://arcweb.hcad.org/parcel-viewer-v2.0/",
+    "zoning_department_url": "https://www.harriscountyfemt.org/",
+    "recorder_office_url": "https://www.hcfcd.org/Resources/Interactive-Mapping-Tools/Harris-County-Floodplain-Reference-Marks",
+    "fema_flood_map_url": "https://cdn.houstonpublicmedia.org/wp-content/uploads/2016/09/Harris-County_Houston-Coastal-Flood-Map.jpg",
+    "wetland_database_url": "https://www.hcfcd.org/Resources/Interactive-Mapping-Tools",
+    "platform_type": "Custom/Esri",
+    "navigation_path": "The Harris County Flood Control District (HCFCD) website is the main portal. The interactive mapping tools are under the 'Resources' tab. The HCAD Parcel Viewer is a separate site.",
+    "usage_tips": "The HCFCD map is excellent for detailed flood plain analysis. The HCAD viewer is best for property assessment data. Use the address search for quick lookups."
+  },
+  "Maricopa County, AZ": {
+    "gis_system_url": "https://www.maricopa.gov/3942/GIS-Mapping-Applications",
+    "assessor_site_url": "https://www.maricopa.gov/509/Data-Requests",
+    "zoning_department_url": "https://www.maricopa.gov/4035/Interactive-Parcel-Maps",
+    "recorder_office_url": "https://www.maricopacountyaz.org/GIS.html",
+    "fema_flood_map_url": "https://www.maricopa.gov/959/Floodplain-Information",
+    "wetland_database_url": "N/A",
+    "platform_type": "Esri ArcGIS",
+    "navigation_path": "The main Maricopa County website has a GIS section with links to various mapping applications. The Assessor's data requests are on a separate page. Zoning is found within the interactive parcel maps.",
+    "usage_tips": "The Parcel Viewer is the most useful tool for all-in-one property research. The Open Data Portal is great for bulk data downloads."
+  },
+  "Orange County, FL": {
+    "gis_system_url": "https://www.orangecountyfl.net/PlanningDevelopment/InteractiveMapping.aspx",
+    "assessor_site_url": "https://ocgis-datahub-ocfl.hub.arcgis.com/",
+    "zoning_department_url": "https://www.orangecountyfl.net/PlanningDevelopment/InteractiveMapping.aspx",
+    "recorder_office_url": "https://orange.wateratlas.usf.edu/mapping",
+    "fema_flood_map_url": "https://orange.wateratlas.usf.edu/mapping",
+    "wetland_database_url": "https://orange.wateratlas.usf.edu/mapping",
+    "platform_type": "Geocortex/Esri",
+    "navigation_path": "The Orange County website has an 'Interactive Mapping' page under 'Planning & Development'. The Water Atlas is a separate but linked resource.",
+    "usage_tips": "InfoMap is the main GIS viewer. The Water Atlas is excellent for environmental data, including wetlands and flood zones. Some tools may require Internet Explorer."
+  },
+  "Mecklenburg County, NC": {
+    "gis_system_url": "https://gis.mecknc.gov/",
+    "assessor_site_url": "https://www.pubrecord.org/mecklenburg-county-property-records-north-carolina/",
+    "zoning_department_url": "https://gis.mecknc.gov/",
+    "recorder_office_url": "https://www.pubrecord.org/mecklenburg-county-property-records-north-carolina/",
+    "fema_flood_map_url": "https://www.pubrecord.org/mecklenburg-county-property-records-north-carolina/",
+    "wetland_database_url": "https://www.lib.ncsu.edu/gis/counties/codata.php?co=37119",
+    "platform_type": "Custom/Esri",
+    "navigation_path": "The Mecklenburg County GIS website (gis.mecknc.gov) is the central hub. POLARIS is the main application. Public Records provides additional links.",
+    "usage_tips": "POLARIS is a powerful tool with many layers. Use the Quality of Life Explorer for neighborhood-level data. The NCSU library has historical GIS data."
+  },
+  "Fulton County, GA": {
+    "gis_system_url": "https://www.fultoncountyga.gov/maps",
+    "assessor_site_url": "https://www.gis-data.org/ga-fulton-county/",
+    "zoning_department_url": "https://www.gis-data.org/ga-fulton-county/",
+    "recorder_office_url": "https://www.gis-data.org/ga-fulton-county/",
+    "fema_flood_map_url": "https://www.fultoncountyga.gov/maps",
+    "wetland_database_url": "https://www.gis-data.org/ga-fulton-county/",
+    "platform_type": "Esri",
+    "navigation_path": "The Fulton County website has a 'Maps' page with links to various viewers. GIS-Data.org provides a good overview and links to specific departments.",
+    "usage_tips": "The Property Map Viewer is the primary tool. Be aware of the distinction between Fulton County, GA and Fulton County, IL. The City of South Fulton has its own GIS services."
+  },
+  "Davidson County, TN": {
+    "gis_system_url": "https://www.nashville.gov/departments/planning/mapping-and-gis",
+    "assessor_site_url": "https://maps.nashville.gov/ParcelViewer/",
+    "zoning_department_url": "https://www.nashville.gov/departments/planning/mapping-and-gis",
+    "recorder_office_url": "https://maps.nashville.gov/ParcelViewer/",
+    "fema_flood_map_url": "https://www.acres.com/plat-map/map/tn/davidson-county-tn",
+    "wetland_database_url": "N/A",
+    "platform_type": "Custom/Esri",
+    "navigation_path": "The Nashville.gov website has a 'Mapping and GIS' page under the Planning Department. The Parcel Viewer is a direct link from there.",
+    "usage_tips": "The Parcel Viewer is the most comprehensive tool for property data. For flood maps, third-party sites like Acres.com may be easier to use."
+  },
+  "Franklin County, OH": {
+    "gis_system_url": "https://property.franklincountyauditor.com/_web/maps/mapadv.aspx",
+    "assessor_site_url": "https://property.franklincountyauditor.com/_web/maps/mapadv.aspx",
+    "zoning_department_url": "https://www.gis-data.org/oh-franklin-county/",
+    "recorder_office_url": "https://www.gis-data.org/oh-franklin-county/",
+    "fema_flood_map_url": "https://www.franklinswcd.org/interactive-maps",
+    "wetland_database_url": "https://www.franklinswcd.org/interactive-maps",
+    "platform_type": "Custom/Esri",
+    "navigation_path": "The Franklin County Auditor's website is the main portal for property and GIS data. The Soil and Water Conservation District has separate environmental maps.",
+    "usage_tips": "The Auditor's map search is powerful but can be complex. The FSWCD maps are excellent for green infrastructure and potential wetlands."
+  },
+  "Charleston County, SC": {
+    "gis_system_url": "https://www.charlestoncounty.org/departments/gis/index.php",
+    "assessor_site_url": "https://www.charlestoncounty.org/departments/gis/index.php",
+    "zoning_department_url": "https://gis.charleston-sc.gov/",
+    "recorder_office_url": "https://gis.charleston-sc.gov/",
+    "fema_flood_map_url": "https://www.charleston-sc.gov/2383/Floodplain-Mapping",
+    "wetland_database_url": "https://www.charleston-sc.gov/2383/Floodplain-Mapping",
+    "platform_type": "Esri/Custom",
+    "navigation_path": "Charleston County and the City of Charleston have separate GIS portals. The county site is more for data, while the city site has more interactive maps.",
+    "usage_tips": "Use the City of Charleston's GIS portal for user-friendly maps, especially for zoning and flood information. The county's GIS Hub is better for data downloads."
+  },
+  "Allegheny County, PA": {
+    "gis_system_url": "https://www.alleghenycounty.us/Government/Departments-and-Offices/Department-Directory/Geographic-Information-Systems-GIS",
+    "assessor_site_url": "https://www.gis-data.org/pa-allegheny-county/",
+    "zoning_department_url": "https://www.gis-data.org/pa-allegheny-county/",
+    "recorder_office_url": "https://www.gis-data.org/pa-allegheny-county/",
+    "fema_flood_map_url": "https://dced.pa.gov/local-government/pennsylvania-flood-maps/",
+    "wetland_database_url": "N/A",
+    "platform_type": "Esri",
+    "navigation_path": "The Allegheny County website has a GIS department page with links to viewers and open data. GIS-Data.org provides a good summary of available data.",
+    "usage_tips": "The GIS Viewer is a good general-purpose tool. The Open Data Portal is the best source for raw data. PEMA manages the state-level flood maps."
+  },
+  "Denver County, CO": {
+    "gis_system_url": "https://www.denvergov.org/Government/Agencies-Departments-Offices/Agencies-Departments-Offices-Directory/Technology-Services/Functions/GIS",
+    "assessor_site_url": "https://www.gis-data.org/co-denver-county/",
+    "zoning_department_url": "https://www.denvergov.org/maps/map/floodplain",
+    "recorder_office_url": "https://www.gis-data.org/co-denver-county/",
+    "fema_flood_map_url": "https://coloradohazardmapping.com/map",
+    "wetland_database_url": "N/A",
+    "platform_type": "Esri",
+    "navigation_path": "The Denvergov.org website has a GIS page under Technology Services. Denver Maps is the main portal. The Colorado Hazard Mapping Portal is a state-level resource.",
+    "usage_tips": "Denver Maps is very user-friendly. The Open Data Catalog is great for developers. The state's hazard mapping portal is the best source for detailed flood data."
+  },
+  "Clark County, NV": {
+    "gis_system_url": "https://clarkcountygis-ccgismo.hub.arcgis.com/",
+    "assessor_site_url": "https://www.clarkcountynv.gov/government/assessor/index.php",
+    "zoning_department_url": "https://www.clarkcountynv.gov/government/assessor/index.php",
+    "recorder_office_url": "https://www.clarkcountynv.gov/government/assessor/index.php",
+    "fema_flood_map_url": "https://www.clarkcountynv.gov/government/assessor/index.php",
+    "wetland_database_url": "N/A",
+    "platform_type": "Esri ArcGIS Hub",
+    "navigation_path": "The Clark County GIS Hub is the main data portal. The Assessor's website provides property record searches.",
+    "usage_tips": "The GIS Hub is the best place to start for maps and data. OpenWeb is the interactive map viewer. Be sure to check the disclaimers about data accuracy."
+  },
+  "Los Angeles County, CA": {
+    "gis_system_url": "https://egis-lacounty.hub.arcgis.com/",
+    "assessor_site_url": "https://portal.assessor.lacounty.gov/",
+    "zoning_department_url": "https://planning.lacounty.gov/gis",
+    "recorder_office_url": "https://www.lavote.gov/home/records",
+    "fema_flood_map_url": "https://geohub.lacity.org/datasets/lacounty::flood-zones",
+    "wetland_database_url": "N/A",
+    "platform_type": "Esri ArcGIS Hub",
+    "navigation_path": "The LA County eGIS Hub is the central portal. The Assessor, Planning, and Recorder have separate websites with GIS components.",
+    "usage_tips": "The eGIS Hub is a good starting point. The LA City GeoHub has a very good flood zone map. Be prepared to navigate between different department websites."
+  }
+}

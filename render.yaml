@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: realtor-agent
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python web_server.py
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.11.0

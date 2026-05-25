@@ -1,0 +1,187 @@
+{
+  "meta": {
+    "report_name": "US_BEST_DEALS_REPORT",
+    "generated_at": "2026-01-02T12:34:56Z",
+    "country": "US",
+    "currency": "USD",
+    "strategies": [
+      "buy_and_hold",
+      "fix_and_flip",
+      "owner_occupant"
+    ],
+    "input_data_files": [
+      "DATA/PROPERTIES/us_properties_scored_20260102.csv",
+      "DATA/MARKETS/us_markets_scored_20260102.csv"
+    ]
+  },
+
+  "global_parameters": {
+    "max_deals_per_strategy": 200,
+    "scoring_version": "1.0.0",
+    "filters": {
+      "min_price": 30000,
+      "max_price": 3000000,
+      "exclude_statuses": ["off_market"],
+      "min_confidence": 0.5
+    }
+  },
+
+  "strategies": {
+    "buy_and_hold": {
+      "description": "US buy & hold rental opportunities with strong yield and stability.",
+      "scoring_weights": {
+        "gross_yield": 0.45,
+        "stability": 0.25,
+        "tenant_demand": 0.20,
+        "landlord_friendliness": 0.10
+      },
+      "top_deals": [
+        {
+          "property_id": "us_tx_austin_123main_1",
+          "source_domain": "example-realestate.com",
+          "listing_url": "https://example-realestate.com/property/123-main-st-austin-tx",
+          "address": {
+            "street": "123 Main St",
+            "city": "Austin",
+            "state_region": "TX",
+            "zipcode_postcode": "78701",
+            "country_code": "US",
+            "lat": 30.2672,
+            "lng": -97.7431
+          },
+          "basic": {
+            "list_price": 350000,
+            "currency": "USD",
+            "bedrooms": 3,
+            "bathrooms": 2,
+            "sqft": 1800,
+            "lot_size_sqft": 6000,
+            "year_built": 1995,
+            "property_type": "single_family",
+            "status": "active",
+            "days_on_market": 7
+          },
+          "rental_metrics": {
+            "estimated_rent_monthly_local": 2600,
+            "estimated_rent_source": "model",
+            "gross_yield_est": 0.0891,
+            "rent_confidence": 0.78
+          },
+          "market_context": {
+            "market_geo_id": "US-TX-Austin-78701",
+            "market_name": "Austin, TX 78701",
+            "median_list_price": 525000,
+            "median_rent_monthly": 2800,
+            "price_change_1y_pct": 0.03,
+            "rent_change_1y_pct": 0.04,
+            "avg_days_on_market": 21,
+            "inventory_count": 120
+          },
+          "strategy_alignment": {
+            "strategy_tags": ["buy_and_hold", "owner_occupant"],
+            "deal_score_buy_and_hold": 0.87,
+            "deal_score_fix_and_flip": 0.32,
+            "deal_score_owner_occupant": 0.74,
+            "deal_score_combined": 0.87
+          },
+          "risk_flags": [
+            {
+              "code": "PROPERTY_TAX_HIGH",
+              "severity": "medium",
+              "description": "County property tax rate higher than US median."
+            }
+          ],
+          "metadata": {
+            "last_scraped_at": "2026-01-02T10:15:00Z",
+            "listing_last_seen_at": "2026-01-02T10:15:00Z",
+            "confidence": 0.82
+          }
+        }
+      ]
+    },
+
+    "fix_and_flip": {
+      "description": "US fix & flip opportunities with spread and velocity.",
+      "scoring_weights": {
+        "discount": 0.50,
+        "renovation_potential": 0.25,
+        "velocity": 0.20,
+        "risk_penalty": -0.15
+      },
+      "top_deals": [
+        {
+          "property_id": "us_oh_cleveland_45oak_1",
+          "source_domain": "another-portal.com",
+          "listing_url": "https://another-portal.com/listing/45-oak-st-cleveland-oh",
+          "address": {
+            "street": "45 Oak St",
+            "city": "Cleveland",
+            "state_region": "OH",
+            "zipcode_postcode": "44114",
+            "country_code": "US",
+            "lat": 41.5055,
+            "lng": -81.6813
+          },
+          "basic": {
+            "list_price": 90000,
+            "currency": "USD",
+            "bedrooms": 4,
+            "bathrooms": 2,
+            "sqft": 1900,
+            "lot_size_sqft": 4000,
+            "year_built": 1910,
+            "property_type": "single_family",
+            "status": "active",
+            "days_on_market": 35
+          },
+          "value_add": {
+            "condition_est": "fair",
+            "needs_renovation": true,
+            "renovation_keywords": ["fixer", "needs TLC", "as-is"],
+            "estimated_renovation_cost": 35000,
+            "arv_estimate": 165000,
+            "arv_confidence": 0.7
+          },
+          "market_context": {
+            "market_geo_id": "US-OH-Cleveland-44114",
+            "market_name": "Cleveland, OH 44114",
+            "median_list_price": 135000,
+            "median_sold_price": 130000,
+            "avg_days_on_market": 28,
+            "inventory_count": 85
+          },
+          "strategy_alignment": {
+            "strategy_tags": ["fix_and_flip"],
+            "deal_score_buy_and_hold": 0.61,
+            "deal_score_fix_and_flip": 0.9,
+            "deal_score_owner_occupant": 0.45,
+            "deal_score_combined": 0.9
+          },
+          "risk_flags": [
+            {
+              "code": "LONGER_DOM_THAN_MEDIAN",
+              "severity": "low",
+              "description": "Property has slightly higher days on market than area median."
+            }
+          ],
+          "metadata": {
+            "last_scraped_at": "2026-01-02T09:00:00Z",
+            "listing_last_seen_at": "2026-01-02T09:00:00Z",
+            "confidence": 0.79
+          }
+        }
+      ]
+    },
+
+    "owner_occupant": {
+      "description": "US owner-occupant opportunities balancing affordability and livability.",
+      "scoring_weights": {
+        "affordability": 0.35,
+        "stability": 0.25,
+        "qol": 0.25,
+        "liquidity": 0.15
+      },
+      "top_deals": []
+    }
+  }
+}

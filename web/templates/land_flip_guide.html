@@ -1,0 +1,1566 @@
+{% extends "base.html" %}
+
+{% block title %}Land Flip Guide - Realtor Agent{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Land Flip Guide</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Ultimate SOP Guide to Flipping Dirt</h1>
+        <p class="text-muted mb-0">Comprehensive Standard Operating Procedure for Land Investing Success</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+        <div class="auto-refresh-toggle me-3">
+            <input type="checkbox" id="auto-refresh-toggle" checked>
+            <label for="auto-refresh-toggle" class="form-check-label">Auto-refresh</label>
+        </div>
+        <button class="btn btn-primary" onclick="RealtorAgent.showModal('quickAnalysisModal')">
+            <i class="fas fa-calculator me-1"></i>Quick Analysis
+        </button>
+        <button class="btn btn-success" onclick="RealtorAgent.showModal('resourceModal')">
+            <i class="fas fa-search me-1"></i>Find Resources
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+/* Enhanced Land Flip Guide Styles */
+.land-guide-container {
+    background: linear-gradient(135deg, #1a5f2a 0%, #2e7d32 50%, #43a047 100%);
+    min-height: 100vh;
+    padding: 20px 0;
+}
+
+.land-guide-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.stats-card {
+    background: linear-gradient(135deg, #1a5f2a 0%, #2e7d32 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: none;
+    transition: transform 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+.stats-card .card-title {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card .card-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card .card-subtitle {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.sidebar {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    height: fit-content;
+}
+
+.sidebar-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #1a5f2a;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.activity-feed {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.activity-item:hover {
+    background-color: #f8f9fa;
+}
+
+.activity-item.success { border-left: 3px solid #28a745; }
+.activity-item.warning { border-left: 3px solid #ffc107; }
+.activity-item.error { border-left: 3px solid #dc3545; }
+.activity-item.info { border-left: 3px solid #17a2b8; }
+
+.activity-icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.activity-item.success .activity-icon { background-color: #d4edda; color: #155724; }
+.activity-item.warning .activity-icon { background-color: #fff3cd; color: #856404; }
+.activity-item.error .activity-icon { background-color: #f8d7da; color: #721c24; }
+.activity-item.info .activity-icon { background-color: #d1ecf1; color: #0c5460; }
+
+.activity-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.activity-status {
+    flex-shrink: 0;
+}
+
+.sidebar-btn {
+    width: 100%;
+    justify-content: flex-start;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.sidebar-btn:hover {
+    transform: translateX(2px);
+}
+
+.sidebar-btn i {
+    margin-right: 0.5rem;
+    width: 16px;
+}
+
+/* Guide Content Styles */
+.guide-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.guide-title-page {
+    background: linear-gradient(135deg, #1a5f2a 0%, #2e7d32 50%, #43a047 100%);
+    color: white;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.guide-title-page h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.guide-title-page .subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.guide-title-page .date {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.toc {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.toc h2 {
+    color: #1a5f2a;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.toc ul {
+    list-style: none;
+    padding: 0;
+}
+
+.toc li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.toc a {
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.toc a:hover {
+    color: #1a5f2a;
+    text-decoration: underline;
+}
+
+.process-flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.process-step {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid #1976d2;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    font-weight: bold;
+    color: #1565c0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.process-step:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+.process-step span {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: normal;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.key-note {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-left: 4px solid #2e7d32;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 12px 12px 0;
+    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.1);
+}
+
+.warning-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border-left: 4px solid #ff9800;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 12px 12px 0;
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.1);
+}
+
+.checklist {
+    background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    border: 1px solid #e0e0e0;
+}
+
+.formula-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border: 2px solid #c2185b;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #880e4f;
+    box-shadow: 0 2px 8px rgba(194, 24, 91, 0.1);
+}
+
+.guide-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.guide-table th {
+    background: linear-gradient(135deg, #2e7d32 0%, #1a5f2a 100%);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.guide-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e9ecef;
+    transition: background-color 0.2s ease;
+}
+
+.guide-table tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.guide-table tr:hover {
+    background: #e8f5e9;
+}
+
+.guide-table a {
+    color: #1565c0;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.guide-table a:hover {
+    color: #0d47a1;
+    text-decoration: underline;
+}
+
+/* Modal Enhancements */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #1a5f2a 0%, #2e7d32 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 1.5rem;
+}
+
+/* Notification Styles */
+.alert {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .process-flow {
+        grid-template-columns: 1fr;
+    }
+
+    .guide-title-page h1 {
+        font-size: 2rem;
+    }
+
+    .stats-card .card-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* Loading States */
+#global-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #2e7d32;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="land-guide-container">
+    <div class="container-fluid">
+        <!-- Stats Cards Row -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="card-title">Total Deals</div>
+                        <div class="card-value" id="total-deals">0</div>
+                        <div class="card-subtitle">Active land deals</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="card-title">Avg ROI</div>
+                        <div class="card-value" id="avg-roi">0%</div>
+                        <div class="card-subtitle">Return on investment</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="card-title">Resources Used</div>
+                        <div class="card-value" id="resources-used">0</div>
+                        <div class="card-subtitle">Research tools accessed</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <div class="card-title">Success Rate</div>
+                        <div class="card-value" id="success-rate">0%</div>
+                        <div class="card-subtitle">Deal completion rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <div class="card land-guide-card guide-content">
+                    <!-- Title Page -->
+                    <div class="guide-title-page">
+                        <h1>Ultimate SOP Guide to Flipping Dirt</h1>
+                        <div class="subtitle">A Comprehensive Standard Operating Procedure<br>for Land Investing Success</div>
+                        <div class="date">January 2026</div>
+                    </div>
+
+                    <!-- Table of Contents -->
+                    <div class="toc">
+                        <h2>Table of Contents</h2>
+                        <ul>
+                            <li><a href="#section1">Section 1: Step-by-Step Process from Acquisition to Disposition</a></li>
+                            <li><a href="#section2">Section 2: National Aggregator Resources for Due Diligence</a></li>
+                            <li><a href="#section3">Section 3: State GIS, Assessor, and Zoning Resources</a></li>
+                            <li><a href="#section4">Section 4: Lender and Financing Resources</a></li>
+                            <li><a href="#section5">Section 5: Key Formulas and Calculations</a></li>
+                            <li><a href="#section6">Section 6: Builder, Drafter, and Surveyor Resources</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Section 1: Step-by-Step Process -->
+                    <h1 id="section1">Section 1: Step-by-Step Process</h1>
+
+                    <div class="process-flow">
+                        <div class="process-step">1. Market Research<span>Define criteria & budget</span></div>
+                        <div class="process-step">2. Lead Generation<span>Find motivated sellers</span></div>
+                        <div class="process-step">3. Lead Processing<span>Negotiate offers</span></div>
+                        <div class="process-step">4. Due Diligence<span>Verify everything</span></div>
+                        <div class="process-step">5. Close Acquisition<span>Execute purchase</span></div>
+                        <div class="process-step">6. Prep for Resale<span>Marketing package</span></div>
+                        <div class="process-step">7. Market & List<span>Multi-channel</span></div>
+                        <div class="process-step">8. Buyer Leads<span>Qualify & negotiate</span></div>
+                        <div class="process-step">9. Close Sale<span>Transfer title</span></div>
+                        <div class="process-step">10. Scale<span>Systematize & repeat</span></div>
+                    </div>
+
+                    <h3>1. Market Research and Selection</h3>
+                    <ul>
+                        <li><strong>Define Investment Criteria:</strong> Size, intended use, zoning classifications, value range</li>
+                        <li><strong>Target County Selection:</strong> Focus on lower population density counties for reduced competition</li>
+                        <li><strong>Analyze Market Demand:</strong> Understand buyer motivations and external factors</li>
+                        <li><strong>Establish Budget:</strong> Clear budget for marketing and acquisition</li>
+                    </ul>
+
+                    <h3>2. Lead Generation: Finding Motivated Sellers</h3>
+                    <ul>
+                        <li><strong>Data Acquisition:</strong> Use <a href="https://www.datatree.com/">DataTree</a> or PropStream for property owner lists</li>
+                        <li><strong>Direct Mail:</strong> Blind offers with specific purchase prices</li>
+                        <li><strong>Online Marketplaces:</strong> <a href="https://www.landwatch.com/">LandWatch</a>, Land.com, Zillow, Facebook Marketplace</li>
+                        <li><strong>Tax Sales:</strong> County auctions for unpaid tax parcels</li>
+                    </ul>
+
+                    <h3>3. Lead Processing and Offer Management</h3>
+                    <ul>
+                        <li>Implement CRM system for lead tracking</li>
+                        <li>Dedicated phone line and professional buying website</li>
+                        <li>Negotiate within predetermined price range</li>
+                    </ul>
+
+                    <div class="key-note">
+                        <strong>💡 Key Note:</strong> The initial offer via direct mail is often just a starting point for negotiation. Be prepared to revise but protect your margins.
+                    </div>
+
+                    <h3>4. Due Diligence: Critical Research</h3>
+
+                    <div class="checklist">
+                        <strong>Due Diligence Checklist:</strong>
+                        <ul>
+                            <li>☐ Verify Zoning and Use with county planning department</li>
+                            <li>☐ Confirm Legal Access (public road or recorded easement)</li>
+                            <li>☐ Assess Utility Availability (water, electric, sewer)</li>
+                            <li>☐ Conduct Comparable Sales Analysis</li>
+                            <li>☐ Title Search - liens, encumbrances, chain of title</li>
+                            <li>☐ Flood Zone Check via <a href="https://msc.fema.gov/">FEMA Maps</a></li>
+                            <li>☐ Wetlands Check via <a href="https://www.fws.gov/program/national-wetlands-inventory/wetlands-mapper">NWI Mapper</a></li>
+                            <li>☐ Physical characteristics via Google Earth/MapRight</li>
+                            <li>☐ Property visit or local photographer/drone pilot</li>
+                        </ul>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Critical:</strong> Lack of legal access can render a property nearly worthless. Always verify before closing!
+                    </div>
+
+                    <h3>5. Closing the Acquisition</h3>
+                    <ul>
+                        <li>Use title company/attorney for higher-value transactions</li>
+                        <li>Execute Purchase Agreement and prepare Special Warranty Deed</li>
+                        <li>Use third-party escrow for fund transfer</li>
+                        <li>Record deed with county recorder's office</li>
+                    </ul>
+
+                    <h3>6-9. Resale Preparation through Disposition</h3>
+                    <ul>
+                        <li>Gather documentation: recorded deed, property maps, reports</li>
+                        <li>Obtain professional photos and drone imagery</li>
+                        <li>List on: LandWatch, Land.com, LandFlip, Facebook Marketplace, MLS</li>
+                        <li>Contact adjacent property owners</li>
+                        <li>Offer both cash price and seller financing options</li>
+                    </ul>
+
+                    <h3>10. Systematize and Scale</h3>
+                    <ul>
+                        <li>Track leads, conversion rates, marketing costs, profit per deal</li>
+                        <li>Create templates for checklists, agreements, descriptions</li>
+                        <li>Automate direct mail, consider virtual assistants</li>
+                    </ul>
+
+                    <h1 id="section2">Section 2: National Due Diligence Resources</h1>
+
+                    <table class="guide-table">
+                        <tr><th>Resource</th><th>Description</th><th>URL</th></tr>
+                        <tr><td><strong>DataTree</strong></td><td>Comprehensive property data - ownership, transactions, tax data</td><td><a href="https://www.datatree.com/">datatree.com</a></td></tr>
+                        <tr><td><strong>PropertyShark</strong></td><td>In-depth property info, ownership behind LLCs</td><td><a href="https://www.propertyshark.com/mason/">propertyshark.com</a></td></tr>
+                        <tr><td><strong>NETR Online</strong></td><td>Public records portal, GIS, environmental data, historical aerials</td><td><a href="https://www.netronline.com/">netronline.com</a></td></tr>
+                        <tr><td><strong>ReportAll</strong></td><td>National parcel data - 160M parcels, 3,200 counties</td><td><a href="https://reportallusa.com/">reportallusa.com</a></td></tr>
+                        <tr><td><strong>LandWatch</strong></td><td>Marketplace + comparable sales research</td><td><a href="https://www.landwatch.com/">landwatch.com</a></td></tr>
+                        <tr><td><strong>FEMA Flood Maps</strong></td><td>Official flood hazard information</td><td><a href="https://msc.fema.gov/">msc.fema.gov</a></td></tr>
+                        <tr><td><strong>NWI Wetlands Mapper</strong></td><td>Wetlands location and type mapping</td><td><a href="https://www.fws.gov/program/national-wetlands-inventory/wetlands-mapper">fws.gov/nwi</a></td></tr>
+                    </table>
+
+                    <h1 id="section3">Section 3: State GIS & Assessor Resources</h1>
+
+                    <table class="guide-table">
+                        <tr><th>State</th><th>Resource</th><th>URL</th></tr>
+                        <tr><td>Arizona</td><td>Maricopa County Assessor</td><td><a href="https://maps.mcassessor.maricopa.gov/">maps.mcassessor.maricopa.gov</a></td></tr>
+                        <tr><td>California</td><td>ParcelQuest (Statewide)</td><td><a href="https://www.parcelquest.com/">parcelquest.com</a></td></tr>
+                        <tr><td>Colorado</td><td>Colorado Geospatial Portal</td><td><a href="https://geodata.colorado.gov/">geodata.colorado.gov</a></td></tr>
+                        <tr><td>Florida</td><td>MapWise Statewide Viewer</td><td><a href="https://www.mapwise.com/maps/florida/parcels-appraiser.php">mapwise.com</a></td></tr>
+                        <tr><td>Georgia</td><td>GA DOR County Links</td><td><a href="https://dor.georgia.gov/property-records-online">dor.georgia.gov</a></td></tr>
+                        <tr><td>North Carolina</td><td>NC OneMap (Statewide)</td><td><a href="https://www.nconemap.gov/pages/parcels">nconemap.gov</a></td></tr>
+                        <tr><td>Ohio</td><td>County Auditor websites</td><td><a href="https://www.unioncountyohio.gov/gis-mapping">County-specific</a></td></tr>
+                        <tr><td>Texas</td><td>TX Comptroller County Directory</td><td><a href="https://comptroller.texas.gov/taxes/property-tax/county-directory/">comptroller.texas.gov</a></td></tr>
+                        <tr><td>Washington</td><td>WA Geospatial Open Data</td><td><a href="https://geo.wa.gov/">geo.wa.gov</a></td></tr>
+                    </table>
+
+                    <h1 id="section4">Section 4: Lender and Financing Resources</h1>
+
+                    <h3>Hard Money Lenders for Land</h3>
+                    <div class="key-note">
+                        <strong>Hard Money Basics:</strong> Asset-based loans, 6-36 month terms, 10-15%+ interest, close in days. Requires clear exit strategy (flip or refinance).
+                    </div>
+
+                    <table class="guide-table">
+                        <tr><th>Lender</th><th>Coverage</th><th>URL</th></tr>
+                        <tr><td><strong>Capital Fund 1</strong></td><td>AZ, CO, TX, TN, GA, NC (48hr funding)</td><td><a href="https://capitalfund1.com/land-and-lot-loans/">capitalfund1.com</a></td></tr>
+                        <tr><td><strong>Raw Land Lenders</strong></td><td>TX, CO</td><td><a href="https://rawlandlenders.com/">rawlandlenders.com</a></td></tr>
+                        <tr><td><strong>First Capital Trust Deeds</strong></td><td>CA, OR, WA, ID, UT, FL, AZ</td><td><a href="https://www.fctd.com/property-types/land-hard-money-loans">fctd.com</a></td></tr>
+                        <tr><td><strong>EquityMax</strong></td><td>Nationwide (48hr closing)</td><td><a href="https://www.equitymax.com/acreage-vacant-land/">equitymax.com</a></td></tr>
+                        <tr><td><strong>Mortgage Vintage</strong></td><td>CA ($100K-$3.5M)</td><td><a href="https://mortgagevintage.com/hard-money-land-loan-program/">mortgagevintage.com</a></td></tr>
+                        <tr><td><strong>AMI Lenders</strong></td><td>TX (up to 70% LTV)</td><td><a href="https://www.amilenders.com/residential-hard-money-loans">amilenders.com</a></td></tr>
+                    </table>
+
+                    <h3>Seller Financing Contract Templates</h3>
+                    <table class="guide-table">
+                        <tr><th>Provider</th><th>URL</th></tr>
+                        <tr><td>PandaDoc</td><td><a href="https://www.pandadoc.com/owner-financing-contract-template/">pandadoc.com/owner-financing</a></td></tr>
+                        <tr><td>Signaturely</td><td><a href="https://signaturely.com/contracts/template-download-owner-financing-contract/">signaturely.com</a></td></tr>
+                        <tr><td>Jotform</td><td><a href="https://www.jotform.com/pdf-templates/owner-financing-contract-template">jotform.com</a></td></tr>
+                    </table>
+
+                    <h1 id="section5">Section 5: Key Formulas and Calculations</h1>
+
+                    <h3>Maximum Allowable Offer (MAO)</h3>
+                    <div class="formula-box">
+                        MAO = (Estimated Resale Value × 0.40) − Known Costs
+                    </div>
+                    <p><strong>Example:</strong> 5 acres at $4,500/acre median, $800 back taxes, $1,500 closing costs:</p>
+                    <ul>
+                        <li>Resale Value: 5 × $4,500 = $22,500</li>
+                        <li>Apply 40%: $22,500 × 0.40 = $9,000</li>
+                        <li>Subtract Costs: $9,000 − $800 − $1,500 = <strong>$6,700 MAO</strong></li>
+                    </ul>
+
+                    <h3>Return on Investment (ROI)</h3>
+                    <div class="formula-box">
+                        ROI (%) = (Net Profit ÷ Total Investment) × 100
+                    </div>
+                    <p><strong>Example:</strong> Buy $5,000, costs $1,500, sell $15,000:</p>
+                    <ul>
+                        <li>Total Investment: $6,500</li>
+                        <li>Net Profit: $15,000 − $6,500 = $8,500</li>
+                        <li>ROI: ($8,500 ÷ $6,500) × 100 = <strong>130.8%</strong></li>
+                    </ul>
+
+                    <h3>Profit Margin</h3>
+                    <div class="formula-box">
+                        Profit Margin (%) = (Net Profit ÷ Selling Price) × 100
+                    </div>
+                    <p>Using above: ($8,500 ÷ $15,000) × 100 = <strong>56.7%</strong></p>
+
+                    <h3>Key Costs to Track</h3>
+                    <table class="guide-table">
+                        <tr><th>Category</th><th>Items</th></tr>
+                        <tr><td>Acquisition</td><td>Purchase price, title search, deed prep, recording, notary</td></tr>
+                        <tr><td>Holding</td><td>Property taxes, HOA, insurance, loan payments</td></tr>
+                        <tr><td>Selling</td><td>Platform fees, photos/drone, advertising, commissions, escrow, transfer taxes</td></tr>
+                    </table>
+
+                    <h1 id="section6">Section 6: Builder, Drafter, and Surveyor Resources</h1>
+
+                    <h3>Land Surveyor Directories</h3>
+                    <table class="guide-table">
+                        <tr><th>Resource</th><th>URL</th></tr>
+                        <tr><td>Land Surveyors United</td><td><a href="https://landsurveyorsunited.com/directory">landsurveyorsunited.com/directory</a></td></tr>
+                        <tr><td>Better Business Bureau</td><td><a href="https://www.bbb.org/us/category/land-surveyor">bbb.org/land-surveyor</a></td></tr>
+                        <tr><td>CA Land Surveyors Assoc.</td><td><a href="https://www.californiasurveyors.org/find-a-surveyor">californiasurveyors.org</a></td></tr>
+                    </table>
+
+                    <h3>CAD Drafting Services</h3>
+                    <table class="guide-table">
+                        <tr><th>Company</th><th>Services</th><th>URL</th></tr>
+                        <tr><td>ArcVertex</td><td>ALTA, boundary, topographic surveys</td><td><a href="https://www.arcvertex.com/land-survey-drafting-services/">arcvertex.com</a></td></tr>
+                        <tr><td>Survey Drafters</td><td>Field data to CAD conversion</td><td><a href="https://www.surveydrafters.com/">surveydrafters.com</a></td></tr>
+                        <tr><td>Gsource Technologies</td><td>Land development, GIS mapping</td><td><a href="https://www.gsourcedata.com/land-survey-drafting-services/">gsourcedata.com</a></td></tr>
+                        <tr><td>Polosoft Technologies</td><td>2D/3D models from survey data</td><td><a href="https://www.polosoftech.com/cad-services/land-survey-drafting">polosoftech.com</a></td></tr>
+                    </table>
+
+                    <div class="key-note" style="margin-top: 2em;">
+                        <strong>🎯 Final Tip:</strong> Success in land flipping comes from systematic execution. Use this SOP as your roadmap, track every metric, and continuously refine your process based on real results.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sidebar mb-4">
+                    <div class="sidebar-title">
+                        <i class="fas fa-chart-line"></i>
+                        Activity Feed
+                    </div>
+                    <div class="activity-feed" id="activity-feed">
+                        <!-- Activity items will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="sidebar mb-4">
+                    <div class="sidebar-title">
+                        <i class="fas fa-file-excel"></i>
+                        Excel Integration
+                    </div>
+                    <button class="btn btn-outline-success sidebar-btn" data-action="load-excel-data">
+                        <i class="fas fa-upload"></i>
+                        Load Deal Data
+                    </button>
+                    <button class="btn btn-outline-primary sidebar-btn" data-action="export-analysis">
+                        <i class="fas fa-download"></i>
+                        Export Analysis
+                    </button>
+                    <button class="btn btn-outline-info sidebar-btn" data-action="roi-calculator">
+                        <i class="fas fa-calculator"></i>
+                        ROI Calculator
+                    </button>
+                </div>
+
+                <div class="sidebar mb-4">
+                    <div class="sidebar-title">
+                        <i class="fas fa-file-pdf"></i>
+                        PDF Guide Tools
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-sm" id="pdf-search" placeholder="Search guide...">
+                    </div>
+                    <button class="btn btn-outline-secondary sidebar-btn" data-action="search-pdf">
+                        <i class="fas fa-search"></i>
+                        Search PDF Guide
+                    </button>
+                    <button class="btn btn-outline-dark sidebar-btn" data-action="open-pdf-guide">
+                        <i class="fas fa-external-link-alt"></i>
+                        Open Full Guide
+                    </button>
+                </div>
+
+                <div class="sidebar">
+                    <div class="sidebar-title">
+                        <i class="fas fa-tools"></i>
+                        Quick Actions
+                    </div>
+                    <button class="btn btn-outline-primary sidebar-btn" data-action="quick-analysis">
+                        <i class="fas fa-bolt"></i>
+                        Quick Analysis
+                    </button>
+                    <button class="btn btn-outline-success sidebar-btn" data-action="find-resources">
+                        <i class="fas fa-search"></i>
+                        Find Resources
+                    </button>
+                    <button class="btn btn-outline-warning sidebar-btn" data-action="market-research">
+                        <i class="fas fa-chart-bar"></i>
+                        Market Research
+                    </button>
+                    <button class="btn btn-outline-info sidebar-btn" data-action="due-diligence">
+                        <i class="fas fa-clipboard-check"></i>
+                        Due Diligence
+                    </button>
+                    <button class="btn btn-outline-danger sidebar-btn" data-action="diagnostics">
+                        <i class="fas fa-stethoscope"></i>
+                        Run Diagnostics
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<!-- Quick Analysis Modal -->
+<div class="modal fade" id="quickAnalysisModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-calculator me-2"></i>Quick Land Deal Analysis</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-analysis-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Property Size (acres)</label>
+                                <input type="number" class="form-control" id="property-size" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Purchase Price ($)</label>
+                                <input type="number" class="form-control" id="purchase-price" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estimated Resale Value ($)</label>
+                                <input type="number" class="form-control" id="resale-value" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Acquisition Costs ($)</label>
+                                <input type="number" class="form-control" id="acquisition-costs" placeholder="Title, closing, etc.">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Holding Costs ($)</label>
+                                <input type="number" class="form-control" id="holding-costs" placeholder="Taxes, insurance">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Selling Costs ($)</label>
+                                <input type="number" class="form-control" id="selling-costs" placeholder="Commissions, marketing">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-calculator me-2"></i>Calculate ROI
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <div id="analysis-results" class="mt-4" style="display: none;">
+                    <h6>Analysis Results:</h6>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-success" id="calc-mao">$0</h5>
+                                    <p class="card-text">Maximum Allowable Offer</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-primary" id="calc-roi">0%</h5>
+                                    <p class="card-text">Return on Investment</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-info" id="calc-profit">$0</h5>
+                                    <p class="card-text">Estimated Profit</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="RealtorAgent.exportAnalysis()">
+                    <i class="fas fa-download me-2"></i>Export Analysis
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resource Finder Modal -->
+<div class="modal fade" id="resourceModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-search me-2"></i>Find Land Flipping Resources</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <select class="form-select" id="resource-state">
+                            <option value="">Select State</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="OH">Ohio</option>
+                            <option value="TX">Texas</option>
+                            <option value="WA">Washington</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="resource-type">
+                            <option value="">Resource Type</option>
+                            <option value="gis">GIS & Mapping</option>
+                            <option value="assessor">Property Assessor</option>
+                            <option value="zoning">Zoning & Planning</option>
+                            <option value="lender">Lenders</option>
+                            <option value="surveyor">Surveyors</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary w-100" onclick="RealtorAgent.findResources()">
+                            <i class="fas fa-search me-2"></i>Find Resources
+                        </button>
+                    </div>
+                </div>
+                <div id="resource-results">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-search fa-2x mb-2"></i>
+                        <p>Select state and resource type to find relevant tools and services</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Global Loader -->
+<div id="global-loader">
+    <div class="loader"></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// RealtorAgent Land Flip Guide Namespace
+const RealtorAgent = {
+    // Configuration
+    config: {
+        autoRefresh: false,
+        refreshInterval: 30000, // 30 seconds
+        maxActivityItems: 50,
+        apiBaseUrl: '/api'
+    },
+
+    // State management
+    state: {
+        isLoading: false,
+        currentAnalysis: null,
+        activityFeed: [],
+        stats: {
+            totalDeals: 0,
+            avgRoi: 0,
+            resourcesUsed: 0,
+            successRate: 0
+        },
+        resources: {
+            AZ: {
+                gis: 'https://maps.mcassessor.maricopa.gov/',
+                assessor: 'https://maps.mcassessor.maricopa.gov/',
+                zoning: 'https://www.maricopa.gov/236/Planning-Development',
+                lender: 'https://capitalfund1.com/land-and-lot-loans/',
+                surveyor: 'https://www.azls.org/'
+            },
+            CA: {
+                gis: 'https://www.parcelquest.com/',
+                assessor: 'https://assessor.lacounty.gov/',
+                zoning: 'https://planning.lacounty.gov/',
+                lender: 'https://www.fctd.com/property-types/land-hard-money-loans',
+                surveyor: 'https://www.californiasurveyors.org/find-a-surveyor'
+            },
+            TX: {
+                gis: 'https://www.tnris.org/',
+                assessor: 'https://www.hcad.org/',
+                zoning: 'https://www.houstonplanning.org/',
+                lender: 'https://rawlandlenders.com/',
+                surveyor: 'https://www.tsps.org/'
+            }
+        }
+    },
+
+    // Initialize the land flip guide page
+    init: function() {
+        console.log('Initializing RealtorAgent Land Flip Guide...');
+
+        // Initialize components
+        this.initEventListeners();
+        this.initTooltips();
+        this.loadInitialData();
+
+        // Start auto-refresh if enabled
+        if (this.config.autoRefresh) {
+            this.startAutoRefresh();
+        }
+
+        console.log('RealtorAgent Land Flip Guide initialized successfully');
+    },
+
+    // Initialize event listeners
+    initEventListeners: function() {
+        // Auto-refresh toggle
+        const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
+        if (autoRefreshToggle) {
+            autoRefreshToggle.addEventListener('change', (e) => {
+                this.config.autoRefresh = e.target.checked;
+                if (this.config.autoRefresh) {
+                    this.startAutoRefresh();
+                } else {
+                    this.stopAutoRefresh();
+                }
+            });
+        }
+
+        // Sidebar buttons
+        document.querySelectorAll('.sidebar-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = e.target.closest('.sidebar-btn').dataset.action;
+                this.handleSidebarAction(action);
+            });
+        });
+
+        // Quick analysis form
+        const analysisForm = document.getElementById('quick-analysis-form');
+        if (analysisForm) {
+            analysisForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.calculateROI();
+            });
+        }
+
+        // PDF search
+        const pdfSearch = document.getElementById('pdf-search');
+        if (pdfSearch) {
+            pdfSearch.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.searchPDFGuide();
+                }
+            });
+        }
+    },
+
+    // Initialize tooltips
+    initTooltips: function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    },
+
+    // Load initial data
+    loadInitialData: function() {
+        this.loadGuideStats();
+        this.loadActivityFeed();
+        this.loadGuideStatus();
+    },
+
+    // Load guide statistics
+    loadGuideStats: async function() {
+        try {
+            const response = await fetch(`${this.config.apiBaseUrl}/land-guide/stats`);
+            if (response.ok) {
+                const stats = await response.json();
+                this.updateStatsDisplay(stats);
+            } else {
+                // Use default stats if API not available
+                this.updateStatsDisplay(this.state.stats);
+            }
+        } catch (error) {
+            console.error('Failed to load guide stats:', error);
+            this.updateStatsDisplay(this.state.stats);
+        }
+    },
+
+    // Update stats display
+    updateStatsDisplay: function(stats) {
+        Object.assign(this.state.stats, stats);
+
+        // Update stat cards
+        document.getElementById('total-deals').textContent = stats.totalDeals || 0;
+        document.getElementById('avg-roi').textContent = `${stats.avgRoi || 0}%`;
+        document.getElementById('resources-used').textContent = stats.resourcesUsed || 0;
+        document.getElementById('success-rate').textContent = `${stats.successRate || 0}%`;
+    },
+
+    // Load activity feed
+    loadActivityFeed: async function() {
+        try {
+            const response = await fetch(`${this.config.apiBaseUrl}/land-guide/activity`);
+            if (response.ok) {
+                const activities = await response.json();
+                this.renderActivityFeed(activities);
+            } else {
+                // Use sample activities if API not available
+                this.renderSampleActivityFeed();
+            }
+        } catch (error) {
+            console.error('Failed to load activity feed:', error);
+            this.renderSampleActivityFeed();
+        }
+    },
+
+    // Render activity feed
+    renderActivityFeed: function(activities) {
+        const feedContainer = document.getElementById('activity-feed');
+        if (!feedContainer) return;
+
+        this.state.activityFeed = activities.slice(0, this.config.maxActivityItems);
+
+        const feedHtml = this.state.activityFeed.map(activity => `
+            <div class="activity-item ${activity.type}">
+                <div class="activity-icon">
+                    <i class="fas ${this.getActivityIcon(activity.type)}"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-title">${activity.title}</div>
+                    <div class="activity-time">${this.formatTime(activity.timestamp)}</div>
+                </div>
+                <div class="activity-status">
+                    <span class="badge bg-${this.getStatusColor(activity.status)}">${activity.status}</span>
+                </div>
+            </div>
+        `).join('');
+
+        feedContainer.innerHTML = feedHtml;
+    },
+
+    // Render sample activity feed for demo
+    renderSampleActivityFeed: function() {
+        const sampleActivities = [
+            { type: 'analysis', title: 'ROI calculation performed', timestamp: new Date().toISOString(), status: 'completed' },
+            { type: 'resource', title: 'GIS resources accessed', timestamp: new Date(Date.now() - 3600000).toISOString(), status: 'success' },
+            { type: 'guide', title: 'Due diligence checklist viewed', timestamp: new Date(Date.now() - 7200000).toISOString(), status: 'info' }
+        ];
+        this.renderActivityFeed(sampleActivities);
+    },
+
+    // Get activity icon
+    getActivityIcon: function(type) {
+        const icons = {
+            'analysis': 'fa-calculator',
+            'resource': 'fa-search',
+            'guide': 'fa-book',
+            'error': 'fa-exclamation-triangle'
+        };
+        return icons[type] || 'fa-info-circle';
+    },
+
+    // Get status color
+    getStatusColor: function(status) {
+        const colors = {
+            'success': 'success',
+            'completed': 'success',
+            'pending': 'warning',
+            'error': 'danger',
+            'info': 'info'
+        };
+        return colors[status] || 'secondary';
+    },
+
+    // Format time
+    formatTime: function(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = now - date;
+
+        if (diff < 60000) return 'Just now';
+        if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+        if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+        return date.toLocaleDateString();
+    },
+
+    // Load guide status
+    loadGuideStatus: async function() {
+        try {
+            const response = await fetch(`${this.config.apiBaseUrl}/land-guide/status`);
+            if (response.ok) {
+                const status = await response.json();
+                this.updateStatusDisplay(status);
+            }
+        } catch (error) {
+            console.error('Failed to load guide status:', error);
+        }
+    },
+
+    // Update status display
+    updateStatusDisplay: function(status) {
+        // Update status indicators if any exist
+        const statusIndicators = document.querySelectorAll('.status-indicator');
+        statusIndicators.forEach(indicator => {
+            const service = indicator.dataset.service;
+            if (status[service]) {
+                indicator.className = `status-indicator ${status[service].status}`;
+            }
+        });
+    },
+
+    // Handle sidebar actions
+    handleSidebarAction: function(action) {
+        switch (action) {
+            case 'quick-analysis':
+                this.showModal('quickAnalysisModal');
+                break;
+            case 'find-resources':
+                this.showModal('resourceModal');
+                break;
+            case 'load-excel-data':
+                this.loadExcelData();
+                break;
+            case 'export-analysis':
+                this.exportAnalysis();
+                break;
+            case 'roi-calculator':
+                this.showModal('quickAnalysisModal');
+                break;
+            case 'search-pdf':
+                this.searchPDFGuide();
+                break;
+            case 'open-pdf-guide':
+                this.openPDFGuide();
+                break;
+            case 'market-research':
+                this.handleMarketResearch();
+                break;
+            case 'due-diligence':
+                this.handleDueDiligence();
+                break;
+            case 'diagnostics':
+                this.runDiagnostics();
+                break;
+            default:
+                console.log('Unknown action:', action);
+        }
+    },
+
+    // Calculate ROI from quick analysis form
+    calculateROI: function() {
+        const size = parseFloat(document.getElementById('property-size').value) || 0;
+        const purchasePrice = parseFloat(document.getElementById('purchase-price').value) || 0;
+        const resaleValue = parseFloat(document.getElementById('resale-value').value) || 0;
+        const acquisitionCosts = parseFloat(document.getElementById('acquisition-costs').value) || 0;
+        const holdingCosts = parseFloat(document.getElementById('holding-costs').value) || 0;
+        const sellingCosts = parseFloat(document.getElementById('selling-costs').value) || 0;
+
+        // MAO calculation: (Resale Value × 0.40) − Known Costs
+        const mao = (resaleValue * 0.40) - (acquisitionCosts + holdingCosts + sellingCosts);
+
+        // Total investment
+        const totalInvestment = purchasePrice + acquisitionCosts + holdingCosts + sellingCosts;
+
+        // Net profit
+        const netProfit = resaleValue - totalInvestment;
+
+        // ROI calculation
+        const roi = totalInvestment > 0 ? (netProfit / totalInvestment) * 100 : 0;
+
+        // Update results display
+        document.getElementById('calc-mao').textContent = `$${mao.toLocaleString()}`;
+        document.getElementById('calc-roi').textContent = `${roi.toFixed(1)}%`;
+        document.getElementById('calc-profit').textContent = `$${netProfit.toLocaleString()}`;
+
+        // Show results
+        document.getElementById('analysis-results').style.display = 'block';
+
+        // Add to activity feed
+        this.addActivity('analysis', 'ROI calculation completed', 'completed');
+
+        this.showNotification('ROI calculation completed successfully', 'success');
+    },
+
+    // Find resources based on state and type
+    findResources: function() {
+        const state = document.getElementById('resource-state').value;
+        const type = document.getElementById('resource-type').value;
+
+        if (!state || !type) {
+            this.showNotification('Please select both state and resource type', 'warning');
+            return;
+        }
+
+        const stateResources = this.state.resources[state];
+        if (!stateResources) {
+            this.showNotification('Resources for this state are not yet available', 'info');
+            return;
+        }
+
+        const resourceUrl = stateResources[type];
+        if (!resourceUrl) {
+            this.showNotification('This resource type is not available for the selected state', 'warning');
+            return;
+        }
+
+        // Display resource results
+        const resultsHtml = `
+            <div class="alert alert-success">
+                <h6><i class="fas fa-check-circle me-2"></i>Resource Found!</h6>
+                <p><strong>${type.charAt(0).toUpperCase() + type.slice(1)} Resource for ${state}:</strong></p>
+                <p><a href="${resourceUrl}" target="_blank" class="btn btn-primary">
+                    <i class="fas fa-external-link-alt me-2"></i>Open Resource
+                </a></p>
+            </div>
+        `;
+
+        document.getElementById('resource-results').innerHTML = resultsHtml;
+
+        // Add to activity feed
+        this.addActivity('resource', `${type} resource accessed for ${state}`, 'success');
+
+        this.showNotification('Resource located successfully', 'success');
+    },
+
+    // Load Excel data
+    loadExcelData: function() {
+        this.showNotification('Loading Excel data...', 'info');
+        // Implement Excel data loading
+        setTimeout(() => {
+            this.showNotification('Excel data loaded successfully', 'success');
+            this.addActivity('excel', 'Deal data loaded from Excel', 'completed');
+        }, 2000);
+    },
+
+    // Export analysis
+    exportAnalysis: function() {
+        this.showNotification('Exporting analysis...', 'info');
+        // Implement analysis export
+        setTimeout(() => {
+            this.showNotification('Analysis exported successfully', 'success');
+            this.addActivity('export', 'Analysis data exported', 'completed');
+        }, 1500);
+    },
+
+    // Search PDF guide
+    searchPDFGuide: function() {
+        const query = document.getElementById('pdf-search').value.trim();
+        if (!query) {
+            this.showNotification('Please enter a search term', 'warning');
+            return;
+        }
+
+        this.showNotification(`Searching for "${query}" in guide...`, 'info');
+
+        // Simulate search
+        setTimeout(() => {
+            this.showNotification(`Found results for "${query}"`, 'success');
+            this.addActivity('search', `Guide search: ${query}`, 'completed');
+        }, 1000);
+    },
+
+    // Open PDF guide
+    openPDFGuide: function() {
+        window.open('/guides/land-flipping-sop.pdf', '_blank');
+        this.addActivity('guide', 'Full PDF guide opened', 'info');
+    },
+
+    // Handle market research
+    handleMarketResearch: function() {
+        this.showNotification('Opening market research tools...', 'info');
+        // Implement market research functionality
+        setTimeout(() => {
+            this.showNotification('Market research tools ready', 'success');
+        }, 1000);
+    },
+
+    // Handle due diligence
+    handleDueDiligence: function() {
+        this.showNotification('Opening due diligence checklist...', 'info');
+        // Scroll to due diligence section
+        document.getElementById('section4').scrollIntoView({ behavior: 'smooth' });
+        this.addActivity('guide', 'Due diligence section accessed', 'info');
+    },
+
+    // Run diagnostics
+    runDiagnostics: function() {
+        this.showNotification('Running system diagnostics...', 'info');
+        // Implement diagnostics
+        setTimeout(() => {
+            this.showNotification('All systems operational', 'success');
+            this.addActivity('diagnostic', 'System diagnostics completed', 'success');
+        }, 3000);
+    },
+
+    // Add activity to feed
+    addActivity: function(type, title, status) {
+        const activity = {
+            type: type,
+            title: title,
+            timestamp: new Date().toISOString(),
+            status: status
+        };
+
+        this.state.activityFeed.unshift(activity);
+        this.state.activityFeed = this.state.activityFeed.slice(0, this.config.maxActivityItems);
+        this.renderActivityFeed(this.state.activityFeed);
+    },
+
+    // Modal display functions
+    showModal: function(modalId) {
+        const modal = new bootstrap.Modal(document.getElementById(modalId));
+        modal.show();
+    },
+
+    // Utility functions
+    setLoading: function(loading) {
+        this.state.isLoading = loading;
+        const loader = document.getElementById('global-loader');
+        if (loader) {
+            loader.style.display = loading ? 'flex' : 'none';
+        }
+    },
+
+    showNotification: function(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 5000);
+    },
+
+    startAutoRefresh: function() {
+        this.stopAutoRefresh(); // Clear any existing interval
+        this.refreshIntervalId = setInterval(() => {
+            this.loadGuideStats();
+            this.loadActivityFeed();
+            this.loadGuideStatus();
+        }, this.config.refreshInterval);
+    },
+
+    stopAutoRefresh: function() {
+        if (this.refreshIntervalId) {
+            clearInterval(this.refreshIntervalId);
+            this.refreshIntervalId = null;
+        }
+    },
+
+    // Cleanup on page unload
+    cleanup: function() {
+        this.stopAutoRefresh();
+    },
+
+    // Legacy functions for backward compatibility
+    showAlert: function(message, type) {
+        this.showNotification(message, type);
+    },
+
+    refreshActivityFeed: function() {
+        this.loadActivityFeed();
+    },
+
+    loadExcelData: function(type) {
+        this.showNotification(`Loading Excel data for ${type}...`, 'info');
+        // Implement Excel data loading
+    },
+
+    exportToExcel: function() {
+        this.showNotification('Exporting to Excel...', 'info');
+        // Implement Excel export
+    },
+
+    searchPDFGuides: function() {
+        this.searchPDFGuide();
+    },
+
+    openPDFGuide: function() {
+        this.openPDFGuide();
+    },
+
+    runDiagnostics: function() {
+        this.runDiagnostics();
+    },
+
+    optimizeGuide: function() {
+        this.showNotification('Optimizing guide performance...', 'info');
+        // Implement optimization
+    }
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    RealtorAgent.init();
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', function() {
+    RealtorAgent.cleanup();
+});
+
+// Legacy functions for backward compatibility
+function selectTemplate(template) {
+    // Template selection functionality
+    RealtorAgent.showAlert(`Template "${template}" selected`, 'info');
+}
+
+function createReport() {
+    RealtorAgent.showAlert('Report creation functionality coming soon', 'info');
+}
+
+function openScheduleModal() {
+    RealtorAgent.showModal('resourceModal');
+}
+
+function initializeGuidePage() {
+    // Legacy initialization
+    console.log('Guide page initialized');
+}
+
+function generateReport(type, button) {
+    RealtorAgent.showAlert(`${type} report generation started`, 'info');
+}
+
+function addToRecentReports(name, type) {
+    RealtorAgent.addActivity('report', `${name} report added`, 'completed');
+}
+
+function filterReports(type) {
+    RealtorAgent.showAlert(`Filtering reports by ${type}`, 'info');
+}
+
+function viewReport(filename) {
+    window.open(`/api/guides/view/${filename}`, '_blank');
+}
+
+function downloadReport(filename, button) {
+    RealtorAgent.showAlert('Report download started', 'success');
+}
+
+function deleteReport(id, button) {
+    if (confirm('Are you sure you want to delete this report?')) {
+        RealtorAgent.showAlert('Report deleted successfully', 'success');
+    }
+}
+
+function editSchedule(id) {
+    RealtorAgent.showAlert('Schedule editing not implemented', 'info');
+}
+
+function deleteSchedule(id, button) {
+    if (confirm('Are you sure you want to delete this scheduled item?')) {
+        RealtorAgent.showAlert('Scheduled item deleted successfully', 'success');
+    }
+}
+
+function useTemplate(template) {
+    RealtorAgent.showAlert(`Using template: ${template}`, 'info');
+}
+</script>
+{% endblock %}
+

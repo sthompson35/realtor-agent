@@ -1,0 +1,84 @@
+# Development Environment Configuration
+# Safe defaults for local development
+
+environment: development
+
+# Database Configuration
+database:
+  host: localhost
+  port: 5432
+  name: realtor_agent_dev
+  user: realtor_dev
+  password: dev_password_123
+  ssl_mode: disable
+  connection_pool_size: 5
+  connection_timeout: 30
+
+# API Keys (Development/Test Keys)
+api_keys:
+  zillow:  # DEPRECATED - Zillow API discontinued
+    api_key: "DEPRECATED_ZILLOW_API_NO_LONGER_AVAILABLE"
+    rate_limit: 10  # requests per minute
+  realtor:
+    api_key: "dev_realtor_key_placeholder"
+    rate_limit: 5
+  homes:
+    api_key: "dev_homes_key_placeholder"
+    rate_limit: 5
+  land:
+    api_key: "dev_land_key_placeholder"
+    rate_limit: 3
+  discountlots:
+    api_key: "dev_discountlots_key_placeholder"
+    rate_limit: 2
+  twilio:
+    account_sid: "dev_twilio_sid_placeholder"
+    auth_token: "dev_twilio_token_placeholder"
+    from_number: "+15551234567"
+  sendgrid:
+    api_key: "dev_sendgrid_key_placeholder"
+    from_email: "noreply@realtoragent.dev"
+
+# Logging Configuration
+logging:
+  level: DEBUG
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/realtor_agent_dev.log"
+  max_file_size: 10485760  # 10MB
+  backup_count: 5
+
+# Security Configuration
+security:
+  secret_key: "dev_secret_key_change_in_production"
+  jwt_expiration: 86400  # 24 hours
+  password_min_length: 8
+  encryption_key: "dev_encryption_key_32_chars_long"
+  cors_origins: ["http://localhost:3000", "http://localhost:8000"]
+
+# Feature Flags
+features:
+  enable_audit_logging: false
+  enable_compliance_checks: true
+  enable_email_notifications: false
+  enable_sms_notifications: false
+  enable_api_rate_limiting: true
+  enable_data_encryption: false
+
+# External Services
+external_services:
+  dnc_api: "https://api.dnc.dev/check"
+  flood_data_api: "https://api.flood.dev/lookup"
+  property_tax_api: "https://api.tax.dev/lookup"
+
+# Monitoring
+monitoring:
+  enabled: false
+  metrics_port: 9090
+  health_check_endpoint: "/health"
+
+# Development Overrides
+development:
+  debug_mode: true
+  mock_external_apis: true
+  skip_compliance_checks: false
+  allow_test_data: true

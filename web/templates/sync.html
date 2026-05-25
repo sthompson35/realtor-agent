@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Sync - Realtor Agent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Enhanced Styles for Sync Page */
+        .sync-card {
+            transition: all 0.3s ease;
+        }
+        .sync-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-online { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-warning { background-color: #ffc107; }
+        .progress-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+        .conflict-item {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+        }
+
+        /* Dashboard Stats Styles */
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Activity Feed Styles */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .activity-item {
+            padding: 10px;
+            border-left: 3px solid #007bff;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .activity-item.success { border-left-color: #28a745; }
+        .activity-item.warning { border-left-color: #ffc107; }
+        .activity-item.error { border-left-color: #dc3545; }
+        .activity-item.info { border-left-color: #17a2b8; }
+
+        /* Deal Card Styles */
+        .deal-card {
+            margin-bottom: 16px;
+            background: white;
+            transition: box-shadow 0.2s ease;
+        }
+        .deal-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .deal-address {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .deal-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #28a745;
+            margin-bottom: 8px;
+        }
+        .deal-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* Notification Styles */
+        .alert {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Modal Enhancements */
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            border-bottom: 1px solid #f8f9fa;
+            border-radius: 12px 12px 0 0;
+        }
+
+        /* Button Enhancements */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* PDF Guides List */
+        .pdf-guides-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .pdf-guide-item {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .pdf-guide-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .stat-card {
+                margin-bottom: 15px;
+            }
+            .progress-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-home"></i> Realtor Agent
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/deals"><i class="fas fa-handshake"></i> Deals</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/bots"><i class="fas fa-robot"></i> Bots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/analytics"><i class="fas fa-chart-line"></i> Analytics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/sync"><i class="fas fa-sync"></i> Sync</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reports"><i class="fas fa-file-alt"></i> Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/settings"><i class="fas fa-cog"></i> Settings</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Enhanced Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h1 class="mb-0">
+                            <i class="fas fa-sync text-primary"></i> Database Synchronization
+                        </h1>
+                        <p class="text-muted mb-0">Synchronize data between your database and Excel files</p>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <!-- Auto-refresh Toggle -->
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="auto-refresh-toggle" checked>
+                            <label class="form-check-label" for="auto-refresh-toggle">
+                                <small>Auto-refresh</small>
+                            </label>
+                        </div>
+                        <!-- Quick Sync Button -->
+                        <button class="btn btn-primary" onclick="RealtorAgent.showModal('quickSyncModal')">
+                            <i class="fas fa-bolt me-2"></i>Quick Sync
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-value" id="total-syncs">0</div>
+                            <div class="stat-label">Total Syncs</div>
+                        </div>
+                        <i class="fas fa-sync fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-value" id="sync-success-rate">100%</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-value" id="records-processed">0</div>
+                            <div class="stat-label">Records Processed</div>
+                        </div>
+                        <i class="fas fa-database fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <div class="stat-value" id="last-sync-time">--:--</div>
+                            <div class="stat-label">Last Sync</div>
+                        </div>
+                        <i class="fas fa-clock fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Row -->
+        <div class="row">
+            <!-- Sync Management Column -->
+            <div class="col-lg-8">
+
+        <!-- Status Overview -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card sync-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <span class="status-indicator status-online"></span>
+                            Database Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="progress-circle bg-primary" id="db-leads-count">-</div>
+                                <small class="text-muted">Leads</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="progress-circle bg-success" id="db-properties-count">-</div>
+                                <small class="text-muted">Properties</small>
+                            </div>
+                            <div class="col-4">
+                                <div class="progress-circle bg-info" id="db-deals-count">-</div>
+                                <small class="text-muted">Deals</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card sync-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <span class="status-indicator status-online"></span>
+                            Excel Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-12">
+                                <div class="progress-circle bg-warning" id="excel-leads-count">-</div>
+                                <small class="text-muted">CRM Leads</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sync Controls -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Lead Synchronization</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="syncForm">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="syncDirection" class="form-label">Direction</label>
+                                    <select class="form-select" id="syncDirection">
+                                        <option value="bidirectional">Bidirectional</option>
+                                        <option value="excel_to_db">Excel → Database</option>
+                                        <option value="db_to_excel">Database → Excel</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="conflictResolution" class="form-label">Conflict Resolution</label>
+                                    <select class="form-select" id="conflictResolution">
+                                        <option value="newest_wins">Newest Wins</option>
+                                        <option value="excel_wins">Excel Wins</option>
+                                        <option value="db_wins">Database Wins</option>
+                                        <option value="manual">Manual Review</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="dryRun">
+                                        <label class="form-check-label" for="dryRun">
+                                            Dry Run
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary" id="syncBtn">
+                                            <i class="fas fa-sync"></i> Start Sync
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Controls -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Export Database to Excel</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="exportForm">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="exportFilename" class="form-label">Filename</label>
+                                    <input type="text" class="form-control" id="exportFilename"
+                                           placeholder="leads_export_20260106.xlsx">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-success" id="exportBtn">
+                                            <i class="fas fa-download"></i> Export Leads
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Activity Feed -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="fas fa-history me-2"></i>Sync Activity</h6>
+                    <button class="btn btn-sm btn-outline-primary" onclick="RealtorAgent.refreshActivityFeed()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="card-body p-0">
+                    <div id="activity-feed" class="activity-feed">
+                        <!-- Activity items will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Excel Data Integration -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-file-excel me-2"></i>Excel Data</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-success btn-sm" onclick="RealtorAgent.loadExcelData('leads')">
+                            <i class="fas fa-users me-2"></i>Load Leads
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="RealtorAgent.loadExcelData('contacts')">
+                            <i class="fas fa-address-book me-2"></i>Load Contacts
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm" onclick="RealtorAgent.loadExcelData('sync_logs')">
+                            <i class="fas fa-history me-2"></i>Sync Logs
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="RealtorAgent.exportToExcel()">
+                            <i class="fas fa-download me-2"></i>Export Sync Report
+                        </button>
+                    </div>
+                    <div id="excel-status" class="mt-3 small text-muted"></div>
+                </div>
+            </div>
+
+            <!-- PDF Guide -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-book me-2"></i>Sync Guide</h6>
+                </div>
+                <div class="card-body">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control form-control-sm" id="pdf-search" placeholder="Search guides...">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="RealtorAgent.searchPDFGuides()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="pdf-guides-list" class="pdf-guides-list">
+                        <!-- PDF guides will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary btn-sm" onclick="RealtorAgent.showModal('quickSyncModal')">
+                            <i class="fas fa-sync me-2"></i>Quick Sync
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" onclick="RealtorAgent.showModal('exportModal')">
+                            <i class="fas fa-download me-2"></i>Export Data
+                        </button>
+                        <button class="btn btn-outline-info btn-sm" onclick="RealtorAgent.showModal('importModal')">
+                            <i class="fas fa-upload me-2"></i>Import Data
+                        </button>
+                        <button class="btn btn-outline-warning btn-sm" onclick="RealtorAgent.showModal('backupModal')">
+                            <i class="fas fa-save me-2"></i>Backup Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Modals -->
+    <!-- Quick Sync Modal -->
+    <div class="modal fade" id="quickSyncModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Quick Synchronization</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="quick-sync-form" onsubmit="RealtorAgent.handleQuickSyncForm(event)">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Quick sync will synchronize all data sources with default settings.
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Sync Type</label>
+                                <select class="form-select" name="sync_type" required>
+                                    <option value="full">Full Sync</option>
+                                    <option value="incremental">Incremental Sync</option>
+                                    <option value="leads_only">Leads Only</option>
+                                    <option value="properties_only">Properties Only</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Conflict Resolution</label>
+                                <select class="form-select" name="conflict_resolution">
+                                    <option value="newest_wins">Newest Wins</option>
+                                    <option value="excel_wins">Excel Wins</option>
+                                    <option value="db_wins">Database Wins</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="dry_run" id="quick-dry-run">
+                                    <label class="form-check-label" for="quick-dry-run">
+                                        Dry run (preview changes without applying them)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Start Quick Sync</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Export Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="export-form" onsubmit="RealtorAgent.handleExportForm(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Data Type</label>
+                                <select class="form-select" name="data_type" required>
+                                    <option value="leads">Leads</option>
+                                    <option value="properties">Properties</option>
+                                    <option value="deals">Deals</option>
+                                    <option value="all">All Data</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Format</label>
+                                <select class="form-select" name="format" required>
+                                    <option value="excel">Excel (.xlsx)</option>
+                                    <option value="csv">CSV (.csv)</option>
+                                    <option value="json">JSON (.json)</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Filename</label>
+                                <input type="text" class="form-control" name="filename" placeholder="export_20260110.xlsx">
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="include_metadata" id="include-metadata">
+                                    <label class="form-check-label" for="include-metadata">
+                                        Include metadata and timestamps
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-success">Export Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Data</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="import-form" onsubmit="RealtorAgent.handleImportForm(event)">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">File to Import</label>
+                                <input type="file" class="form-control" name="import_file" accept=".xlsx,.csv,.json" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Data Type</label>
+                                <select class="form-select" name="data_type" required>
+                                    <option value="leads">Leads</option>
+                                    <option value="properties">Properties</option>
+                                    <option value="deals">Deals</option>
+                                    <option value="auto">Auto-detect</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Import Mode</label>
+                                <select class="form-select" name="import_mode" required>
+                                    <option value="add">Add New Records</option>
+                                    <option value="update">Update Existing</option>
+                                    <option value="replace">Replace All</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="validate_data" id="validate-data" checked>
+                                    <label class="form-check-label" for="validate-data">
+                                        Validate data before import
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-info">Import Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup Modal -->
+    <div class="modal fade" id="backupModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Backup</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="backup-form" onsubmit="RealtorAgent.handleBackupForm(event)">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Create a backup of your current data before making major changes.
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Backup Type</label>
+                                <select class="form-select" name="backup_type" required>
+                                    <option value="full">Full Backup</option>
+                                    <option value="leads">Leads Only</option>
+                                    <option value="properties">Properties Only</option>
+                                    <option value="deals">Deals Only</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Format</label>
+                                <select class="form-select" name="format" required>
+                                    <option value="excel">Excel (.xlsx)</option>
+                                    <option value="json">JSON (.json)</option>
+                                    <option value="sql">SQL Dump</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Backup Name</label>
+                                <input type="text" class="form-control" name="backup_name" placeholder="backup_20260110">
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="compress" id="compress-backup" checked>
+                                    <label class="form-check-label" for="compress-backup">
+                                        Compress backup file
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-warning">Create Backup</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // RealtorAgent namespace for organized functionality
+        window.RealtorAgent = window.RealtorAgent || {};
+
+        // ============================================================================
+        // CORE REAL ESTATE AGENT FUNCTIONALITY
+        // ============================================================================
+
+        RealtorAgent = {
+            // Configuration
+            config: {
+                apiBaseUrl: '',
+                refreshInterval: 30000, // 30 seconds
+                maxRetries: 3
+            },
+
+            // State management
+            state: {
+                isLoading: false,
+                autoRefreshEnabled: true,
+                currentView: 'table',
+                selectedItems: new Set(),
+                lastUpdate: null
+            },
+
+            // Initialize the RealtorAgent system
+            init: function() {
+                console.log('RealtorAgent initializing for Sync page...');
+                this.setupEventListeners();
+                this.loadInitialData();
+                this.startAutoRefresh();
+            },
+
+            // Setup event listeners
+            setupEventListeners: function() {
+                // Auto-refresh toggle
+                const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
+                if (autoRefreshToggle) {
+                    autoRefreshToggle.addEventListener('change', (e) => {
+                        this.state.autoRefreshEnabled = e.target.checked;
+                        if (e.target.checked) {
+                            this.startAutoRefresh();
+                        } else {
+                            this.stopAutoRefresh();
+                        }
+                    });
+                }
+
+                // Modal triggers
+                document.addEventListener('click', (e) => {
+                    if (e.target.matches('[data-bs-toggle="modal"]')) {
+                        e.preventDefault();
+                        const modalId = e.target.dataset.bsTarget || e.target.getAttribute('href');
+                        if (modalId) {
+                            this.showModal(modalId.replace('#', ''));
+                        }
+                    }
+                });
+            },
+
+            // Load initial data
+            loadInitialData: async function() {
+                try {
+                    await Promise.all([
+                        this.loadSyncStatus(),
+                        this.loadDashboardStats(),
+                        this.loadRecentActivity(),
+                        this.loadExcelData()
+                    ]);
+                } catch (error) {
+                    console.error('Error loading initial data:', error);
+                    this.showAlert('Failed to load initial data. Please refresh the page.', 'error');
+                }
+            },
+
+            // Load sync status
+            loadSyncStatus: async function() {
+                try {
+                    const response = await fetch('/api/sync/status');
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    // Update counters
+                    document.getElementById('db-leads-count').textContent = data.database.leads || 0;
+                    document.getElementById('db-properties-count').textContent = data.database.properties || 0;
+                    document.getElementById('db-deals-count').textContent = data.database.deals || 0;
+                    document.getElementById('excel-leads-count').textContent = data.excel.leads_crm || 0;
+
+                } catch (error) {
+                    console.error('Error loading sync status:', error);
+                    this.showError('Failed to load sync status');
+                }
+            },
+
+            // Load dashboard statistics
+            loadDashboardStats: async function() {
+                try {
+                    const response = await fetch('/api/sync/stats');
+                    const stats = await response.json();
+
+                    if (stats.error) {
+                        throw new Error(stats.error);
+                    }
+
+                    this.updateDashboardStats(stats);
+                } catch (error) {
+                    console.error('Error loading dashboard stats:', error);
+                }
+            },
+
+            // Load recent activity
+            loadRecentActivity: async function() {
+                try {
+                    const response = await fetch('/api/sync/activity?limit=10');
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    this.renderActivityFeed(data.activities);
+                } catch (error) {
+                    console.error('Error loading recent activity:', error);
+                }
+            },
+
+            // Load Excel data
+            loadExcelData: async function(type) {
+                if (!type) return;
+
+                try {
+                    const response = await fetch(`/api/excel/${type}`);
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    this.showAlert(`Successfully loaded ${data.count} ${type} records from Excel`, 'success');
+                    this.loadSyncStatus(); // Refresh status
+                } catch (error) {
+                    console.error(`Error loading Excel ${type}:`, error);
+                    this.showError(`Failed to load ${type} from Excel`);
+                }
+            },
+
+            // Update dashboard stats
+            updateDashboardStats: function(stats) {
+                const statElements = {
+                    'total-syncs': stats.total_syncs || 0,
+                    'sync-success-rate': `${stats.success_rate || 100}%`,
+                    'records-processed': this.formatNumber(stats.records_processed || 0),
+                    'last-sync-time': this.formatTime(stats.last_sync_time)
+                };
+
+                Object.entries(statElements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        const valueElement = element.querySelector('.stat-value') || element;
+                        if (valueElement) {
+                            valueElement.textContent = value;
+                        }
+                    }
+                });
+            },
+
+            // Render activity feed
+            renderActivityFeed: function(activities) {
+                const container = document.getElementById('activity-feed');
+                if (!container) return;
+
+                if (!activities || activities.length === 0) {
+                    container.innerHTML = `
+                        <div class="activity-empty p-3 text-center text-muted">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>No recent sync activity</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const html = activities.map(activity => this.createActivityItem(activity)).join('');
+                container.innerHTML = html;
+            },
+
+            // Create activity item HTML
+            createActivityItem: function(activity) {
+                const iconClass = this.getActivityIconClass(activity.type);
+                const statusClass = this.getActivityStatusClass(activity.status);
+
+                return `
+                    <div class="activity-item ${statusClass}">
+                        <div class="d-flex align-items-start">
+                            <i class="fas ${iconClass} me-2 mt-1"></i>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">${activity.title}</div>
+                                <small class="text-muted">${this.formatDate(activity.timestamp)}</small>
+                                ${activity.description ? `<div class="mt-1">${activity.description}</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            // Modal management
+            showModal: function(modalId) {
+                const modal = new bootstrap.Modal(document.getElementById(modalId));
+                modal.show();
+            },
+
+            // Form handlers
+            handleQuickSyncForm: async function(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+
+                try {
+                    this.showLoading('quick-sync-form', 'Starting quick sync...');
+
+                    const response = await fetch('/api/sync/quick', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        this.showResults(result);
+                        this.loadSyncStatus();
+                        this.loadDashboardStats();
+                        bootstrap.Modal.getInstance(document.getElementById('quickSyncModal')).hide();
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    this.showError('Quick sync failed: ' + error.message);
+                } finally {
+                    this.hideLoading('quick-sync-form');
+                }
+            },
+
+            handleExportForm: async function(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+
+                try {
+                    this.showLoading('export-form', 'Exporting data...');
+
+                    const response = await fetch('/api/sync/export', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = formData.get('filename') || 'export.xlsx';
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+
+                        this.showAlert('Data exported successfully', 'success');
+                        bootstrap.Modal.getInstance(document.getElementById('exportModal')).hide();
+                    } else {
+                        const result = await response.json();
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    this.showError('Export failed: ' + error.message);
+                } finally {
+                    this.hideLoading('export-form');
+                }
+            },
+
+            handleImportForm: async function(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+
+                try {
+                    this.showLoading('import-form', 'Importing data...');
+
+                    const response = await fetch('/api/sync/import', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        this.showResults(result);
+                        this.loadSyncStatus();
+                        bootstrap.Modal.getInstance(document.getElementById('importModal')).hide();
+                    } else {
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    this.showError('Import failed: ' + error.message);
+                } finally {
+                    this.hideLoading('import-form');
+                }
+            },
+
+            handleBackupForm: async function(event) {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+
+                try {
+                    this.showLoading('backup-form', 'Creating backup...');
+
+                    const response = await fetch('/api/sync/backup', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = formData.get('backup_name') || 'backup.zip';
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+
+                        this.showAlert('Backup created successfully', 'success');
+                        bootstrap.Modal.getInstance(document.getElementById('backupModal')).hide();
+                    } else {
+                        const result = await response.json();
+                        throw new Error(result.error);
+                    }
+                } catch (error) {
+                    this.showError('Backup failed: ' + error.message);
+                } finally {
+                    this.hideLoading('backup-form');
+                }
+            },
+
+            // Show results
+            showResults: function(result) {
+                const resultsCard = document.getElementById('resultsCard');
+                const resultsContent = document.getElementById('resultsContent');
+
+                let html = `
+                    <div class="alert alert-info">
+                        <strong>Operation completed at ${new Date(result.timestamp).toLocaleString()}</strong>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-primary">${result.records_processed || 0}</h3>
+                                <small class="text-muted">Processed</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-success">${result.records_added || 0}</h3>
+                                <small class="text-muted">Added</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-warning">${result.records_updated || 0}</h3>
+                                <small class="text-muted">Updated</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h3 class="text-secondary">${result.records_skipped || 0}</h3>
+                                <small class="text-muted">Skipped</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                if (result.conflicts && result.conflicts.length > 0) {
+                    html += `
+                        <div class="mt-3">
+                            <h5>Conflicts Requiring Attention:</h5>
+                            ${result.conflicts.map(conflict => `
+                                <div class="conflict-item">
+                                    <strong>${conflict.key}</strong><br>
+                                    Resolution: ${conflict.resolution}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                if (result.errors && result.errors.length > 0) {
+                    html += `
+                        <div class="mt-3">
+                            <div class="alert alert-danger">
+                                <strong>Errors:</strong>
+                                <ul>
+                                    ${result.errors.map(error => `<li>${error}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (result.dry_run) {
+                    html += '<div class="alert alert-warning mt-3"><strong>Note:</strong> This was a dry run - no changes were made.</div>';
+                }
+
+                resultsContent.innerHTML = html;
+                resultsCard.style.display = 'block';
+            },
+
+            // Utility functions
+            showLoading: function(containerId, message) {
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.innerHTML = `
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">${message}</p>
+                        </div>
+                    `;
+                }
+            },
+
+            hideLoading: function(containerId) {
+                // Loading is handled by form reset
+            },
+
+            showAlert: function(message, type = 'info') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+                alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+                alertDiv.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                document.body.appendChild(alertDiv);
+
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            },
+
+            showError: function(message) {
+                this.showAlert(message, 'danger');
+            },
+
+            getActivityIconClass: function(type) {
+                const iconMap = {
+                    'sync': 'fa-sync',
+                    'export': 'fa-download',
+                    'import': 'fa-upload',
+                    'backup': 'fa-save',
+                    'error': 'fa-exclamation-triangle',
+                    'success': 'fa-check-circle'
+                };
+                return iconMap[type] || 'fa-info-circle';
+            },
+
+            getActivityStatusClass: function(status) {
+                const statusMap = {
+                    'success': 'success',
+                    'error': 'error',
+                    'warning': 'warning',
+                    'info': 'info'
+                };
+                return statusMap[status] || 'info';
+            },
+
+            formatDate: function(dateString) {
+                if (!dateString) return 'N/A';
+                try {
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                } catch {
+                    return dateString;
+                }
+            },
+
+            formatTime: function(timeString) {
+                if (!timeString) return '--:--';
+                try {
+                    const date = new Date(timeString);
+                    return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                } catch {
+                    return '--:--';
+                }
+            },
+
+            formatNumber: function(num) {
+                if (num === null || num === undefined) return '0';
+                return new Intl.NumberFormat('en-US').format(num);
+            },
+
+            // Auto-refresh functionality
+            startAutoRefresh: function() {
+                this.stopAutoRefresh();
+                this.state.refreshInterval = setInterval(() => {
+                    if (this.state.autoRefreshEnabled) {
+                        this.loadSyncStatus();
+                        this.loadDashboardStats();
+                        this.loadRecentActivity();
+                    }
+                }, this.config.refreshInterval);
+            },
+
+            stopAutoRefresh: function() {
+                if (this.state.refreshInterval) {
+                    clearInterval(this.state.refreshInterval);
+                    this.state.refreshInterval = null;
+                }
+            },
+
+            // Refresh activity feed
+            refreshActivityFeed: function() {
+                this.loadRecentActivity();
+                this.showAlert('Activity feed refreshed', 'success');
+            },
+
+            // Search PDF guides
+            searchPDFGuides: function() {
+                const searchTerm = document.getElementById('pdf-search').value;
+                // Implementation would depend on available PDF guides
+                this.showAlert(`Searching for "${searchTerm}" in guides...`, 'info');
+            },
+
+            // Export to Excel
+            exportToExcel: function() {
+                this.showModal('exportModal');
+            }
+        };
+
+        // Initialize RealtorAgent when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            RealtorAgent.init();
+        });
+
+        // ============================================================================
+        // EXISTING SYNC PAGE FUNCTIONALITY (PRESERVED)
+        // ============================================================================
+
+        // Legacy functions for backward compatibility
+        function loadSyncStatus() {
+            RealtorAgent.loadSyncStatus();
+        }
+
+        function showResults(result) {
+            RealtorAgent.showResults(result);
+        }
+
+        function showSuccess(message) {
+            RealtorAgent.showAlert(message, 'success');
+        }
+
+        function showError(message) {
+            RealtorAgent.showError(message);
+        }
+
+        function showAlert(message, type) {
+            RealtorAgent.showAlert(message, type);
+        }
+
+        // Handle sync form submission
+        document.getElementById('syncForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const syncBtn = document.getElementById('syncBtn');
+            const originalText = syncBtn.innerHTML;
+            syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
+            syncBtn.disabled = true;
+
+            try {
+                const formData = {
+                    direction: document.getElementById('syncDirection').value,
+                    conflict_resolution: document.getElementById('conflictResolution').value,
+                    dry_run: document.getElementById('dryRun').checked
+                };
+
+                const response = await fetch('/api/sync/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResults(result);
+                    loadSyncStatus(); // Refresh status
+                } else {
+                    showError(result.error || 'Sync failed');
+                }
+
+            } catch (error) {
+                showError('Sync failed: ' + error.message);
+            } finally {
+                syncBtn.innerHTML = originalText;
+                syncBtn.disabled = false;
+            }
+        });
+
+        // Handle export form submission
+        document.getElementById('exportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const exportBtn = document.getElementById('exportBtn');
+            const originalText = exportBtn.innerHTML;
+            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+            exportBtn.disabled = true;
+
+            try {
+                const formData = {
+                    filename: document.getElementById('exportFilename').value || undefined
+                };
+
+                const response = await fetch('/api/sync/export/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showSuccess(result.message);
+                    loadSyncStatus(); // Refresh status
+                } else {
+                    showError(result.error || 'Export failed');
+                }
+
+            } catch (error) {
+                showError('Export failed: ' + error.message);
+            } finally {
+                exportBtn.innerHTML = originalText;
+                exportBtn.disabled = false;
+            }
+        });
+
+        // Show results
+        function showResults(result) {
+            const resultsCard = document.getElementById('resultsCard');
+            const resultsContent = document.getElementById('resultsContent');
+
+            let html = `
+                <div class="alert alert-info">
+                    <strong>Sync completed at ${new Date(result.timestamp).toLocaleString()}</strong>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h3 class="text-primary">${result.records_processed}</h3>
+                            <small class="text-muted">Processed</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h3 class="text-success">${result.records_added}</h3>
+                            <small class="text-muted">Added</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h3 class="text-warning">${result.records_updated}</h3>
+                            <small class="text-muted">Updated</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center">
+                            <h3 class="text-secondary">${result.records_skipped}</h3>
+                            <small class="text-muted">Skipped</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (result.conflicts && result.conflicts.length > 0) {
+                html += `
+                    <div class="mt-3">
+                        <h5>Conflicts Requiring Attention:</h5>
+                        ${result.conflicts.map(conflict => `
+                            <div class="conflict-item">
+                                <strong>Lead ID: ${conflict.key}</strong><br>
+                                Resolution: ${conflict.resolution}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            if (result.errors && result.errors.length > 0) {
+                html += `
+                    <div class="mt-3">
+                        <div class="alert alert-danger">
+                            <strong>Errors:</strong>
+                            <ul>
+                                ${result.errors.map(error => `<li>${error}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (result.dry_run) {
+                html += '<div class="alert alert-warning mt-3"><strong>Note:</strong> This was a dry run - no changes were made.</div>';
+            }
+
+            resultsContent.innerHTML = html;
+            resultsCard.style.display = 'block';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            showAlert(message, 'success');
+        }
+
+        // Show error message
+        function showError(message) {
+            showAlert(message, 'danger');
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.container').firstChild);
+
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

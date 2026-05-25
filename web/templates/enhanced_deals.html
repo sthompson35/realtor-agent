@@ -1,0 +1,310 @@
+{% extends "base.html" %}
+
+{% block title %}Enhanced Deal Analysis - Real Estate Investment Toolkit{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Enhanced Deals</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filters { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 15px; }
+    .filter-group { display: flex; flex-direction: column; min-width: 150px; }
+    .filter-label { font-size: 12px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+    .filter-input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    .apply-filters { background: #4F81BD; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    .apply-filters:hover { background: #3A6BA8; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+    .stat-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+    .stat-value { font-size: 24px; font-weight: bold; color: #4F81BD; }
+    .stat-label { font-size: 12px; color: #666; text-transform: uppercase; }
+    .deal-card { background: white; padding: 20px; margin: 15px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .deal-header { border-bottom: 2px solid #4F81BD; padding-bottom: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .deal-title { font-size: 18px; font-weight: bold; color: #333; margin: 0; }
+    .deal-badges { display: flex; gap: 10px; }
+    .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+    .badge-hot { background: #ff6600; color: white; }
+    .badge-growing { background: #66cc00; color: white; }
+    .badge-emerging { background: #ffcc00; color: black; }
+    .badge-low-risk { background: #28a745; color: white; }
+    .badge-medium-risk { background: #ffc107; color: black; }
+    .badge-high-risk { background: #dc3545; color: white; }
+    .deal-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin: 15px 0; }
+    .metric { background: #f8f9fa; padding: 12px; border-radius: 6px; text-align: center; border-left: 3px solid #4F81BD; }
+    .metric-label { font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 4px; }
+    .metric-value { font-size: 16px; font-weight: bold; color: #333; }
+    .metric-positive { color: #28a745; }
+    .metric-negative { color: #dc3545; }
+    .market-insight { background: #e6f3ff; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #4F81BD; }
+    .toolkit-insights { background: #fff2e6; padding: 15px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #ff6600; }
+    .deal-actions { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; }
+    .action-btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; text-decoration: none; display: inline-block; text-align: center; }
+    .btn-primary { background: #4F81BD; color: white; }
+    .btn-secondary { background: #6c757d; color: white; }
+    .btn-success { background: #28a745; color: white; }
+    .btn-primary:hover, .btn-secondary:hover, .btn-success:hover { opacity: 0.8; }
+    .export-section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+    .no-deals { background: white; padding: 40px; text-align: center; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin: 20px 0; }
+    .loading { text-align: center; padding: 40px; }
+    .pagination { text-align: center; margin: 20px 0; }
+    .pagination a { margin: 0 5px; padding: 8px 12px; text-decoration: none; border: 1px solid #ddd; border-radius: 4px; }
+    .pagination a.active { background: #4F81BD; color: white; border-color: #4F81BD; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <!-- Filters Section -->
+    <div class="filters">
+        <h3>🔍 Deal Filters & Analysis</h3>
+        <form method="GET" action="/enhanced-deals">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label class="filter-label">Max Deals</label>
+                    <input type="number" name="max_deals" class="filter-input" value="{{ filters.max_deals }}" min="1" max="100">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Min Profit Margin (%)</label>
+                    <input type="number" name="min_profit" class="filter-input" value="{{ filters.min_profit }}" min="0" max="100" step="0.1">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Max Purchase Price ($)</label>
+                    <input type="number" name="max_price" class="filter-input" value="{{ filters.max_price }}" min="10000" step="10000">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Deal Type</label>
+                    <select name="deal_type" class="filter-input">
+                        <option value="all" {% if filters.deal_type == 'all' %}selected{% endif %}>All Types</option>
+                        <option value="fix_flip" {% if filters.deal_type == 'fix_flip' %}selected{% endif %}>Fix & Flip</option>
+                        <option value="wholesale" {% if filters.deal_type == 'wholesale' %}selected{% endif %}>Wholesale</option>
+                        <option value="rental" {% if filters.deal_type == 'rental' %}selected{% endif %}>Rental</option>
+                        <option value="land_development" {% if filters.deal_type == 'land_development' %}selected{% endif %}>Land Development</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sort By</label>
+                    <select name="sort" class="filter-input">
+                        <option value="profit_margin" {% if filters.sort == 'profit_margin' %}selected{% endif %}>Profit Margin</option>
+                        <option value="price" {% if filters.sort == 'price' %}selected{% endif %}>Purchase Price</option>
+                        <option value="arv" {% if filters.sort == 'arv' %}selected{% endif %}>ARV</option>
+                        <option value="quality_score" {% if filters.sort == 'quality_score' %}selected{% endif %}>Quality Score</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sort Order</label>
+                    <select name="order" class="filter-input">
+                        <option value="desc" {% if filters.order == 'desc' %}selected{% endif %}>High to Low</option>
+                        <option value="asc" {% if filters.order == 'asc' %}selected{% endif %}>Low to High</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="justify-content: flex-end;">
+                    <button type="submit" class="apply-filters">🔄 Apply Filters</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    {% if summary_stats %}
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.total_deals }}</div>
+            <div class="stat-label">Total Deals</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${{ "{:,.0f}".format(summary_stats.avg_purchase_price) }}</div>
+            <div class="stat-label">Avg Purchase Price</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">${{ "{:,.0f}".format(summary_stats.avg_profit) }}</div>
+            <div class="stat-label">Avg Profit</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.avg_profit_margin }}%</div>
+            <div class="stat-label">Avg Profit Margin</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.avg_quality_score }}</div>
+            <div class="stat-label">Avg Quality Score</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.max_profit_margin }}%</div>
+            <div class="stat-label">Best Deal Margin</div>
+        </div>
+    </div>
+
+    <!-- Deal Type Distribution -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.deal_types.get('fix_flip', 0) }}</div>
+            <div class="stat-label">Fix & Flip</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.deal_types.get('wholesale', 0) }}</div>
+            <div class="stat-label">Wholesale</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.deal_types.get('rental', 0) }}</div>
+            <div class="stat-label">Rental</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.deal_types.get('land_development', 0) }}</div>
+            <div class="stat-label">Land Development</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.market_status.get('Hot', 0) }}</div>
+            <div class="stat-label">Hot Markets</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ summary_stats.risk_levels.get('Low', 0) }}</div>
+            <div class="stat-label">Low Risk Deals</div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Export Section -->
+    <div class="export-section">
+        <h3>📊 Export Deal Analysis</h3>
+        <p>Download comprehensive deal analysis with all metrics and toolkit insights</p>
+        <a href="/enhanced-deals/export?{{ request.query_string.decode('utf-8') }}" class="action-btn btn-success" style="font-size: 14px; padding: 12px 24px;">
+            📥 Export to Excel
+        </a>
+    </div>
+
+    <!-- Deals List -->
+    {% if deals %}
+        {% for deal in deals %}
+        <div class="deal-card">
+            <div class="deal-header">
+                <div class="deal-title">{{ deal.property_address }}</div>
+                <div class="deal-badges">
+                    <span class="badge badge-{{ deal.market_status.lower().replace(' ', '-') if deal.market_status else 'unknown' }}">
+                        {{ deal.market_status if deal.market_status else 'Unknown' }}
+                    </span>
+                    <span class="badge badge-{{ deal.risk_level.lower().replace(' ', '-') if deal.risk_level else 'unknown' }}">
+                        {{ deal.risk_level if deal.risk_level else 'Unknown' }} Risk
+                    </span>
+                    <span class="badge" style="background: #4F81BD; color: white;">
+                        {{ deal.deal_type.replace('_', ' ').title() }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="deal-metrics">
+                <div class="metric">
+                    <div class="metric-label">Purchase Price</div>
+                    <div class="metric-value">${{ "{:,.0f}".format(deal.purchase_price) }}</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">ARV</div>
+                    <div class="metric-value">${{ "{:,.0f}".format(deal.arv) }}</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Profit</div>
+                    <div class="metric-value metric-{{ 'positive' if deal.profit > 0 else 'negative' }}">
+                        ${{ "{:,.0f}".format(deal.profit) }}
+                    </div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Profit Margin</div>
+                    <div class="metric-value metric-positive">{{ deal.profit_margin }}%</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Cap Rate</div>
+                    <div class="metric-value">{{ deal.cap_rate }}%</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Quality Score</div>
+                    <div class="metric-value">{{ deal.quality_score }}/100</div>
+                </div>
+                {% if deal.cash_on_cash %}
+                <div class="metric">
+                    <div class="metric-label">Cash-on-Cash</div>
+                    <div class="metric-value">{{ deal.cash_on_cash }}%</div>
+                </div>
+                {% endif %}
+                {% if deal.irr %}
+                <div class="metric">
+                    <div class="metric-label">IRR</div>
+                    <div class="metric-value">{{ deal.irr }}%</div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if deal.market_status or deal.investment_focus %}
+            <div class="market-insight">
+                <h4>📊 Market Intelligence</h4>
+                {% if deal.market_status %}
+                <p><strong>Market Status:</strong> {{ deal.market_status }}</p>
+                {% endif %}
+                {% if deal.investment_focus %}
+                <p><strong>Investment Focus:</strong> {{ deal.investment_focus }}</p>
+                {% endif %}
+                {% if deal.state_resources %}
+                <p><strong>State Resources:</strong> Available</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if deal.toolkit_insights %}
+            <div class="toolkit-insights">
+                <h4>🛠️ Toolkit Insights</h4>
+                <ul>
+                    {% for insight in deal.toolkit_insights %}
+                    <li>{{ insight }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                <strong>Contact:</strong> {{ deal.owner_name }} | {{ deal.phone }} | {{ deal.email }}
+            </div>
+
+            <div style="margin-bottom: 15px; color: #666; font-style: italic;">
+                {{ deal.notes }}
+            </div>
+
+            <div class="deal-actions">
+                <a href="tel:{{ deal.phone }}" class="action-btn btn-primary">📞 Call</a>
+                <a href="mailto:{{ deal.email }}" class="action-btn btn-primary">✉️ Email</a>
+                <button onclick="copyToClipboard('{{ deal.property_address }}')" class="action-btn btn-secondary">📋 Copy Address</button>
+                <button onclick="showDealDetails('{{ deal.deal_id }}')" class="action-btn btn-secondary">📋 Details</button>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-deals">
+            <h3>🔍 No Deals Found</h3>
+            <p>No deals match your current filter criteria. Try adjusting the filters to see more opportunities.</p>
+            <p><em>AI deal finding is scanning for new opportunities continuously...</em></p>
+        </div>
+    {% endif %}
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Address copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+
+        function showDealDetails(dealId) {
+            // This could be enhanced to show a modal with detailed deal information
+            alert('Deal details for: ' + dealId + '\\n\\nFeature coming soon: Detailed analysis modal');
+        }
+
+        // Auto-refresh deals every 5 minutes
+        setTimeout(function() {
+            if (confirm('Refresh deals for latest opportunities?')) {
+                window.location.reload();
+            }
+        }, 300000);
+{% endblock %}

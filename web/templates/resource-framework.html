@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Resource Framework - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">Resource Framework</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Resource Framework</h1>
+        <p class="text-muted mb-0">Comprehensive Framework for Finding and Evaluating Investment Opportunities</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide/county-examples" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Previous
+        </a>
+        <a href="/master-guide/formulas" class="btn btn-primary">
+            Next: Investment Formulas <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">The Resource Discovery Process</h5>
+            </div>
+            <div class="card-body">
+                <div class="framework-overview">
+                    <p>Successful real estate investing begins with a systematic approach to identifying opportunities. This framework provides the methodology for finding, evaluating, and acquiring properties that meet your investment criteria.</p>
+
+                    <div class="process-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h6>Market Research</h6>
+                                <p>Analyze demographic trends, economic indicators, and housing market data to identify target markets.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h6>Property Identification</h6>
+                                <p>Use multiple sources to find off-market and pre-MLS properties that match your criteria.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h6>Due Diligence</h6>
+                                <p>Conduct thorough financial analysis, property inspection, and market validation.</p>
+                            </div>
+                        </div>
+
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h6>Acquisition</h6>
+                                <p>Execute purchase with proper legal documentation and financing structure.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Resource Sources</h5>
+            </div>
+            <div class="card-body">
+                <div class="resource-categories">
+                    <div class="resource-category">
+                        <h6><i class="fas fa-users me-2 text-primary"></i>Professional Networks</h6>
+                        <ul>
+                            <li>Real estate agents and brokers</li>
+                            <li>Property managers and landlords</li>
+                            <li>Attorneys and accountants</li>
+                            <li>Bankers and lenders</li>
+                        </ul>
+                    </div>
+
+                    <div class="resource-category">
+                        <h6><i class="fas fa-globe me-2 text-success"></i>Online Platforms</h6>
+                        <ul>
+                            <li>MLS and real estate portals</li>
+                            <li>Auction sites and foreclosure listings</li>
+                            <li>Social media and networking groups</li>
+                            <li>Real estate investment forums</li>
+                        </ul>
+                    </div>
+
+                    <div class="resource-category">
+                        <h6><i class="fas fa-building me-2 text-info"></i>Direct Sources</h6>
+                        <ul>
+                            <li>Motivated sellers and wholesalers</li>
+                            <li>REO departments of banks</li>
+                            <li>Government surplus properties</li>
+                            <li>Direct mail campaigns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="findProperties()">
+                        <i class="fas fa-search me-2"></i>Find Properties
+                    </button>
+                    <button class="btn btn-outline-success" onclick="marketAnalysis()">
+                        <i class="fas fa-chart-line me-2"></i>Market Analysis
+                    </button>
+                    <button class="btn btn-outline-info" onclick="contactDatabase()">
+                        <i class="fas fa-address-book me-2"></i>Contact Database
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Key Success Factors</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <div class="d-flex">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>Consistency:</strong> Regular prospecting and follow-up
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mb-3">
+                        <div class="d-flex">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>Relationships:</strong> Building trust with sellers and partners
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mb-3">
+                        <div class="d-flex">
+                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>Education:</strong> Continuous learning about markets and techniques
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/formulas" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Next Section
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.process-steps {
+    position: relative;
+    padding: 20px 0;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    bottom: -30px;
+    width: 2px;
+    background: #007bff;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.step-content h6 {
+    margin-bottom: 5px;
+    color: #495057;
+}
+
+.step-content p {
+    margin: 0;
+    color: #6c757d;
+}
+
+.resource-categories {
+    display: grid;
+    gap: 20px;
+}
+
+.resource-category h6 {
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 5px;
+}
+
+.resource-category ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.resource-category li {
+    padding: 3px 0;
+    color: #495057;
+}
+
+.resource-category li::before {
+    content: '•';
+    color: #007bff;
+    font-weight: bold;
+    margin-right: 8px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function findProperties() {
+    alert('Property search functionality will be implemented');
+}
+
+function marketAnalysis() {
+    alert('Market analysis tool will be implemented');
+}
+
+function contactDatabase() {
+    window.location.href = '/master-guide/contact-database';
+}
+</script>
+{% endblock %}

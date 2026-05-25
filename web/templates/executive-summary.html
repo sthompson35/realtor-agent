@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Executive Summary - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">Executive Summary</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Executive Summary</h1>
+        <p class="text-muted mb-0">Strategic Overview of Real Estate Investment Opportunities</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to Guide
+        </a>
+        <a href="/master-guide/county-examples" class="btn btn-primary">
+            Next: County Examples <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Investment Landscape Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="guide-content">
+                    <h4>The Real Estate Investment Opportunity</h4>
+                    <p>Real estate investment represents one of the most reliable paths to wealth building, offering both income generation and long-term appreciation. However, success requires strategic thinking, market knowledge, and disciplined execution.</p>
+
+                    <h5>Key Market Drivers</h5>
+                    <ul>
+                        <li><strong>Population Growth:</strong> Continued migration to desirable areas creates demand</li>
+                        <li><strong>Economic Development:</strong> Job creation and infrastructure improvements drive property values</li>
+                        <li><strong>Limited Supply:</strong> Regulatory constraints and development costs limit new construction</li>
+                        <li><strong>Financing Availability:</strong> Low interest rates make financing accessible</li>
+                    </ul>
+
+                    <h5>Strategic Approach</h5>
+                    <p>Successful real estate investing requires a systematic approach that combines market analysis, financial discipline, and operational excellence. This guide provides the framework for building a sustainable investment portfolio.</p>
+
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-lightbulb me-2"></i>Key Insight</h6>
+                        <p>The most successful investors focus on markets with strong fundamentals rather than chasing trends or hype. Patience and discipline separate winners from losers in real estate investing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Success Factors</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Market Selection</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Population growth trends</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Economic indicators</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Supply/demand dynamics</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Regulatory environment</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Financial Discipline</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Conservative underwriting</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Cash flow analysis</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Risk management</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Exit strategies</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/county-examples" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Next Section
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <span class="stat-label">Avg. Annual Return:</span>
+                        <span class="stat-value">8-12%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Cash-on-Cash:</span>
+                        <span class="stat-value">6-10%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Hold Period:</span>
+                        <span class="stat-value">3-7 years</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Key Takeaways</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        <small>Focus on fundamentals over trends</small>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        <small>Patience compounds returns</small>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        <small>Risk management is crucial</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.guide-content h4 {
+    color: #2c3e50;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.guide-content h5 {
+    color: #34495e;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.guide-content ul {
+    padding-left: 1.5rem;
+}
+
+.guide-content li {
+    margin-bottom: 0.5rem;
+}
+
+.stats-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #007bff;
+}
+</style>
+{% endblock %}

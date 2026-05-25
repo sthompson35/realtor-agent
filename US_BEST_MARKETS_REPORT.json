@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "report_name": "US_BEST_MARKETS_REPORT",
+    "generated_at": "2026-01-02T12:34:56Z",
+    "country": "US",
+    "currency": "USD",
+    "strategies": [
+      "buy_and_hold",
+      "fix_and_flip",
+      "owner_occupant"
+    ],
+    "input_data_files": [
+      "DATA/MARKETS/us_markets_scored_20260102.csv"
+    ]
+  },
+
+  "global_parameters": {
+    "max_markets_per_strategy": 100,
+    "scoring_version": "1.0.0",
+    "min_inventory_count": 30,
+    "min_data_confidence": 0.6
+  },
+
+  "strategies": {
+    "buy_and_hold": {
+      "description": "US markets with attractive rental yields and stable fundamentals.",
+      "scoring_weights": {
+        "yield": 0.40,
+        "stability": 0.25,
+        "tenant_demand": 0.20,
+        "landlord_friendliness": 0.15
+      },
+      "top_markets": [
+        {
+          "geo_id": "US-IN-Indianapolis-46220",
+          "geo_level": "zip",
+          "market_name": "Indianapolis, IN 46220",
+          "country_code": "US",
+          "state_region": "IN",
+          "city": "Indianapolis",
+          "zipcode_postcode": "46220",
+
+          "core_metrics": {
+            "median_list_price": 275000,
+            "median_sold_price": 265000,
+            "median_rent_monthly": 1850,
+            "price_per_sqft": 165,
+            "inventory_count": 95,
+            "avg_days_on_market": 22
+          },
+
+          "trend_metrics": {
+            "price_change_1y_pct": 0.04,
+            "rent_change_1y_pct": 0.05,
+            "inventory_change_1y_pct": 0.08,
+            "dom_change_1y_pct": -0.10
+          },
+
+          "strategy_scores": {
+            "score_buy_and_hold": 0.9,
+            "score_fix_and_flip": 0.65,
+            "score_owner_occupant": 0.7
+          },
+
+          "yield_metrics": {
+            "median_gross_yield_est": 0.080,
+            "percent_properties_with_yield_over_7": 0.72
+          },
+
+          "context_flags": [
+            {
+              "code": "LANDLORD_FRIENDLY_STATE",
+              "severity": "positive",
+              "description": "Landlord-tenant laws generally favorable to landlords."
+            }
+          ],
+
+          "metadata": {
+            "data_window_start": "2025-12-01",
+            "data_window_end": "2026-01-01",
+            "confidence": 0.87
+          }
+        }
+      ]
+    },
+
+    "fix_and_flip": {
+      "description": "US markets suitable for fix & flip (spread + velocity).",
+      "scoring_weights": {
+        "discount_opportunity": 0.40,
+        "renovation_stock": 0.25,
+        "liquidity": 0.20,
+        "risk_penalty": -0.15
+      },
+      "top_markets": [
+        {
+          "geo_id": "US-OH-Cleveland",
+          "geo_level": "city",
+          "market_name": "Cleveland, OH",
+          "country_code": "US",
+          "state_region": "OH",
+          "city": "Cleveland",
+
+          "core_metrics": {
+            "median_list_price": 140000,
+            "median_sold_price": 132000,
+            "median_rent_monthly": 1150,
+            "price_per_sqft": 90,
+            "inventory_count": 480,
+            "avg_days_on_market": 32
+          },
+
+          "trend_metrics": {
+            "price_change_1y_pct": 0.01,
+            "rent_change_1y_pct": 0.03,
+            "inventory_change_1y_pct": 0.12,
+            "dom_change_1y_pct": -0.05
+          },
+
+          "strategy_scores": {
+            "score_buy_and_hold": 0.76,
+            "score_fix_and_flip": 0.89,
+            "score_owner_occupant": 0.55
+          },
+
+          "flip_metrics": {
+            "median_discount_vs_arv_pct": 0.14,
+            "percent_stock_needing_renovation": 0.35,
+            "probability_quick_resale": 0.72
+          },
+
+          "context_flags": [
+            {
+              "code": "HIGH_RENOVATION_INVENTORY",
+              "severity": "positive",
+              "description": "Significant share of listings flagged as needing renovation."
+            }
+          ],
+
+          "metadata": {
+            "data_window_start": "2025-12-01",
+            "data_window_end": "2026-01-01",
+            "confidence": 0.81
+          }
+        }
+      ]
+    },
+
+    "owner_occupant": {
+      "description": "US markets good for owner-occupants (affordability + livability).",
+      "scoring_weights": {
+        "affordability": 0.35,
+        "stability": 0.25,
+        "qol": 0.25,
+        "liquidity": 0.15
+      },
+      "top_markets": []
+    }
+  }
+}

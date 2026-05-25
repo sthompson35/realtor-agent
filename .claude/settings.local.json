@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"C:\\\\Users\\\\sdtho\\\\AppData\\\\Roaming\\\\Claude\\\\local-agent-mode-sessions\\\\skills-plugin\\\\4813d559-93aa-4bc8-ba46-ac09a31b1ad0\\\\225fdeee-9693-4584-b044-e6e3f13f5354\\\\skills\\\\xlsx\" *)",
+      "Bash(FLASK_ENV=development DATABASE_URL=\"sqlite:///realtor_dev.db\" python web_server.py)",
+      "Bash(pkill -f \"python web_server.py\")",
+      "Bash(DATABASE_URL=\"sqlite:///realtor_dev.db\" python web_server.py --port 5050)",
+      "Bash(echo \"PID=$!\")",
+      "Bash(pkill -f \"web_server.py\")",
+      "Bash(PORT=5050 DATABASE_URL=\"sqlite:///realtor_dev.db\" FLASK_DEBUG=false python web_server.py)",
+      "Bash(Get-ChildItem -Path \"C:\\\\realtor_agent\" -Recurse -Directory)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(DATABASE_URL=sqlite:///realtor_dev.db python -c ' *)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5050 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | Sort-Object -Unique | ForEach-Object { taskkill /PID $_ /F 2>&1 })",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5050 -ErrorAction SilentlyContinue)",
+      "Bash(awk '{print $NF}')",
+      "Bash(xargs grep -l \"PATCH.*deals\\\\|patch.*deals\")",
+      "Bash(xargs wc -l)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}

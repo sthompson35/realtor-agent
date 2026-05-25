@@ -1,0 +1,281 @@
+{
+  "scraped_at": "2026-01-06T20:35:58.759099",
+  "total_leads": 25,
+  "leads": [
+    {
+      "Owner Name": "Property Owner 1",
+      "Mailing Address": "4406 Sample St, Denver, CO 88756",
+      "Property Address/APN": "2826 Pine Ave, Denver, CO",
+      "Phone": "(654)-795-6921",
+      "Email": "owner1@denver.email",
+      "Market": "Denver, CO",
+      "Source (List)": "Zillow",
+      "Estimated Value": "611673",
+      "Notes": "Property found on MLS. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 2",
+      "Mailing Address": "3689 Sample St, Denver, CO 59185",
+      "Property Address/APN": "5038 Elm Ave, Denver, CO",
+      "Phone": "(790)-958-1199",
+      "Email": "owner2@denver.email",
+      "Market": "Denver, CO",
+      "Source (List)": "FSBO",
+      "Estimated Value": "731002",
+      "Notes": "Property found on Realtor.com. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 3",
+      "Mailing Address": "841 Sample St, Denver, CO 86601",
+      "Property Address/APN": "9371 Elm Ave, Denver, CO",
+      "Phone": "(825)-711-1934",
+      "Email": "owner3@denver.email",
+      "Market": "Denver, CO",
+      "Source (List)": "FSBO",
+      "Estimated Value": "711528",
+      "Notes": "Property found on Redfin. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 4",
+      "Mailing Address": "5197 Sample St, Denver, CO 54775",
+      "Property Address/APN": "9213 Maple Ave, Denver, CO",
+      "Phone": "(882)-670-1879",
+      "Email": "owner4@denver.email",
+      "Market": "Denver, CO",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "839606",
+      "Notes": "Property found on FSBO. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 1",
+      "Mailing Address": "5608 Sample St, Raleigh, NC 66874",
+      "Property Address/APN": "5110 Pine Ave, Raleigh, NC",
+      "Phone": "(244)-582-4996",
+      "Email": "owner1@raleigh.email",
+      "Market": "Raleigh, NC",
+      "Source (List)": "MLS",
+      "Estimated Value": "813154",
+      "Notes": "Property found on Zillow. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 2",
+      "Mailing Address": "1397 Sample St, Raleigh, NC 12779",
+      "Property Address/APN": "5086 Elm Ave, Raleigh, NC",
+      "Phone": "(697)-319-1284",
+      "Email": "owner2@raleigh.email",
+      "Market": "Raleigh, NC",
+      "Source (List)": "Zillow",
+      "Estimated Value": "889815",
+      "Notes": "Property found on Zillow. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 3",
+      "Mailing Address": "5190 Sample St, Raleigh, NC 88972",
+      "Property Address/APN": "9114 Maple Ave, Raleigh, NC",
+      "Phone": "(890)-473-6821",
+      "Email": "owner3@raleigh.email",
+      "Market": "Raleigh, NC",
+      "Source (List)": "Redfin",
+      "Estimated Value": "940813",
+      "Notes": "Property found on Zillow. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 4",
+      "Mailing Address": "8956 Sample St, Raleigh, NC 28901",
+      "Property Address/APN": "6603 Oak Ave, Raleigh, NC",
+      "Phone": "(254)-801-4255",
+      "Email": "owner4@raleigh.email",
+      "Market": "Raleigh, NC",
+      "Source (List)": "Zillow",
+      "Estimated Value": "1011322",
+      "Notes": "Property found on FSBO. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 1",
+      "Mailing Address": "6155 Sample St, Houston, TX 34248",
+      "Property Address/APN": "9363 Maple Ave, Houston, TX",
+      "Phone": "(574)-229-8119",
+      "Email": "owner1@houston.email",
+      "Market": "Houston, TX",
+      "Source (List)": "MLS",
+      "Estimated Value": "517026",
+      "Notes": "Property found on Zillow. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 2",
+      "Mailing Address": "9508 Sample St, Houston, TX 60446",
+      "Property Address/APN": "9105 Elm Ave, Houston, TX",
+      "Phone": "(888)-980-5853",
+      "Email": "owner2@houston.email",
+      "Market": "Houston, TX",
+      "Source (List)": "Off Market",
+      "Estimated Value": "577969",
+      "Notes": "Property found on FSBO. Interested in selling. Generated test lead. (Expired listing - potential motivated seller)"
+    },
+    {
+      "Owner Name": "Property Owner 3",
+      "Mailing Address": "6349 Sample St, Houston, TX 88810",
+      "Property Address/APN": "3086 Maple Ave, Houston, TX",
+      "Phone": "(834)-838-2546",
+      "Email": "owner3@houston.email",
+      "Market": "Houston, TX",
+      "Source (List)": "MLS",
+      "Estimated Value": "551805",
+      "Notes": "Property found on Zillow. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 4",
+      "Mailing Address": "7954 Sample St, Houston, TX 88153",
+      "Property Address/APN": "1777 Main Ave, Houston, TX",
+      "Phone": "(368)-902-4364",
+      "Email": "owner4@houston.email",
+      "Market": "Houston, TX",
+      "Source (List)": "MLS",
+      "Estimated Value": "611457",
+      "Notes": "Property found on Realtor.com. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Lisa Garcia",
+      "Mailing Address": "517 Elm St, Dallas, TX 97363",
+      "Property Address/APN": "437 Pine Rd, Dallas, TX",
+      "Phone": "(593)-584-8469",
+      "Email": "contact462@gmail.com",
+      "Market": "Dallas, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "529334",
+      "Notes": "Active listing found on Realtor.com. Motivated seller."
+    },
+    {
+      "Owner Name": "Sarah Brown",
+      "Mailing Address": "2029 Maple Dr, Dallas, TX 46588",
+      "Property Address/APN": "5259 Maple Dr, Dallas, TX",
+      "Phone": "(695)-879-1843",
+      "Email": "contact731@gmail.com",
+      "Market": "Dallas, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "1025273",
+      "Notes": "Active listing found on Realtor.com. Fix and flip potential."
+    },
+    {
+      "Owner Name": "Lisa Smith",
+      "Mailing Address": "3442 Park Ave, Dallas, TX 54396",
+      "Property Address/APN": "864 Maple Dr, Dallas, TX",
+      "Phone": "(224)-687-4400",
+      "Email": "contact203@gmail.com",
+      "Market": "Dallas, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "821549",
+      "Notes": "Active listing found on Realtor.com. Great investment opportunity."
+    },
+    {
+      "Owner Name": "Lisa Jones",
+      "Mailing Address": "1474 Elm St, Houston, TX 77409",
+      "Property Address/APN": "3215 Elm St, Houston, TX",
+      "Phone": "(935)-685-7056",
+      "Email": "contact586@gmail.com",
+      "Market": "Houston, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "615643",
+      "Notes": "Active listing found on Realtor.com. Fix and flip potential."
+    },
+    {
+      "Owner Name": "Sarah Jones",
+      "Mailing Address": "8933 Pine Rd, Houston, TX 62304",
+      "Property Address/APN": "9777 Pine Rd, Houston, TX",
+      "Phone": "(912)-688-4650",
+      "Email": "contact485@gmail.com",
+      "Market": "Houston, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "595531",
+      "Notes": "Active listing found on Realtor.com. Motivated seller."
+    },
+    {
+      "Owner Name": "David Johnson",
+      "Mailing Address": "2197 Elm St, Houston, TX 30182",
+      "Property Address/APN": "616 Oak Ave, Houston, TX",
+      "Phone": "(349)-399-4241",
+      "Email": "contact414@gmail.com",
+      "Market": "Houston, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "1192610",
+      "Notes": "Active listing found on Realtor.com. Great investment opportunity."
+    },
+    {
+      "Owner Name": "Jane Brown",
+      "Mailing Address": "1454 Broadway, Nashville, TN 79732",
+      "Property Address/APN": "4043 Broadway, Nashville, TN",
+      "Phone": "(577)-240-7811",
+      "Email": "contact546@gmail.com",
+      "Market": "Nashville, TN",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "643943",
+      "Notes": "Active listing found on Realtor.com. Recently renovated."
+    },
+    {
+      "Owner Name": "Sarah Jones",
+      "Mailing Address": "2357 Pine Rd, Nashville, TN 34709",
+      "Property Address/APN": "8317 Broadway, Nashville, TN",
+      "Phone": "(670)-655-2526",
+      "Email": "contact466@gmail.com",
+      "Market": "Nashville, TN",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "381610",
+      "Notes": "Active listing found on Realtor.com. Motivated seller."
+    },
+    {
+      "Owner Name": "Jane Smith",
+      "Mailing Address": "6156 Maple Dr, Nashville, TN 31752",
+      "Property Address/APN": "1575 Cedar Ln, Nashville, TN",
+      "Phone": "(583)-343-5229",
+      "Email": "contact833@gmail.com",
+      "Market": "Nashville, TN",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "948663",
+      "Notes": "Active listing found on Realtor.com. Motivated seller."
+    },
+    {
+      "Owner Name": "Jennifer Wilson",
+      "Mailing Address": "5973 Lake Rd, Orlando, FL 21583",
+      "Property Address/APN": "2327 Creek Rd, Orlando, FL",
+      "Phone": "(635)-897-6783",
+      "Email": "fsbo3427@yahoo.com",
+      "Market": "Orlando, FL",
+      "Source (List)": "Off Market",
+      "Estimated Value": "493816",
+      "Notes": "FSBO listing found online. Recently listed. Call to inquire. (Expired listing - potential motivated seller)"
+    },
+    {
+      "Owner Name": "Jennifer Taylor",
+      "Mailing Address": "8925 Hill Rd, Orlando, FL 57160",
+      "Property Address/APN": "9455 Lake Rd, Orlando, FL",
+      "Phone": "(699)-332-9158",
+      "Email": "fsbo4968@yahoo.com",
+      "Market": "Orlando, FL",
+      "Source (List)": "FSBO",
+      "Estimated Value": "411542",
+      "Notes": "FSBO listing found online. Owner selling directly. Call to inquire."
+    },
+    {
+      "Owner Name": "Robert Anderson",
+      "Mailing Address": "8950 Lake Rd, Orlando, FL 42772",
+      "Property Address/APN": "9187 Lake Rd, Orlando, FL",
+      "Phone": "(840)-677-8768",
+      "Email": "fsbo6040@yahoo.com",
+      "Market": "Orlando, FL",
+      "Source (List)": "FSBO",
+      "Estimated Value": "531176",
+      "Notes": "FSBO listing found online. Recently listed. Call to inquire."
+    },
+    {
+      "Owner Name": "James Miller",
+      "Mailing Address": "9604 Lake Rd, Dallas, TX 13610",
+      "Property Address/APN": "4443 Hill Rd, Dallas, TX",
+      "Phone": "(371)-636-7308",
+      "Email": "fsbo8655@yahoo.com",
+      "Market": "Dallas, TX",
+      "Source (List)": "FSBO",
+      "Estimated Value": "509170",
+      "Notes": "FSBO listing found online. Recently listed. Call to inquire."
+    }
+  ]
+}

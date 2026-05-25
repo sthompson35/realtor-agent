@@ -1,0 +1,1188 @@
+{% extends "base.html" %}
+{% block title %}Training Center — STLLC Toolkit{% endblock %}
+
+{% block extra_css %}
+<style>
+  .lesson-card { border-left: 4px solid #0d6efd; transition: transform .15s; }
+  .lesson-card:hover { transform: translateX(4px); }
+  .lesson-card.active { border-left-color: #198754; background: #f0fff4; }
+  .formula-box { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px;
+                 font-family: monospace; font-size: .9rem; padding: 12px 16px; }
+  .signal-buy  { color: #198754; font-weight: 700; }
+  .signal-hold { color: #fd7e14; font-weight: 700; }
+  .signal-pass { color: #dc3545; font-weight: 700; }
+  .calc-panel  { background: #fff; border: 1px solid #dee2e6; border-radius: 8px; padding: 20px; }
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; margin-top: 12px; }
+  .result-card { background: #f8f9fa; border-radius: 6px; padding: 12px; text-align: center; }
+  .result-card .val { font-size: 1.4rem; font-weight: 700; color: #0d6efd; }
+  .matrix-table th, .matrix-table td { text-align: center; font-size: .78rem; padding: 4px 6px; }
+  .matrix-buy  { background: #d1e7dd; }
+  .matrix-hold { background: #fff3cd; }
+  .matrix-pass { background: #f8d7da; }
+  .phase-bar   { height: 20px; background: #0d6efd; border-radius: 3px; }
+  .answer-key  { background: #fff3cd; border-left: 4px solid #ffc107; padding: 12px 16px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="fw-bold"><i class="fas fa-graduation-cap me-2 text-primary"></i>Training Center</h2>
+      <p class="text-muted mb-0">STLLC Complete System — 12 Lessons · 5 Case Studies · Live Calculators</p>
+    </div>
+    <div class="col-auto d-flex align-items-center gap-2">
+      <button class="btn btn-success" onclick="seedCaseStudies()">
+        <i class="fas fa-database me-1"></i>Seed Case Studies
+      </button>
+      <a href="/formulas" class="btn btn-outline-primary">
+        <i class="fas fa-square-root-alt me-1"></i>Formula Reference
+      </a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- ── Sidebar: lesson list ─────────────────────────────── -->
+    <div class="col-lg-3">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white fw-semibold">
+          <i class="fas fa-book-open me-1"></i>Lessons
+        </div>
+        <div class="list-group list-group-flush" id="lesson-list">
+          {% set lessons = [
+            ("1","Quick Start & System Setup","fas fa-rocket"),
+            ("2","Client Report & MAO Calculator","fas fa-file-invoice-dollar"),
+            ("3","Sensitivity Analysis (7×7 Grid)","fas fa-th"),
+            ("4","Stress Test — Best/Base/Worst","fas fa-exclamation-triangle"),
+            ("5","JV Partnership Waterfall","fas fa-handshake"),
+            ("6","Exit Strategy Comparison","fas fa-signs-post"),
+            ("7","Wholesale MAO & Assignment","fas fa-tag"),
+            ("8","Tax Estimator","fas fa-receipt"),
+            ("9","Construction Draw Schedule","fas fa-hard-hat"),
+            ("10","Comparable Sales Analysis","fas fa-balance-scale"),
+            ("11","Pipeline Management","fas fa-filter"),
+            ("12","Multi-Property Comparison","fas fa-list-ol"),
+          ] %}
+          {% for num, title, icon in lessons %}
+          <a href="#" class="list-group-item list-group-item-action lesson-link lesson-card py-2 px-3"
+             data-lesson="{{ num }}" onclick="showLesson('{{num}}'); return false;">
+            <i class="{{ icon }} me-2 text-primary"></i>
+            <span class="fw-semibold">L{{ num }}.</span> {{ title }}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Case Studies -->
+      <div class="card shadow-sm mt-3">
+        <div class="card-header bg-success text-white fw-semibold">
+          <i class="fas fa-home me-1"></i>Case Studies
+        </div>
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action py-2 px-3"
+             onclick="loadCase('CS1'); return false;">
+            <span class="fw-semibold">CS1</span> — 412 Elm St, Desloge MO
+          </a>
+          <a href="#" class="list-group-item list-group-item-action py-2 px-3"
+             onclick="loadCase('CS2'); return false;">
+            <span class="fw-semibold">CS2</span> — 789 Lead Belt Dr, Park Hills
+          </a>
+          <a href="#" class="list-group-item list-group-item-action py-2 px-3"
+             onclick="loadCase('CS3'); return false;">
+            <span class="fw-semibold">CS3</span> — 156 Silver Creek Ln, Bonne Terre
+          </a>
+          <a href="#" class="list-group-item list-group-item-action py-2 px-3"
+             onclick="loadCase('CS4'); return false;">
+            <span class="fw-semibold">CS4</span> — 220 W Columbia St, Farmington
+          </a>
+          <a href="#" class="list-group-item list-group-item-action py-2 px-3"
+             onclick="loadCase('CS5'); return false;">
+            <span class="fw-semibold">CS5</span> — 534 Oak Hill Rd, Park Hills
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Main content ─────────────────────────────────────── -->
+    <div class="col-lg-9">
+      <!-- Welcome screen -->
+      <div id="welcome-panel">
+        <div class="card shadow-sm mb-4">
+          <div class="card-body text-center py-5">
+            <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+            <h3 class="fw-bold">Welcome to the STLLC Training Center</h3>
+            <p class="text-muted">Select a lesson from the sidebar to begin. Each lesson includes formulas,
+              a live calculator pre-loaded with the case study data, exercises, and the answer key.</p>
+            <div class="row g-3 mt-2 text-start">
+              <div class="col-md-4">
+                <div class="card border-0 bg-light">
+                  <div class="card-body">
+                    <h6 class="fw-bold"><i class="fas fa-book text-primary me-2"></i>12 Lessons</h6>
+                    <small class="text-muted">From Quick Setup to Multi-Property Comparison</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card border-0 bg-light">
+                  <div class="card-body">
+                    <h6 class="fw-bold"><i class="fas fa-home text-success me-2"></i>5 Case Studies</h6>
+                    <small class="text-muted">Real MO properties from the workbook</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card border-0 bg-light">
+                  <div class="card-body">
+                    <h6 class="fw-bold"><i class="fas fa-calculator text-warning me-2"></i>Live Calculators</h6>
+                    <small class="text-muted">Run real numbers against the API instantly</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key formulas quick ref -->
+        <div class="card shadow-sm">
+          <div class="card-header fw-semibold">
+            <i class="fas fa-square-root-alt me-2 text-primary"></i>Key Formulas Quick Reference
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              {% set formulas = [
+                ("70% Rule MAO","ARV × 0.70 − Rehab","mao"),
+                ("ROI","(Net Profit ÷ Total In) × 100","roi"),
+                ("Cap Rate","(NOI ÷ Purchase Price) × 100","caprate"),
+                ("DSCR","NOI ÷ Annual Debt Service","dscr"),
+                ("Cash-on-Cash","(Annual Cash Flow ÷ Cash Invested) × 100","coc"),
+                ("NOI","Eff. Gross Income − Operating Expenses","noi"),
+                ("Depreciation","Building Value ÷ 27.5 years","dep"),
+                ("Equity Capture","ARV − Purchase − Rehab","equity"),
+                ("Break-Even Ratio","(Expenses+Debt) ÷ Gross Income","ber"),
+                ("Rent-to-Price","Monthly Rent ÷ Purchase Price × 100","rtp"),
+                ("GRM","Purchase Price ÷ Annual Gross Rent","grm"),
+                ("BRRRR Cash Left","All-In − (ARV × LTV) + Refi Costs","brrrr"),
+              ] %}
+              {% for name, formula, _ in formulas %}
+              <div class="col-md-6">
+                <div class="formula-box">
+                  <div class="fw-semibold text-primary">{{ name }}</div>
+                  <div>{{ formula }}</div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic lesson panel (hidden until lesson selected) -->
+      <div id="lesson-panel" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast for feedback -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999">
+  <div id="train-toast" class="toast align-items-center" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="train-toast-body">Done.</div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ──────────────────────────────────────────────────────────────────────────────
+// Case study data (mirrors DB seed — used to pre-fill calculators)
+// ──────────────────────────────────────────────────────────────────────────────
+const CASE_STUDIES = {
+  CS1: { label:"412 Elm St, Desloge MO", contract_price:85000, arv:155000, rehab_cost:28000,
+         monthly_rent:1100, taxes:1200, insurance:900, hold_months:5, sqft:1350,
+         beds:3, baths:2, strategy:"flip" },
+  CS2: { label:"789 Lead Belt Dr, Park Hills MO", contract_price:62000, arv:140000, rehab_cost:65000,
+         monthly_rent:1800, taxes:1500, insurance:1400, hold_months:8, sqft:2100,
+         beds:4, baths:2, strategy:"brrrr", refi_ltv:0.75 },
+  CS3: { label:"156 Silver Creek Ln, Bonne Terre MO", contract_price:35000, arv:105000, rehab_cost:38000,
+         monthly_rent:800, taxes:900, insurance:750, hold_months:3, sqft:950,
+         beds:3, baths:1, strategy:"wholesale", assignment_fee:5000 },
+  CS4: { label:"220 W Columbia St, Farmington MO", contract_price:125000, arv:285000, rehab_cost:95000,
+         monthly_rent:2200, taxes:2400, insurance:2000, hold_months:10, sqft:3200,
+         beds:4, baths:3, strategy:"flip" },
+  CS5: { label:"534 Oak Hill Rd, Park Hills MO", contract_price:78000, arv:168000, rehab_cost:35000,
+         monthly_rent:1300, taxes:1600, insurance:1100, hold_months:6, sqft:1550,
+         beds:3, baths:2, strategy:"flip", refi_ltv:0.75 },
+};
+
+let _activeCase = null;
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Lesson definitions
+// ──────────────────────────────────────────────────────────────────────────────
+const LESSONS = {
+  "1": {
+    title: "Quick Start & System Setup",
+    icon: "fas fa-rocket",
+    overview: `<p>Welcome to the STLLC Toolkit. This lesson covers the five key tabs you'll use every day:
+      Intake, Strategy Arsenal, Rehab Estimator, Outreach Tracker, and the Closed Deals Log.
+      <strong>Your job:</strong> Enter a property's details on the Intake sheet and let the system
+      calculate whether it's a BUY, HOLD, or PASS.</p>`,
+    formulas: [
+      ["MAO (70% Rule)","ARV × 0.70 − Rehab Costs"],
+      ["ROI","(Net Profit ÷ Total Investment) × 100"],
+      ["Decision","ROI ≥ 20% → BUY | ROI ≥ 10% → HOLD | else → PASS"],
+    ],
+    exercise: `Using CS1 (412 Elm St, Desloge): purchase $85K, ARV $155K, rehab $28K.<br>
+               Calculate the MAO and determine if this is a BUY, HOLD, or PASS.`,
+    answer: `MAO = $155,000 × 0.70 − $28,000 = <strong>$80,500</strong><br>
+             Net Profit ≈ $155,000 − $85,000 − $28,000 − holding/closing ≈ $29,600<br>
+             Total In ≈ $85,000 + $28,000 + ~$13,000 costs ≈ $126,000<br>
+             ROI ≈ $29,600 ÷ $126,000 ≈ <strong class="signal-buy">23.5% → BUY ✓</strong>`,
+    caseStudy: "CS1",
+    calcType: "exit",
+  },
+  "2": {
+    title: "Client Report & MAO Calculator",
+    icon: "fas fa-file-invoice-dollar",
+    overview: `<p>The Client Report pulls from the Intake sheet and packages the deal into a
+      professional summary for investors and sellers. Key output: <strong>Maximum Allowable Offer (MAO)</strong>
+      with three methods — 70% Rule, 65% Rule (conservative), and Buyer Profit Analysis.</p>`,
+    formulas: [
+      ["MAO 70%","ARV × 0.70 − Rehab"],
+      ["MAO 65%","ARV × 0.65 − Rehab (conservative)"],
+      ["Buyer Profit MAO","ARV − Rehab − Buyer Profit Target − Assignment Fee"],
+      ["Equity Capture","ARV − Purchase − Rehab"],
+    ],
+    exercise: `For CS3 (156 Silver Creek Ln): ARV $105K, Rehab $38K, Assignment Fee $5K.
+               Calculate all three MAO methods and determine GO/CAUTION/NO-GO.`,
+    answer: `MAO 70% = $105,000 × 0.70 − $38,000 = <strong>$35,500</strong><br>
+             MAO 65% = $105,000 × 0.65 − $38,000 = <strong>$30,250</strong><br>
+             Buyer Profit MAO = $105,000 − $38,000 − $21,000 − $5,000 = <strong>$41,000</strong><br>
+             Recommended = min($35,500, $41,000) = <strong>$35,500</strong><br>
+             Purchase $35,000 ≤ MAO → <strong class="signal-buy">GO ✓</strong>`,
+    caseStudy: "CS3",
+    calcType: "wholesale",
+  },
+  "3": {
+    title: "Sensitivity Analysis (7×7 Grid)",
+    icon: "fas fa-th",
+    overview: `<p>The 7×7 sensitivity grid shows 49 scenarios — every combination of purchase price
+      ±15% and ARV ±15% in 5% steps. Each cell shows net profit, ROI, and BUY/HOLD/PASS.
+      <strong>Goal:</strong> Understand your margin of safety and find the price bands where the deal stays viable.</p>`,
+    formulas: [
+      ["Grid Dimensions","Purchase Price: ±15% in 5% steps (7 cols)"],
+      ["","ARV: ±15% in 5% steps (7 rows)"],
+      ["Cell ROI","(Adj. ARV − Adj. Price − Rehab − Costs) ÷ Total In"],
+      ["Margin of Safety","Count of BUY cells ÷ 49 total cells"],
+    ],
+    exercise: `Run a sensitivity grid for CS1: Purchase $85K, ARV $155K, Rehab $28K.
+               How many of the 49 scenarios result in a BUY signal?`,
+    answer: `With a strong spread ($70K between purchase and ARV), expect <strong>20–30 BUY cells</strong>
+             in the upper-left quadrant (lower purchase / higher ARV combinations).<br>
+             The base case (0% adjustments) should show ROI ≈ 23.5% → BUY.`,
+    caseStudy: "CS1",
+    calcType: "sensitivity",
+  },
+  "4": {
+    title: "Stress Test — Best / Base / Worst",
+    icon: "fas fa-exclamation-triangle",
+    overview: `<p>The stress test asks: <em>what happens if things go wrong?</em> Three scenarios
+      test your deal against realistic multipliers. If it survives the Worst case, you're protected.</p>
+      <ul>
+        <li><strong>Best:</strong> ARV +10%, Rehab −10%, Rent +5%, Hold −10%, Vacancy ×0.5</li>
+        <li><strong>Base:</strong> No change from intake assumptions</li>
+        <li><strong>Worst:</strong> ARV −10%, Rehab +20%, Rent −5%, Hold +20%, Vacancy ×1.5</li>
+      </ul>`,
+    formulas: [
+      ["Break-Even Months","Total Investment ÷ Effective Monthly Rent"],
+      ["Effective Rent","Monthly Rent × (1 − Vacancy %)"],
+      ["Worst-Case Rule","Deal must profit ≥ $5,000 even in Worst scenario"],
+    ],
+    exercise: `Run a stress test for CS2 (BRRRR duplex): Purchase $62K, ARV $140K, Rehab $65K,
+               Monthly Rent $1,800. Does the deal survive the Worst scenario?`,
+    answer: `<strong>Worst case:</strong> ARV = $126K, Rehab = $78K, Rent = $1,710<br>
+             Total In ≈ $62K + $78K + ~$13K = $153K<br>
+             Net Profit = $126K − $153K = <strong class="signal-pass">−$27,000 → PASS (Worst)</strong><br>
+             <em>This is expected for BRRRR — evaluate on CoC after refi, not flip profit.</em>`,
+    caseStudy: "CS2",
+    calcType: "stress",
+  },
+  "5": {
+    title: "JV Partnership Waterfall",
+    icon: "fas fa-handshake",
+    overview: `<p>Joint ventures split capital and profit. The waterfall distributes in order:
+      (1) Management fee, (2) Preferred returns per partner, (3) Remaining profit splits.</p>
+      <p>CS4 example: 70/30 capital split (investor/operator), 50/50 profit split after preferred returns.</p>`,
+    formulas: [
+      ["Management Fee","Total Capital × 2%"],
+      ["Preferred Return","Partner Capital × 8% (per partner)"],
+      ["Remaining","After pref returns — split by profit_split_pct"],
+      ["Partner ROI","Total Return ÷ Capital Contributed × 100"],
+    ],
+    exercise: `CS4 (Farmington Victorian): Purchase $125K, ARV $285K, Rehab $95K.
+               Investor puts in $154K (70%), Operator $66K (30%). 50/50 profit split. 2% mgmt fee.
+               Net profit ≈ $45K. Calculate each partner's return and ROI.`,
+    answer: `Total Capital = $220K. Mgmt Fee = $4,400.<br>
+             Investor Preferred Return (8% of $154K) = $12,320.<br>
+             Operator Preferred Return (8% of $66K) = $5,280.<br>
+             Remaining = $45K − $4,400 − $12,320 − $5,280 = $23,000.<br>
+             Each gets 50%: $11,500.<br>
+             <strong>Investor total: $23,820 → ROI 15.5%</strong><br>
+             <strong>Operator total: $16,780 → ROI 25.4%</strong>`,
+    caseStudy: "CS4",
+    calcType: "jv",
+  },
+  "6": {
+    title: "Exit Strategy Comparison",
+    icon: "fas fa-signs-post",
+    overview: `<p>Before committing to a deal, compare all four exits side by side:
+      Fix &amp; Flip, Wholesale, Rental Hold, and BRRRR. The system recommends the highest
+      risk-adjusted ROI exit. Decision rules: ROI ≥ 20% → BUY | ROI ≥ 10% → HOLD | else → PASS.</p>`,
+    formulas: [
+      ["Flip ROI","(ARV − Total In) ÷ Total In × 100"],
+      ["Rental CoC","Annual Cash Flow ÷ Cash Invested × 100"],
+      ["BRRRR Cash Left","All-In Cost − (ARV × LTV) + Refi Costs"],
+      ["Wholesale Profit","Contract Price − MAO (if positive)"],
+    ],
+    exercise: `Compare all exits for CS5 (534 Oak Hill Rd): Purchase $78K, ARV $168K, Rehab $35K,
+               Rent $1,300/mo, Hold 6mo. Which exit is recommended?`,
+    answer: `<strong>Flip:</strong> Total In ≈ $130K, Net Profit ≈ $38K → ROI ≈ 29% → BUY<br>
+             <strong>Wholesale:</strong> MAO 70% = $82.6K > Purchase → Assignment fee positive<br>
+             <strong>BRRRR:</strong> Refi at 75% = $126K, Cash Left In ≈ $4K → CoC very high<br>
+             <strong class="signal-buy">Recommended: Fix & Flip or BRRRR</strong>`,
+    caseStudy: "CS5",
+    calcType: "exit",
+  },
+  "7": {
+    title: "Wholesale MAO & Assignment",
+    icon: "fas fa-tag",
+    overview: `<p>Wholesaling locks up a property at your MAO, then assigns the contract to a cash buyer
+      for an assignment fee. Three MAO methods guard your spread. GO/CAUTION/NO-GO tells you instantly
+      if there's enough room to wholesale profitably.</p>`,
+    formulas: [
+      ["MAO 70%","ARV × 0.70 − Rehab"],
+      ["MAO 65%","ARV × 0.65 − Rehab (conservative)"],
+      ["Buyer Profit MAO","ARV − Rehab − Buyer Profit (20% of ARV) − Assignment Fee"],
+      ["GO","Recommended MAO > 0 AND ≥ 50% of ARV"],
+      ["CAUTION","Recommended MAO > 0 but < 50% of ARV"],
+      ["NO-GO","Recommended MAO ≤ 0"],
+    ],
+    exercise: `CS3 has $2,400 in back taxes. Adjusted effective cost = $35,000 + $2,400 = $37,400.
+               ARV $105K, Rehab $38K, Assignment Fee $5K. Can you still wholesale profitably?`,
+    answer: `MAO 70% = $35,500. Purchase effectively $37,400 (with back taxes).<br>
+             $37,400 > $35,500 → MAO is below your cost. <strong class="signal-pass">NO-GO as-is</strong><br>
+             <em>Negotiate seller bottom to ≤$30,000 (no back tax assumption) to make it work.</em>`,
+    caseStudy: "CS3",
+    calcType: "wholesale",
+  },
+  "8": {
+    title: "Tax Estimator",
+    icon: "fas fa-receipt",
+    overview: `<p>Taxes eat profit if you don't plan. The estimator calculates your after-tax return
+      for flip and hold strategies using Missouri rates.</p>
+      <ul>
+        <li><strong>Flip (active/dealer):</strong> Federal 24% + MO 5% + SE Tax 15.3%</li>
+        <li><strong>Hold (passive):</strong> Federal 24% + MO 5% − Depreciation shelter</li>
+      </ul>`,
+    formulas: [
+      ["Depreciation","Building Value ÷ 27.5 years (land is non-depreciable)"],
+      ["Building Value","Purchase × (1 − Land Value %) — typically 80%"],
+      ["SE Tax","Net Profit × 15.3% (flip/wholesale only)"],
+      ["Effective Rate","Total Tax ÷ Net Profit × 100"],
+    ],
+    exercise: `CS1 flip profit ≈ $29,600. What is the after-tax profit? (Federal 24%, MO 5%, SE 15.3%)`,
+    answer: `SE Tax = $29,600 × 15.3% = $4,529<br>
+             Federal = $29,600 × 24% = $7,104<br>
+             MO State = $29,600 × 5% = $1,480<br>
+             Total Tax = $13,113 (44.3% effective rate)<br>
+             <strong>After-Tax Profit = $29,600 − $13,113 = $16,487</strong>`,
+    caseStudy: "CS1",
+    calcType: "taxes",
+  },
+  "9": {
+    title: "Construction Draw Schedule",
+    icon: "fas fa-hard-hat",
+    overview: `<p>Lenders and hard-money lenders release funds in draws tied to construction milestones.
+      The standard 6-phase schedule ensures funds arrive when the work is done — protecting both
+      you and your lender.</p>`,
+    formulas: [
+      ["Pre-Construction","10% — Permits, plans, mobilization"],
+      ["Demo & Rough-In","25% — Demo, framing, rough plumbing/electrical"],
+      ["MEP","25% — Mechanical, Electrical, Plumbing finals"],
+      ["Interior Finishes","20% — Drywall, flooring, cabinetry, fixtures"],
+      ["Exterior","15% — Siding, roofing, landscaping, paint"],
+      ["Punch List","5% — Final inspection, touch-ups, CO"],
+      ["Contingency","Add 10% on top of total for overruns"],
+    ],
+    exercise: `Create a draw schedule for CS4 (Farmington Victorian): $95,000 rehab budget.
+               How much is disbursed at each phase? What is the total with 10% contingency?`,
+    answer: `Pre-Con: $9,500 | Demo: $23,750 | MEP: $23,750 | Interior: $19,000 | Exterior: $14,250 | Punch: $4,750<br>
+             Contingency (10%): $9,500<br>
+             <strong>Total with Contingency: $104,500</strong>`,
+    caseStudy: "CS4",
+    calcType: "draw",
+  },
+  "10": {
+    title: "Comparable Sales Analysis",
+    icon: "fas fa-balance-scale",
+    overview: `<p>ARV is only as good as your comps. The 5-comp framework adjusts each sale price
+      for differences in sqft, bedrooms, bathrooms, age, and condition. Total adjustments are
+      capped at ±15% of each comp's sale price to stay credible.</p>`,
+    formulas: [
+      ["SqFt Adj","(Subject − Comp sqft) ÷ 100 × $20/100sqft"],
+      ["Bedroom Adj","(Subject − Comp beds) × $3,000"],
+      ["Bathroom Adj","(Subject − Comp baths) × $2,000"],
+      ["Age Adj","(Comp − Subject age) ÷ 5 years × $500"],
+      ["Condition Adj","(Subject − Comp score) × $5,000 (1–5 scale)"],
+      ["Reconciled ARV","Average of all adjusted comp prices"],
+    ],
+    exercise: `CS5 has 5 comps: $158K, $162K, $165K, $170K, $175.5K (all 1550 sqft, 3BR/2BA, similar age/condition).
+               No adjustments needed. What is the reconciled ARV?`,
+    answer: `Reconciled ARV = ($158,000 + $162,000 + $165,000 + $170,000 + $175,500) ÷ 5<br>
+             = $830,500 ÷ 5 = <strong>$166,100</strong><br>
+             (Training workbook uses $168,000 — slight difference from comp weighting choices)`,
+    caseStudy: "CS5",
+    calcType: "comps",
+  },
+  "11": {
+    title: "Pipeline Management",
+    icon: "fas fa-filter",
+    overview: `<p>Every deal in your pipeline has a probability of closing based on its stage.
+      Probability-weighting your pipeline ARV gives you a realistic forecast of what will
+      actually close — not just a gross list of everything you're chasing.</p>`,
+    formulas: [
+      ["Lead","10% close probability"],
+      ["Qualified / Prospect","25%"],
+      ["Offer Sent / Under Contract","50%"],
+      ["Due Diligence","75%"],
+      ["Closing","90%"],
+      ["Closed","100%"],
+      ["Dead","0%"],
+      ["Weighted Value","Stage Value × Probability"],
+    ],
+    exercise: `You have: 10 leads ($1.5M ARV), 3 qualified ($450K), 2 under contract ($280K), 1 closing ($165K).
+               Calculate the probability-weighted pipeline value.`,
+    answer: `Leads: $1.5M × 10% = $150,000<br>
+             Qualified: $450K × 25% = $112,500<br>
+             Under Contract: $280K × 50% = $140,000<br>
+             Closing: $165K × 90% = $148,500<br>
+             <strong>Weighted Total: $551,000</strong> (vs $2.395M gross)`,
+    caseStudy: null,
+    calcType: "pipeline",
+  },
+  "12": {
+    title: "Multi-Property Comparison",
+    icon: "fas fa-list-ol",
+    overview: `<p>When you have multiple deals competing for the same capital, rank them objectively.
+      The composite score weights four metrics: ROI 35%, Cash Flow 25%, Equity Capture 20%, Cap Rate 20%.
+      Each metric is normalized 0–100 within the group, then weighted. The top scorer is your best bet.</p>`,
+    formulas: [
+      ["Composite Score","ROI×35% + Cash Flow×25% + Equity×20% + Cap Rate×20%"],
+      ["Normalization","(Value − Min) ÷ (Max − Min) × 100"],
+      ["BUY","ROI ≥ 20%"],
+      ["HOLD","ROI ≥ 10%"],
+      ["PASS","ROI < 10%"],
+    ],
+    exercise: `Compare CS1 (ROI 23.5%, CF $0, Equity $42K, Cap 7%) vs CS5 (ROI 29%, CF $1.2K/yr, Equity $55K, Cap 8%).
+               Which ranks higher?`,
+    answer: `CS5 wins on ROI (29% vs 23.5%), Cash Flow ($1,200 vs $0), and Equity ($55K vs $42K).<br>
+             CS5 composite score will be higher. <strong>CS5 is the better capital deployment.</strong>`,
+    caseStudy: "CS5",
+    calcType: "compare",
+  },
+};
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Show lesson
+// ──────────────────────────────────────────────────────────────────────────────
+function showLesson(num) {
+  const lesson = LESSONS[num];
+  if (!lesson) return;
+
+  // Highlight sidebar
+  document.querySelectorAll('.lesson-link').forEach(el => el.classList.remove('active'));
+  const link = document.querySelector(`.lesson-link[data-lesson="${num}"]`);
+  if (link) link.classList.add('active');
+
+  // Hide welcome, show lesson panel
+  document.getElementById('welcome-panel').style.display = 'none';
+  const panel = document.getElementById('lesson-panel');
+  panel.style.display = 'block';
+
+  const cs = lesson.caseStudy ? CASE_STUDIES[lesson.caseStudy] : null;
+
+  panel.innerHTML = `
+    <div class="card shadow-sm mb-3">
+      <div class="card-header d-flex align-items-center">
+        <i class="${lesson.icon} me-2 text-primary"></i>
+        <span class="fw-bold">Lesson ${num}: ${lesson.title}</span>
+        ${cs ? `<span class="badge bg-success ms-auto">${lesson.caseStudy}: ${cs.label}</span>` : ''}
+      </div>
+      <div class="card-body">
+        <h6 class="fw-semibold text-primary">Overview</h6>
+        ${lesson.overview}
+
+        <h6 class="fw-semibold text-primary mt-3">Key Formulas</h6>
+        <div class="row g-2">
+          ${lesson.formulas.map(([name, formula]) => `
+            <div class="col-md-6">
+              <div class="formula-box">
+                ${name ? `<div class="fw-semibold">${name}</div>` : ''}
+                <div>${formula}</div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        ${lesson.exercise ? `
+          <h6 class="fw-semibold text-warning mt-3"><i class="fas fa-pencil-alt me-1"></i>Exercise</h6>
+          <p>${lesson.exercise}</p>
+        ` : ''}
+
+        ${lesson.answer ? `
+          <div class="answer-key mt-2">
+            <h6 class="fw-semibold mb-1"><i class="fas fa-key me-1 text-warning"></i>Answer Key</h6>
+            <p class="mb-0">${lesson.answer}</p>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+
+    <!-- Live Calculator -->
+    <div class="card shadow-sm">
+      <div class="card-header fw-semibold">
+        <i class="fas fa-calculator me-2 text-success"></i>Live Calculator
+        ${cs ? `<button class="btn btn-sm btn-outline-success float-end" onclick="loadCase('${lesson.caseStudy}')">
+          <i class="fas fa-upload me-1"></i>Load ${lesson.caseStudy}
+        </button>` : ''}
+      </div>
+      <div class="card-body" id="calc-body-${num}">
+        ${buildCalcForm(lesson.calcType, num, cs)}
+      </div>
+    </div>
+  `;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Build calculator forms
+// ──────────────────────────────────────────────────────────────────────────────
+function buildCalcForm(calcType, lessonNum, cs) {
+  const cv = (field, def=0) => cs ? (cs[field] ?? def) : def;
+
+  if (calcType === 'sensitivity') {
+    return `
+      <div class="row g-2">
+        <div class="col-md-3"><label class="form-label">Purchase Price</label>
+          <input class="form-control" id="s-price" type="number" value="${cv('contract_price',85000)}"></div>
+        <div class="col-md-3"><label class="form-label">ARV</label>
+          <input class="form-control" id="s-arv" type="number" value="${cv('arv',155000)}"></div>
+        <div class="col-md-3"><label class="form-label">Rehab Cost</label>
+          <input class="form-control" id="s-rehab" type="number" value="${cv('rehab_cost',28000)}"></div>
+        <div class="col-md-3"><label class="form-label">Hold Months</label>
+          <input class="form-control" id="s-hold" type="number" value="${cv('hold_months',6)}"></div>
+      </div>
+      <button class="btn btn-primary mt-3" onclick="runSensitivity()">
+        <i class="fas fa-th me-1"></i>Run 7×7 Grid
+      </button>
+      <div id="s-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'stress') {
+    return `
+      <div class="row g-2">
+        <div class="col-md-3"><label class="form-label">Purchase Price</label>
+          <input class="form-control" id="st-price" type="number" value="${cv('contract_price',62000)}"></div>
+        <div class="col-md-3"><label class="form-label">ARV</label>
+          <input class="form-control" id="st-arv" type="number" value="${cv('arv',140000)}"></div>
+        <div class="col-md-3"><label class="form-label">Rehab</label>
+          <input class="form-control" id="st-rehab" type="number" value="${cv('rehab_cost',65000)}"></div>
+        <div class="col-md-3"><label class="form-label">Monthly Rent</label>
+          <input class="form-control" id="st-rent" type="number" value="${cv('monthly_rent',1800)}"></div>
+        <div class="col-md-3 mt-2"><label class="form-label">Hold Months</label>
+          <input class="form-control" id="st-hold" type="number" value="${cv('hold_months',6)}"></div>
+      </div>
+      <button class="btn btn-warning mt-3" onclick="runStress()">
+        <i class="fas fa-exclamation-triangle me-1"></i>Run Stress Test
+      </button>
+      <div id="st-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'jv') {
+    return `
+      <div class="row g-2">
+        <div class="col-md-4"><label class="form-label">Total Profit ($)</label>
+          <input class="form-control" id="jv-profit" type="number" value="45000"></div>
+        <div class="col-md-4"><label class="form-label">Total Capital ($)</label>
+          <input class="form-control" id="jv-capital" type="number" value="220000"></div>
+        <div class="col-md-4"><label class="form-label">Mgmt Fee %</label>
+          <input class="form-control" id="jv-mgmt" type="number" value="2" step="0.5"></div>
+      </div>
+      <div class="row g-2 mt-1">
+        <div class="col-md-3"><label class="form-label">Partner 1 Capital</label>
+          <input class="form-control" id="jv-p1cap" type="number" value="154000"></div>
+        <div class="col-md-3"><label class="form-label">P1 Pref Return %</label>
+          <input class="form-control" id="jv-p1pref" type="number" value="8" step="0.5"></div>
+        <div class="col-md-3"><label class="form-label">P1 Profit Split %</label>
+          <input class="form-control" id="jv-p1split" type="number" value="50"></div>
+        <div class="col-md-3"><label class="form-label">Partner 1 Name</label>
+          <input class="form-control" id="jv-p1name" value="Investor"></div>
+      </div>
+      <div class="row g-2 mt-1">
+        <div class="col-md-3"><label class="form-label">Partner 2 Capital</label>
+          <input class="form-control" id="jv-p2cap" type="number" value="66000"></div>
+        <div class="col-md-3"><label class="form-label">P2 Pref Return %</label>
+          <input class="form-control" id="jv-p2pref" type="number" value="8" step="0.5"></div>
+        <div class="col-md-3"><label class="form-label">P2 Profit Split %</label>
+          <input class="form-control" id="jv-p2split" type="number" value="50"></div>
+        <div class="col-md-3"><label class="form-label">Partner 2 Name</label>
+          <input class="form-control" id="jv-p2name" value="Operator"></div>
+      </div>
+      <button class="btn btn-primary mt-3" onclick="runJV()">
+        <i class="fas fa-handshake me-1"></i>Calculate JV Waterfall
+      </button>
+      <div id="jv-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'exit') {
+    return `
+      <div class="row g-2">
+        <div class="col-md-3"><label class="form-label">Purchase Price</label>
+          <input class="form-control" id="ex-price" type="number" value="${cv('contract_price',78000)}"></div>
+        <div class="col-md-3"><label class="form-label">ARV</label>
+          <input class="form-control" id="ex-arv" type="number" value="${cv('arv',168000)}"></div>
+        <div class="col-md-3"><label class="form-label">Rehab</label>
+          <input class="form-control" id="ex-rehab" type="number" value="${cv('rehab_cost',35000)}"></div>
+        <div class="col-md-3"><label class="form-label">Monthly Rent</label>
+          <input class="form-control" id="ex-rent" type="number" value="${cv('monthly_rent',1300)}"></div>
+        <div class="col-md-3 mt-2"><label class="form-label">Hold Months</label>
+          <input class="form-control" id="ex-hold" type="number" value="${cv('hold_months',6)}"></div>
+        <div class="col-md-3 mt-2"><label class="form-label">Taxes (annual)</label>
+          <input class="form-control" id="ex-taxes" type="number" value="${cv('taxes',1600)}"></div>
+        <div class="col-md-3 mt-2"><label class="form-label">Insurance (annual)</label>
+          <input class="form-control" id="ex-ins" type="number" value="${cv('insurance',1100)}"></div>
+        <div class="col-md-3 mt-2"><label class="form-label">Refi LTV</label>
+          <input class="form-control" id="ex-ltv" type="number" value="${cv('refi_ltv',0.75)}" step="0.01"></div>
+      </div>
+      <button class="btn btn-success mt-3" onclick="runExit()">
+        <i class="fas fa-signs-post me-1"></i>Compare All Exits
+      </button>
+      <div id="ex-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'wholesale') {
+    return `
+      <div class="row g-2">
+        <div class="col-md-3"><label class="form-label">ARV</label>
+          <input class="form-control" id="ws-arv" type="number" value="${cv('arv',105000)}"></div>
+        <div class="col-md-3"><label class="form-label">Rehab</label>
+          <input class="form-control" id="ws-rehab" type="number" value="${cv('rehab_cost',38000)}"></div>
+        <div class="col-md-3"><label class="form-label">Assignment Fee</label>
+          <input class="form-control" id="ws-fee" type="number" value="${cv('assignment_fee',5000)}"></div>
+        <div class="col-md-3"><label class="form-label">Buyer Profit Target %</label>
+          <input class="form-control" id="ws-bprofit" type="number" value="20" step="1"></div>
+      </div>
+      <button class="btn btn-warning mt-3" onclick="runWholesale()">
+        <i class="fas fa-tag me-1"></i>Calculate MAO
+      </button>
+      <div id="ws-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'taxes') {
+    return `
+      <div class="row g-2">
+        <div class="col-md-3"><label class="form-label">Net Profit</label>
+          <input class="form-control" id="tx-profit" type="number" value="${cv('contract_price') ? Math.round((cv('arv') - cv('contract_price') - cv('rehab_cost'))*0.7) : 29600}"></div>
+        <div class="col-md-3"><label class="form-label">Strategy</label>
+          <select class="form-select" id="tx-strategy">
+            <option value="flip">Fix & Flip</option>
+            <option value="wholesale">Wholesale</option>
+            <option value="hold">Hold/BRRRR</option>
+          </select></div>
+        <div class="col-md-3"><label class="form-label">Purchase Price</label>
+          <input class="form-control" id="tx-purchase" type="number" value="${cv('contract_price',85000)}"></div>
+        <div class="col-md-3"><label class="form-label">Hold Years</label>
+          <input class="form-control" id="tx-years" type="number" value="1" step="0.5"></div>
+      </div>
+      <button class="btn btn-danger mt-3" onclick="runTaxes()">
+        <i class="fas fa-receipt me-1"></i>Calculate Taxes
+      </button>
+      <div id="tx-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'draw') {
+    return `
+      <div class="row g-2">
+        <div class="col-md-4"><label class="form-label">Total Rehab Budget</label>
+          <input class="form-control" id="dr-rehab" type="number" value="${cv('rehab_cost',95000)}"></div>
+        <div class="col-md-4"><label class="form-label">Contingency %</label>
+          <input class="form-control" id="dr-cont" type="number" value="10" step="1"></div>
+      </div>
+      <button class="btn btn-primary mt-3" onclick="runDraw()">
+        <i class="fas fa-hard-hat me-1"></i>Generate Draw Schedule
+      </button>
+      <div id="dr-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'comps') {
+    return `
+      <p class="text-muted">Subject property details and comparable sales (up to 5 comps).</p>
+      <div class="row g-2 border-bottom pb-2 mb-2">
+        <div class="col-12 fw-semibold">Subject Property</div>
+        <div class="col-md-2"><label class="form-label">SqFt</label>
+          <input class="form-control" id="co-sqft" type="number" value="${cv('sqft',1550)}"></div>
+        <div class="col-md-2"><label class="form-label">Beds</label>
+          <input class="form-control" id="co-beds" type="number" value="${cv('beds',3)}"></div>
+        <div class="col-md-2"><label class="form-label">Baths</label>
+          <input class="form-control" id="co-baths" type="number" value="${cv('baths',2)}"></div>
+        <div class="col-md-2"><label class="form-label">Age (yrs)</label>
+          <input class="form-control" id="co-age" type="number" value="30"></div>
+        <div class="col-md-2"><label class="form-label">Condition (1-5)</label>
+          <input class="form-control" id="co-cond" type="number" value="3" min="1" max="5"></div>
+      </div>
+      <div id="comp-rows">
+        ${[158000,162000,165000,170000,175500].map((p,i) => `
+          <div class="row g-2 mb-1 comp-row">
+            <div class="col-md-3"><label class="form-label">Comp ${i+1} Address</label>
+              <input class="form-control comp-address" value="Comp ${i+1}"></div>
+            <div class="col-md-2"><label class="form-label">Sale Price</label>
+              <input class="form-control comp-price" type="number" value="${p}"></div>
+            <div class="col-md-1"><label class="form-label">SqFt</label>
+              <input class="form-control comp-sqft" type="number" value="${cv('sqft',1550)}"></div>
+            <div class="col-md-1"><label class="form-label">Beds</label>
+              <input class="form-control comp-beds" type="number" value="${cv('beds',3)}"></div>
+            <div class="col-md-1"><label class="form-label">Baths</label>
+              <input class="form-control comp-baths" type="number" value="${cv('baths',2)}"></div>
+            <div class="col-md-1"><label class="form-label">Age</label>
+              <input class="form-control comp-age" type="number" value="30"></div>
+            <div class="col-md-1"><label class="form-label">Cond</label>
+              <input class="form-control comp-cond" type="number" value="3" min="1" max="5"></div>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-success mt-3" onclick="runComps()">
+        <i class="fas fa-balance-scale me-1"></i>Analyze Comps
+      </button>
+      <div id="co-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'pipeline') {
+    return `<p class="text-muted">Pipeline metrics load from your live DB automatically.</p>
+      <button class="btn btn-primary" onclick="runPipeline()">
+        <i class="fas fa-filter me-1"></i>Load Live Pipeline Metrics
+      </button>
+      <div id="pi-result" class="mt-3"></div>`;
+  }
+
+  if (calcType === 'compare') {
+    return `<p class="text-muted">Compare up to 4 properties side by side. Fill in key metrics for each.</p>
+      <div id="compare-rows">
+        ${[
+          {n:'CS1 — Elm St',pr:85000,roi:23.5,cf:0,eq:42000,cap:7},
+          {n:'CS5 — Oak Hill',pr:78000,roi:29,cf:1200,eq:55000,cap:8},
+        ].map((p,i)=>`
+          <div class="row g-2 mb-2">
+            <div class="col-md-3"><label class="form-label">Property ${i+1} Name</label>
+              <input class="form-control cmp-name" value="${p.n}"></div>
+            <div class="col-md-2"><label class="form-label">Price ($)</label>
+              <input class="form-control cmp-price" type="number" value="${p.pr}"></div>
+            <div class="col-md-1"><label class="form-label">ROI %</label>
+              <input class="form-control cmp-roi" type="number" value="${p.roi}" step="0.1"></div>
+            <div class="col-md-2"><label class="form-label">Cash Flow (annual)</label>
+              <input class="form-control cmp-cf" type="number" value="${p.cf}"></div>
+            <div class="col-md-2"><label class="form-label">Equity Capture</label>
+              <input class="form-control cmp-eq" type="number" value="${p.eq}"></div>
+            <div class="col-md-2"><label class="form-label">Cap Rate %</label>
+              <input class="form-control cmp-cap" type="number" value="${p.cap}" step="0.1"></div>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-primary mt-2" onclick="runCompare()">
+        <i class="fas fa-list-ol me-1"></i>Rank Properties
+      </button>
+      <div id="cmp-result" class="mt-3"></div>`;
+  }
+
+  return '<p class="text-muted">No calculator available for this lesson type.</p>';
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Load case study data into active calculator
+// ──────────────────────────────────────────────────────────────────────────────
+function loadCase(csKey) {
+  _activeCase = CASE_STUDIES[csKey];
+  toast(`Loaded ${csKey}: ${_activeCase.label}`);
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// API call helpers
+// ──────────────────────────────────────────────────────────────────────────────
+async function apiPost(url, body) {
+  const res = await fetch(url, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  return res.json();
+}
+
+function fmt$(v) { return v == null ? '—' : '$' + Number(v).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0}); }
+function fmt%(v) { return v == null ? '—' : Number(v).toFixed(1) + '%'; }
+function sigClass(s) { return s==='BUY'||s==='GO'?'signal-buy':s==='HOLD'||s==='CAUTION'?'signal-hold':'signal-pass'; }
+
+async function runSensitivity() {
+  const body = {
+    contract_price: +document.getElementById('s-price').value,
+    arv: +document.getElementById('s-arv').value,
+    rehab_cost: +document.getElementById('s-rehab').value,
+    hold_months: +document.getElementById('s-hold').value,
+  };
+  const data = await apiPost('/api/calculate/sensitivity', body);
+  const el = document.getElementById('s-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  const priceOff = data.price_offsets_pct;
+  const matrix   = data.matrix;
+  let html = `<p><strong>${data.cells_viable} / ${data.cells_total}</strong> scenarios are BUY or HOLD.</p>
+    <div class="table-responsive"><table class="table table-bordered matrix-table">
+    <thead><tr><th>ARV↓ / Price→</th>
+    ${priceOff.map(p=>`<th>${p>0?'+':''}${p}%</th>`).join('')}
+    </tr></thead><tbody>`;
+  matrix.forEach((row, ri) => {
+    html += `<tr><th>${data.arv_offsets_pct[ri]>0?'+':''}${data.arv_offsets_pct[ri]}%</th>`;
+    row.forEach(c => {
+      const cls = c.signal==='BUY'?'matrix-buy':c.signal==='HOLD'?'matrix-hold':'matrix-pass';
+      html += `<td class="${cls}" title="Net: ${fmt$(c.net_profit)}">${c.roi_pct}%<br><small>${c.signal}</small></td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  el.innerHTML = html;
+}
+
+async function runStress() {
+  const body = {
+    contract_price: +document.getElementById('st-price').value,
+    arv: +document.getElementById('st-arv').value,
+    rehab_cost: +document.getElementById('st-rehab').value,
+    monthly_rent: +document.getElementById('st-rent').value,
+    hold_months: +document.getElementById('st-hold').value,
+  };
+  const data = await apiPost('/api/calculate/stress-test', body);
+  const el = document.getElementById('st-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  const s = data.scenarios;
+  el.innerHTML = `<div class="row g-3">
+    ${['best','base','worst'].map(name => {
+      const sc = s[name];
+      const badge = name==='best'?'bg-success':name==='base'?'bg-primary':'bg-danger';
+      return `<div class="col-md-4">
+        <div class="result-card">
+          <span class="badge ${badge} mb-2 text-capitalize">${name} Case</span>
+          <div class="val ${sigClass(sc.signal)}">${sc.roi_pct}%</div>
+          <div class="small text-muted">ROI</div>
+          <div class="mt-2 small">Net Profit: <strong>${fmt$(sc.net_profit)}</strong></div>
+          <div class="small">Break-Even: <strong>${sc.break_even_months ?? '—'} mo</strong></div>
+          <div class="mt-1"><span class="badge ${sc.signal==='BUY'?'bg-success':sc.signal==='HOLD'?'bg-warning text-dark':'bg-danger'}">${sc.signal}</span></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+async function runJV() {
+  const body = {
+    total_profit: +document.getElementById('jv-profit').value,
+    total_capital: +document.getElementById('jv-capital').value,
+    management_fee_pct: +document.getElementById('jv-mgmt').value / 100,
+    partners: [
+      {name: document.getElementById('jv-p1name').value,
+       capital: +document.getElementById('jv-p1cap').value,
+       preferred_return_pct: +document.getElementById('jv-p1pref').value / 100,
+       profit_split_pct: +document.getElementById('jv-p1split').value / 100},
+      {name: document.getElementById('jv-p2name').value,
+       capital: +document.getElementById('jv-p2cap').value,
+       preferred_return_pct: +document.getElementById('jv-p2pref').value / 100,
+       profit_split_pct: +document.getElementById('jv-p2split').value / 100},
+    ],
+  };
+  const data = await apiPost('/api/calculate/jv', body);
+  const el = document.getElementById('jv-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  let html = `<div class="row g-2 mb-3">
+    <div class="col-md-4 result-card"><div class="small text-muted">Total Profit</div><div class="val">${fmt$(data.total_profit)}</div></div>
+    <div class="col-md-4 result-card"><div class="small text-muted">Mgmt Fee</div><div class="val">${fmt$(data.management_fee)}</div></div>
+    <div class="col-md-4 result-card"><div class="small text-muted">For Split</div><div class="val">${fmt$(data.remaining_for_split)}</div></div>
+  </div>
+  <table class="table table-sm table-bordered">
+    <thead><tr><th>Partner</th><th>Capital</th><th>Pref Return</th><th>Split Profit</th><th>Total Return</th><th>ROI %</th></tr></thead>
+    <tbody>`;
+  data.partners.forEach(p => {
+    html += `<tr>
+      <td>${p.name} <small class="text-muted">(${p.capital_pct}%)</small></td>
+      <td>${fmt$(p.capital)}</td>
+      <td>${fmt$(p.preferred_return)}</td>
+      <td>${fmt$(p.split_profit)}</td>
+      <td class="fw-bold">${fmt$(p.total_return)}</td>
+      <td class="${sigClass(p.roi_pct>=20?'BUY':p.roi_pct>=10?'HOLD':'PASS')}">${p.roi_pct}%</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+async function runExit() {
+  const body = {
+    contract_price: +document.getElementById('ex-price').value,
+    arv: +document.getElementById('ex-arv').value,
+    rehab_cost: +document.getElementById('ex-rehab').value,
+    monthly_rent: +document.getElementById('ex-rent').value,
+    hold_months: +document.getElementById('ex-hold').value,
+    taxes: +document.getElementById('ex-taxes').value,
+    insurance: +document.getElementById('ex-ins').value,
+    refi_ltv: +document.getElementById('ex-ltv').value,
+  };
+  const data = await apiPost('/api/calculate/exit-strategy', body);
+  const el = document.getElementById('ex-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  const exits = [
+    {key:'Fix_and_Flip', label:'Fix & Flip', icon:'fas fa-hammer',
+     val: `ROI: ${data.Fix_and_Flip.roi_pct}%`, sub: `Net Profit: ${fmt$(data.Fix_and_Flip.net_profit)}`},
+    {key:'Wholesale', label:'Wholesale', icon:'fas fa-tag',
+     val: `Fee: ${fmt$(data.Wholesale.assignment_fee)}`, sub: `MAO: ${fmt$(data.Wholesale.mao)}`},
+    {key:'Rental_Hold', label:'Rental Hold', icon:'fas fa-key',
+     val: `CoC: ${data.Rental_Hold.coc_return_pct}%`, sub: `DSCR: ${data.Rental_Hold.dscr}`},
+    {key:'BRRRR', label:'BRRRR', icon:'fas fa-recycle',
+     val: `Cash Left: ${fmt$(data.BRRRR.cash_left_in)}`, sub: `Equity: ${fmt$(data.BRRRR.equity_capture)}`},
+  ];
+
+  el.innerHTML = `<div class="row g-3 mb-2">
+    ${exits.map(e => {
+      const rec = e.key === data.recommended;
+      const sc = data[e.key];
+      const sig = sc.signal || sc.viable ? (sc.roi_pct >= 20 || sc.coc_return_pct >= 20 ? 'BUY' : 'HOLD') : 'PASS';
+      return `<div class="col-md-3">
+        <div class="result-card border ${rec?'border-success border-2':''}">
+          ${rec ? '<span class="badge bg-success mb-1">★ RECOMMENDED</span>' : ''}
+          <i class="${e.icon} text-primary mb-1 d-block"></i>
+          <div class="fw-semibold">${e.label}</div>
+          <div class="val small mt-1">${e.val}</div>
+          <div class="small text-muted">${e.sub}</div>
+          <div class="mt-1"><span class="badge ${sc.viable?'bg-success':'bg-secondary'}">${sc.signal || (sc.viable?'GO':'NO-GO')}</span></div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+async function runWholesale() {
+  const body = {
+    arv: +document.getElementById('ws-arv').value,
+    rehab_cost: +document.getElementById('ws-rehab').value,
+    assignment_fee: +document.getElementById('ws-fee').value,
+    buyer_target_profit_pct: +document.getElementById('ws-bprofit').value / 100,
+  };
+  const data = await apiPost('/api/calculate/wholesale', body);
+  const el = document.getElementById('ws-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  el.innerHTML = `
+    <div class="result-grid">
+      <div class="result-card"><div class="small text-muted">MAO 70% Rule</div><div class="val">${fmt$(data.mao_70_rule)}</div></div>
+      <div class="result-card"><div class="small text-muted">MAO 65% Rule</div><div class="val">${fmt$(data.mao_65_rule)}</div></div>
+      <div class="result-card"><div class="small text-muted">MAO Buyer Analysis</div><div class="val">${fmt$(data.mao_buyer_analysis)}</div></div>
+      <div class="result-card"><div class="small text-muted">Recommended MAO</div><div class="val text-success">${fmt$(data.recommended_mao)}</div></div>
+      <div class="result-card"><div class="small text-muted">Buyer Profit</div><div class="val">${fmt$(data.buyer_profit)}</div></div>
+      <div class="result-card"><div class="small text-muted">Viability</div>
+        <div class="val ${sigClass(data.viability)}">${data.viability}</div></div>
+    </div>`;
+}
+
+async function runTaxes() {
+  const body = {
+    net_profit: +document.getElementById('tx-profit').value,
+    strategy: document.getElementById('tx-strategy').value,
+    purchase_price: +document.getElementById('tx-purchase').value,
+    hold_years: +document.getElementById('tx-years').value,
+  };
+  const data = await apiPost('/api/calculate/taxes', body);
+  const el = document.getElementById('tx-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  el.innerHTML = `
+    <div class="result-grid">
+      <div class="result-card"><div class="small text-muted">Gross Profit</div><div class="val">${fmt$(data.net_profit)}</div></div>
+      <div class="result-card"><div class="small text-muted">Depreciation Benefit</div><div class="val">${fmt$(data.depreciation_benefit)}</div></div>
+      <div class="result-card"><div class="small text-muted">Federal Tax (${(data.rates_used.federal*100).toFixed(0)}%)</div><div class="val text-danger">${fmt$(data.federal_tax)}</div></div>
+      <div class="result-card"><div class="small text-muted">State Tax (${(data.rates_used.state*100).toFixed(0)}%)</div><div class="val text-danger">${fmt$(data.state_tax)}</div></div>
+      ${data.se_tax > 0 ? `<div class="result-card"><div class="small text-muted">SE Tax (15.3%)</div><div class="val text-danger">${fmt$(data.se_tax)}</div></div>` : ''}
+      <div class="result-card"><div class="small text-muted">Total Tax</div><div class="val text-danger">${fmt$(data.total_tax)}</div></div>
+      <div class="result-card"><div class="small text-muted">After-Tax Profit</div><div class="val text-success">${fmt$(data.after_tax_profit)}</div></div>
+      <div class="result-card"><div class="small text-muted">Effective Rate</div><div class="val">${data.effective_rate_pct}%</div></div>
+    </div>`;
+}
+
+async function runDraw() {
+  const body = {
+    rehab_cost: +document.getElementById('dr-rehab').value,
+    contingency_pct: +document.getElementById('dr-cont').value / 100,
+  };
+  const data = await apiPost('/api/calculate/draw-schedule', body);
+  const el = document.getElementById('dr-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  let html = `<table class="table table-sm table-bordered"><thead><tr>
+    <th>Phase</th><th>%</th><th>Amount</th><th>Cumulative</th><th>Progress</th>
+  </tr></thead><tbody>`;
+  data.phases.forEach(p => {
+    html += `<tr>
+      <td><strong>${p.phase}</strong><br><small class="text-muted">${p.description}</small></td>
+      <td>${(p.pct*100).toFixed(0)}%</td>
+      <td>${fmt$(p.amount)}</td>
+      <td>${fmt$(p.cumulative)} (${p.cumulative_pct}%)</td>
+      <td><div class="phase-bar" style="width:${p.cumulative_pct}%"></div></td>
+    </tr>`;
+  });
+  html += `</tbody><tfoot><tr class="table-warning">
+    <td colspan="2"><strong>Contingency (${(data.contingency_pct*100).toFixed(0)}%)</strong></td>
+    <td colspan="3">${fmt$(data.contingency)}</td>
+  </tr><tr class="table-success fw-bold">
+    <td colspan="2">Total with Contingency</td>
+    <td colspan="3">${fmt$(data.total_with_contingency)}</td>
+  </tr></tfoot></table>`;
+  el.innerHTML = html;
+}
+
+async function runComps() {
+  const subject = {
+    sqft: +document.getElementById('co-sqft').value,
+    beds: +document.getElementById('co-beds').value,
+    baths: +document.getElementById('co-baths').value,
+    age: +document.getElementById('co-age').value,
+    condition_score: +document.getElementById('co-cond').value,
+  };
+  const rows = document.querySelectorAll('.comp-row');
+  const comps = Array.from(rows).map(r => ({
+    address: r.querySelector('.comp-address').value,
+    sale_price: +r.querySelector('.comp-price').value,
+    sqft: +r.querySelector('.comp-sqft').value,
+    beds: +r.querySelector('.comp-beds').value,
+    baths: +r.querySelector('.comp-baths').value,
+    age: +r.querySelector('.comp-age').value,
+    condition_score: +r.querySelector('.comp-cond').value,
+  })).filter(c => c.sale_price > 0);
+
+  const data = await apiPost('/api/calculate/comps', {subject, comps});
+  const el = document.getElementById('co-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  let html = `
+    <div class="result-grid mb-3">
+      <div class="result-card"><div class="small text-muted">Low Adjusted</div><div class="val">${fmt$(data.low_adjusted)}</div></div>
+      <div class="result-card"><div class="small text-muted">Median Adjusted</div><div class="val">${fmt$(data.median_adjusted)}</div></div>
+      <div class="result-card"><div class="small text-muted">High Adjusted</div><div class="val">${fmt$(data.high_adjusted)}</div></div>
+      <div class="result-card"><div class="small text-muted">Reconciled ARV</div><div class="val text-success">${fmt$(data.reconciled_arv)}</div></div>
+      ${data.price_per_sqft ? `<div class="result-card"><div class="small text-muted">$/SqFt</div><div class="val">${fmt$(data.price_per_sqft)}</div></div>` : ''}
+    </div>
+    <table class="table table-sm table-bordered"><thead><tr>
+      <th>Comp</th><th>Sale Price</th><th>Raw Adj</th><th>Adj %</th><th>Capped?</th><th>Adjusted Price</th>
+    </tr></thead><tbody>`;
+  data.comps.forEach(c => {
+    html += `<tr>
+      <td>${c.address}</td><td>${fmt$(c.sale_price)}</td>
+      <td class="${c.raw_adjustment>=0?'text-success':'text-danger'}">${fmt$(c.raw_adjustment)}</td>
+      <td>${c.adj_pct}%</td>
+      <td>${c.capped?'<span class="badge bg-warning text-dark">Yes</span>':'No'}</td>
+      <td class="fw-bold">${fmt$(c.adjusted_price)}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+async function runPipeline() {
+  const data = await fetch('/api/pipeline/metrics').then(r => r.json());
+  const el = document.getElementById('pi-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  el.innerHTML = `
+    <div class="result-grid mb-3">
+      <div class="result-card"><div class="small text-muted">Total Deals</div><div class="val">${data.total_deals}</div></div>
+      <div class="result-card"><div class="small text-muted">Gross Pipeline</div><div class="val">${fmt$(data.total_pipeline_value)}</div></div>
+      <div class="result-card"><div class="small text-muted">Weighted Value</div><div class="val text-success">${fmt$(data.weighted_pipeline_value)}</div></div>
+    </div>
+    <table class="table table-sm table-bordered"><thead><tr>
+      <th>Stage</th><th>Count</th><th>Probability</th><th>Total ARV</th><th>Weighted Value</th>
+    </tr></thead><tbody>
+    ${data.stages.map(s=>`<tr>
+      <td class="text-capitalize">${s.stage.replace('_',' ')}</td>
+      <td>${s.count}</td>
+      <td>${s.probability_pct}%</td>
+      <td>${fmt$(s.total_value)}</td>
+      <td class="fw-bold">${fmt$(s.weighted_value)}</td>
+    </tr>`).join('')}
+    </tbody></table>`;
+}
+
+async function runCompare() {
+  const rows = document.querySelectorAll('.cmp-name');
+  const properties = Array.from(rows).map((el, i) => ({
+    name: el.value,
+    price: +document.querySelectorAll('.cmp-price')[i].value,
+    roi_pct: +document.querySelectorAll('.cmp-roi')[i].value,
+    cash_flow: +document.querySelectorAll('.cmp-cf')[i].value,
+    equity_capture: +document.querySelectorAll('.cmp-eq')[i].value,
+    cap_rate_pct: +document.querySelectorAll('.cmp-cap')[i].value,
+  })).filter(p => p.name);
+
+  const data = await apiPost('/api/calculate/compare', {properties});
+  const el = document.getElementById('cmp-result');
+  if (data.error) { el.innerHTML = `<div class="alert alert-danger">${data.error}</div>`; return; }
+
+  el.innerHTML = `<p><strong>Top Pick: <span class="text-success">${data.top_pick}</span></strong></p>
+    <table class="table table-sm table-bordered"><thead><tr>
+      <th>Rank</th><th>Property</th><th>ROI %</th><th>Cash Flow</th><th>Equity</th><th>Cap Rate</th><th>Score</th><th>Signal</th>
+    </tr></thead><tbody>
+    ${data.properties.map(p=>`<tr>
+      <td><strong>#${p.rank}</strong></td>
+      <td>${p.name}</td>
+      <td>${p.roi_pct}%</td>
+      <td>${fmt$(p.cash_flow)}</td>
+      <td>${fmt$(p.equity_capture)}</td>
+      <td>${p.cap_rate_pct}%</td>
+      <td><strong>${p.composite_score}</strong></td>
+      <td><span class="${sigClass(p.signal)}">${p.signal}</span></td>
+    </tr>`).join('')}
+    </tbody></table>`;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Seed case studies
+// ──────────────────────────────────────────────────────────────────────────────
+async function seedCaseStudies() {
+  toast('Seeding 5 case studies…');
+  const data = await apiPost('/api/seed/case-studies', {run_underwriter: true});
+  toast(`Done — ${data.inserted} inserted, ${data.skipped} skipped${data.errors?.length?' ('+data.errors.length+' errors)':''}`);
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Toast helper
+// ──────────────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  document.getElementById('train-toast-body').textContent = msg;
+  const t = new bootstrap.Toast(document.getElementById('train-toast'), {delay: 4000});
+  t.show();
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Auto-open lesson from URL hash or route parameter
+// ──────────────────────────────────────────────────────────────────────────────
+(function() {
+  const lessonParam = {{ lesson | tojson if lesson else 'null' }};
+  const hash = window.location.hash.replace('#','');
+  const target = lessonParam || hash;
+  if (target && LESSONS[target]) showLesson(target);
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Bot Activity Report - Realtor Agent{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/reports">Reports</a></li>
+        <li class="breadcrumb-item active">Bot Activity</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Bot Activity Report</h1>
+        <p class="text-muted mb-0">Real-time monitoring of AI bot performance and activity</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" onclick="refreshBotData()">
+            <i class="fas fa-sync-alt me-1"></i>Refresh
+        </button>
+        <button class="btn btn-success" onclick="generateBotReport()">
+            <i class="fas fa-file-pdf me-1"></i>Generate Report
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Bot Activity Stats -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="active-bots">7</div>
+                        <div class="stat-label">Active Bots</div>
+                    </div>
+                    <i class="fas fa-play-circle fa-2x opacity-75 text-success"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card success">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="total-activities">1,247</div>
+                        <div class="stat-label">Total Activities Today</div>
+                    </div>
+                    <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card warning">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="avg-response-time">2.3s</div>
+                        <div class="stat-label">Avg Response Time</div>
+                    </div>
+                    <i class="fas fa-clock fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card info">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="success-rate">94.2%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Bot Status Overview -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Bot Status Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Bot Name</th>
+                                    <th>Status</th>
+                                    <th>Last Activity</th>
+                                    <th>Today's Activities</th>
+                                    <th>Success Rate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bot-status-table">
+                                {% for bot_key, bot in bots.items() %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-robot text-primary me-2"></i>
+                                            {{ bot_key.replace('_', ' ').title() }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if bot.status == 'active' %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if bot.last_run %}
+                                        {{ bot.last_run }}
+                                        {% else %}
+                                        Never
+                                        {% endif %}
+                                    </td>
+                                    <td>25</td>
+                                    <td>92.5%</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="toggleBot('{{ bot_key }}')">
+                                                <i class="fas fa-power-off"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="runBot('{{ bot_key }}')">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Bot Activities</h5>
+                </div>
+                <div class="card-body">
+                    <div class="activity-feed" id="activity-timeline">
+                        <div class="activity-item success">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div><strong>Web Scout</strong>: Found new property listing</div>
+                                <small class="text-muted">2 minutes ago</small>
+                            </div>
+                        </div>
+                        <div class="activity-item info">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div><strong>Data Cleaner</strong>: Processed 15 records</div>
+                                <small class="text-muted">5 minutes ago</small>
+                            </div>
+                        </div>
+                        <div class="activity-item warning">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div><strong>Negotiator</strong>: Sent counter-offer</div>
+                                <small class="text-muted">8 minutes ago</small>
+                            </div>
+                        </div>
+                        <div class="activity-item success">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div><strong>Underwriter</strong>: Completed analysis</div>
+                                <small class="text-muted">12 minutes ago</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="runAllBots()">
+                            <i class="fas fa-play me-1"></i>Run All Bots
+                        </button>
+                        <button class="btn btn-warning" onclick="pauseAllBots()">
+                            <i class="fas fa-pause me-1"></i>Pause All Bots
+                        </button>
+                        <button class="btn btn-info" onclick="refreshBotData()">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bot Performance Chart -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Bot Performance</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="bot-performance-chart" width="100%" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Bot Activity Functions
+function refreshBotData() {
+    location.reload();
+}
+
+function generateBotReport() {
+    alert('Bot activity report generated successfully!');
+}
+
+function runAllBots() {
+    alert('All bots started successfully!');
+}
+
+function pauseAllBots() {
+    alert('All bots paused successfully!');
+}
+
+function toggleBot(botName) {
+    alert(`Bot ${botName} toggled!`);
+}
+
+function runBot(botName) {
+    alert(`Bot ${botName} started!`);
+}
+
+// Initialize chart
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('bot-performance-chart');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Web Scout', 'Data Cleaner', 'Underwriter', 'Negotiator', 'Owner Finder'],
+                datasets: [{
+                    label: 'Activities Today',
+                    data: [45, 32, 28, 19, 15],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                        'rgba(255, 159, 64, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

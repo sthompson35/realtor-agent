@@ -1,0 +1,650 @@
+# LISTING_STRATEGY.yaml
+# Owner: Strategy Layer (L0.5: S-LISTINGS)
+# Last Updated: 2026-01-02
+# Data Source: US_BEST_MARKETS_REPORT.json → MARKET_SHIFT_STRATEGY.md
+
+meta:
+  version: "1.0.0"
+  generated_at: "2026-01-02T19:30:00Z"
+  refresh_frequency: "weekly"
+  owner: "S-LISTINGS Strategy Engine"
+
+# ============================================================================
+# LISTING ACQUISITION PRIORITIES BY STRATEGY
+# ============================================================================
+
+listing_acquisition:
+  
+  # --------------------------------------------------------------------------
+  # BUY & HOLD LISTING TARGETS
+  # --------------------------------------------------------------------------
+  buy_and_hold:
+    description: "Acquire listings from investors, landlords, and rental property owners"
+    total_monthly_target: 15
+    avg_commission_rate: 0.06
+    
+    target_markets:
+      - market: "Indianapolis, IN 46220"
+        geo_id: "US-IN-Indianapolis-46220"
+        priority: 1
+        strategy_score: 0.90
+        target_listings_per_month: 5
+        
+        value_proposition:
+          primary: "Investor-grade underwriting + property management network"
+          secondary: "Access to cash buyers, 14-day close capability"
+          tertiary: "Free rental yield analysis and market comps"
+        
+        target_sellers:
+          - "Tired landlords (10+ years ownership)"
+          - "Out-of-state investors looking to exit"
+          - "Property managers with client listings"
+          - "Estate executors with rental properties"
+        
+        marketing_approach:
+          - channel: "Direct outreach to landlord associations"
+            budget: 300
+          - channel: "Property manager partnerships"
+            budget: 200
+          - channel: "Investor meetup sponsorships"
+            budget: 150
+        
+        listing_criteria:
+          property_types: ["single_family", "duplex", "small_multifamily"]
+          price_range: [150000, 400000]
+          min_gross_yield: 0.07
+          condition: ["good", "fair", "needs_work"]
+        
+        competitive_advantages:
+          - "Pre-qualified investor buyer pool"
+          - "Fast close capability (14 days)"
+          - "No repair contingencies"
+          - "Professional property photos + virtual tours"
+        
+        kpis:
+          target_listings: 5
+          avg_list_price: 275000
+          avg_commission: 16500
+          avg_days_to_close: 30
+          expected_close_rate: 0.90
+      
+      - market: "Memphis, TN 38104"
+        geo_id: "US-TN-Memphis-38104"
+        priority: 2
+        strategy_score: 0.88
+        target_listings_per_month: 4
+        
+        value_proposition:
+          primary: "8.9% rental yield market expertise"
+          secondary: "National investor network + local market knowledge"
+          tertiary: "Tenant-in-place sales capability"
+        
+        target_sellers:
+          - "Absentee landlords"
+          - "Landlords with problem tenants"
+          - "Investors consolidating portfolios"
+        
+        marketing_approach:
+          - channel: "Direct mail to absentee owners"
+            budget: 250
+          - channel: "REI club presentations"
+            budget: 150
+        
+        listing_criteria:
+          property_types: ["single_family", "duplex"]
+          price_range: [100000, 300000]
+          min_gross_yield: 0.08
+          condition: ["good", "fair"]
+        
+        competitive_advantages:
+          - "High rental demand market"
+          - "Tenant screening services"
+          - "Property management referrals"
+        
+        kpis:
+          target_listings: 4
+          avg_list_price: 195000
+          avg_commission: 11700
+          avg_days_to_close: 35
+          expected_close_rate: 0.85
+      
+      - market: "Cleveland, OH 44102"
+        geo_id: "US-OH-Cleveland-44102"
+        priority: 3
+        strategy_score: 0.86
+        target_listings_per_month: 3
+        
+        value_proposition:
+          primary: "9.1% gross yield market + cash buyer network"
+          secondary: "As-is sales, no repairs required"
+          tertiary: "Fast close, minimal hassle"
+        
+        target_sellers:
+          - "Multi-unit owners"
+          - "Landlords with deferred maintenance"
+          - "Investors exiting market"
+        
+        marketing_approach:
+          - channel: "Landlord association partnerships"
+            budget: 200
+          - channel: "Direct outreach to multi-unit owners"
+            budget: 150
+        
+        listing_criteria:
+          property_types: ["single_family", "duplex", "triplex"]
+          price_range: [80000, 250000]
+          min_gross_yield: 0.08
+          condition: ["fair", "needs_work"]
+        
+        competitive_advantages:
+          - "Cash buyer pool for distressed properties"
+          - "No repair requirements"
+          - "Quick close capability"
+        
+        kpis:
+          target_listings: 3
+          avg_list_price: 165000
+          avg_commission: 9900
+          avg_days_to_close: 28
+          expected_close_rate: 0.88
+  
+  # --------------------------------------------------------------------------
+  # FIX & FLIP LISTING TARGETS
+  # --------------------------------------------------------------------------
+  fix_and_flip:
+    description: "Acquire distressed property listings and connect with cash buyers/flippers"
+    total_monthly_target: 10
+    avg_commission_rate: 0.05
+    
+    target_markets:
+      - market: "Cleveland, OH"
+        geo_id: "US-OH-Cleveland"
+        priority: 1
+        strategy_score: 0.92
+        target_listings_per_month: 3
+        
+        value_proposition:
+          primary: "Fast cash buyers + contractor network + 14-day close"
+          secondary: "No repairs, no contingencies, as-is purchase"
+          tertiary: "Free ARV analysis and flip feasibility report"
+        
+        target_sellers:
+          - "Pre-foreclosure owners"
+          - "Estate executors"
+          - "Code violation owners"
+          - "Divorce situations"
+          - "Inherited properties"
+        
+        marketing_approach:
+          - channel: "Probate court outreach"
+            budget: 250
+          - channel: "Code violation lists"
+            budget: 200
+          - channel: "Foreclosure attorney partnerships"
+            budget: 150
+        
+        listing_criteria:
+          property_types: ["single_family", "condo"]
+          price_range: [50000, 250000]
+          condition: ["needs_work", "distressed"]
+          min_discount_from_arv: 0.15
+        
+        competitive_advantages:
+          - "Cash buyer network (50+ active flippers)"
+          - "Contractor referrals for sellers"
+          - "Fast close (7-14 days)"
+          - "No inspection contingencies"
+        
+        kpis:
+          target_listings: 3
+          avg_list_price: 145000
+          avg_commission: 7250
+          avg_days_to_close: 18
+          expected_close_rate: 0.95
+      
+      - market: "Detroit, MI 48201"
+        geo_id: "US-MI-Detroit-48201"
+        priority: 2
+        strategy_score: 0.89
+        target_listings_per_month: 2
+        
+        value_proposition:
+          primary: "18-25% discount market expertise"
+          secondary: "Cash buyers ready for renovation-heavy properties"
+          tertiary: "Fast close, no financing contingencies"
+        
+        target_sellers:
+          - "Tax lien properties"
+          - "Estate sales"
+          - "Vacant property owners"
+          - "Absentee owners"
+        
+        marketing_approach:
+          - channel: "Tax lien list outreach"
+            budget: 200
+          - channel: "Estate attorney partnerships"
+            budget: 150
+        
+        listing_criteria:
+          property_types: ["single_family"]
+          price_range: [30000, 200000]
+          condition: ["needs_work", "distressed"]
+          min_discount_from_arv: 0.18
+        
+        competitive_advantages:
+          - "Renovation-heavy property expertise"
+          - "Cash buyer pool"
+          - "Quick close capability"
+        
+        kpis:
+          target_listings: 2
+          avg_list_price: 125000
+          avg_commission: 6250
+          avg_days_to_close: 20
+          expected_close_rate: 0.92
+      
+      - market: "Baltimore, MD 21201"
+        geo_id: "US-MD-Baltimore-21201"
+        priority: 3
+        strategy_score: 0.87
+        target_listings_per_month: 2
+        
+        value_proposition:
+          primary: "Fast turnover market + wholesaler network"
+          secondary: "Cash close in 10 days"
+          tertiary: "No inspection contingencies"
+        
+        target_sellers:
+          - "Foreclosure properties"
+          - "Distressed sellers"
+          - "Inherited properties"
+        
+        marketing_approach:
+          - channel: "Foreclosure auction networking"
+            budget: 150
+          - channel: "Wholesaler partnerships"
+            budget: 100
+        
+        listing_criteria:
+          property_types: ["single_family", "townhome"]
+          price_range: [80000, 300000]
+          condition: ["needs_work", "fair"]
+          min_discount_from_arv: 0.12
+        
+        competitive_advantages:
+          - "Fast turnover market"
+          - "Wholesaler network"
+          - "Quick close"
+        
+        kpis:
+          target_listings: 2
+          avg_list_price: 185000
+          avg_commission: 9250
+          avg_days_to_close: 15
+          expected_close_rate: 0.93
+  
+  # --------------------------------------------------------------------------
+  # OWNER OCCUPANT LISTING TARGETS
+  # --------------------------------------------------------------------------
+  owner_occupant:
+    description: "Acquire traditional residential listings in high-livability markets"
+    total_monthly_target: 12
+    avg_commission_rate: 0.06
+    
+    target_markets:
+      - market: "Raleigh, NC 27601"
+        geo_id: "US-NC-Raleigh-27601"
+        priority: 1
+        strategy_score: 0.94
+        target_listings_per_month: 4
+        
+        value_proposition:
+          primary: "Top-rated schools + tech hub expertise"
+          secondary: "Professional marketing (photos, video, virtual tours)"
+          tertiary: "Pre-qualified buyer pool + relocation network"
+        
+        target_sellers:
+          - "Relocating professionals"
+          - "Upgrading families"
+          - "Empty nesters downsizing"
+          - "Corporate transfers"
+        
+        marketing_approach:
+          - channel: "Sphere of influence (SOI) outreach"
+            budget: 300
+          - channel: "Neighborhood farming"
+            budget: 250
+          - channel: "Corporate HR partnerships"
+            budget: 200
+        
+        listing_criteria:
+          property_types: ["single_family", "townhome"]
+          price_range: [250000, 600000]
+          condition: ["excellent", "good"]
+          school_rating_min: 7
+        
+        competitive_advantages:
+          - "Top school district expertise"
+          - "Tech professional buyer network"
+          - "Relocation services"
+          - "Professional staging consultation"
+        
+        kpis:
+          target_listings: 4
+          avg_list_price: 385000
+          avg_commission: 23100
+          avg_days_to_close: 35
+          expected_close_rate: 0.92
+      
+      - market: "Austin, TX 78701"
+        geo_id: "US-TX-Austin-78701"
+        priority: 2
+        strategy_score: 0.92
+        target_listings_per_month: 3
+        
+        value_proposition:
+          primary: "No state income tax + vibrant culture expertise"
+          secondary: "California transplant buyer network"
+          tertiary: "7.2% appreciation market knowledge"
+        
+        target_sellers:
+          - "Relocating to California/other states"
+          - "Upgrading within Austin"
+          - "Investors converting to primary residence"
+        
+        marketing_approach:
+          - channel: "Social media marketing"
+            budget: 300
+          - channel: "Tech company partnerships"
+            budget: 200
+          - channel: "Neighborhood events"
+            budget: 150
+        
+        listing_criteria:
+          property_types: ["condo", "single_family"]
+          price_range: [350000, 800000]
+          condition: ["excellent", "good"]
+        
+        competitive_advantages:
+          - "California buyer network"
+          - "Tech industry connections"
+          - "Music/culture scene expertise"
+        
+        kpis:
+          target_listings: 3
+          avg_list_price: 495000
+          avg_commission: 29700
+          avg_days_to_close: 32
+          expected_close_rate: 0.90
+      
+      - market: "Charlotte, NC 28201"
+        geo_id: "US-NC-Charlotte-28201"
+        priority: 3
+        strategy_score: 0.90
+        target_listings_per_month: 2
+        
+        value_proposition:
+          primary: "Banking hub + corporate transfer expertise"
+          secondary: "6.8% appreciation market"
+          tertiary: "Professional marketing + staging"
+        
+        target_sellers:
+          - "Banking professionals relocating"
+          - "Corporate transfers"
+          - "Upgrading families"
+        
+        marketing_approach:
+          - channel: "Banking industry networking"
+            budget: 250
+          - channel: "Corporate relocation services"
+            budget: 200
+        
+        listing_criteria:
+          property_types: ["single_family", "townhome"]
+          price_range: [250000, 550000]
+          condition: ["excellent", "good"]
+        
+        competitive_advantages:
+          - "Banking industry connections"
+          - "Corporate relocation network"
+          - "Southern charm + growth market"
+        
+        kpis:
+          target_listings: 2
+          avg_list_price: 365000
+          avg_commission: 21900
+          avg_days_to_close: 38
+          expected_close_rate: 0.88
+
+# ============================================================================
+# LISTING PRESENTATION FRAMEWORK
+# ============================================================================
+
+listing_presentation:
+  core_components:
+    - section: "Market Analysis"
+      content:
+        - "Comparative Market Analysis (CMA)"
+        - "Market trends (price, inventory, DOM)"
+        - "Strategy-specific insights (yield, discount, appreciation)"
+        - "Context flags (landlord-friendly, school ratings, etc.)"
+    
+    - section: "Pricing Strategy"
+      content:
+        - "Recommended list price with justification"
+        - "Price positioning vs. competition"
+        - "Expected time on market"
+        - "Price adjustment strategy if needed"
+    
+    - section: "Marketing Plan"
+      content:
+        - "Professional photography + video"
+        - "Virtual tours + 3D walkthrough"
+        - "MLS syndication (Zillow, Realtor.com, etc.)"
+        - "Social media advertising"
+        - "Email blast to buyer database"
+        - "Open houses + broker tours"
+    
+    - section: "Value Proposition"
+      content:
+        - "Strategy-specific buyer network"
+        - "Fast close capability (if applicable)"
+        - "Professional staging consultation"
+        - "Transaction coordination + support"
+    
+    - section: "Agent Track Record"
+      content:
+        - "Recent sales in market"
+        - "Average days on market vs. market average"
+        - "List-to-sale price ratio"
+        - "Client testimonials"
+  
+  customization_by_strategy:
+    buy_and_hold:
+      emphasis:
+        - "Investor buyer pool"
+        - "Rental yield analysis"
+        - "Cash close capability"
+        - "Tenant-in-place sales"
+    
+    fix_and_flip:
+      emphasis:
+        - "Cash buyer network"
+        - "ARV analysis"
+        - "Fast close (7-14 days)"
+        - "No repair contingencies"
+    
+    owner_occupant:
+      emphasis:
+        - "Professional marketing"
+        - "Buyer relocation services"
+        - "Neighborhood expertise"
+        - "Staging consultation"
+
+# ============================================================================
+# COMMISSION STRUCTURE
+# ============================================================================
+
+commission_structure:
+  standard_rates:
+    buy_and_hold: 0.06
+    fix_and_flip: 0.05
+    owner_occupant: 0.06
+  
+  volume_incentives:
+    - tier: "5+ listings per year"
+      discount: 0.005
+    - tier: "10+ listings per year"
+      discount: 0.01
+  
+  referral_fees:
+    incoming: 0.25  # 25% of commission
+    outgoing: 0.25  # 25% of commission
+
+# ============================================================================
+# LISTING LIFECYCLE MANAGEMENT
+# ============================================================================
+
+listing_lifecycle:
+  stages:
+    - stage: "Pre-Listing"
+      duration_days: 7
+      activities:
+        - "Initial consultation"
+        - "Property walkthrough"
+        - "CMA preparation"
+        - "Listing presentation"
+        - "Sign listing agreement"
+    
+    - stage: "Preparation"
+      duration_days: 14
+      activities:
+        - "Professional photos + video"
+        - "Virtual tour creation"
+        - "Staging consultation"
+        - "Repairs/improvements (if needed)"
+        - "MLS data entry"
+    
+    - stage: "Active Marketing"
+      duration_days: 30
+      activities:
+        - "MLS activation"
+        - "Social media campaigns"
+        - "Email blasts"
+        - "Open houses"
+        - "Broker tours"
+        - "Showing coordination"
+    
+    - stage: "Under Contract"
+      duration_days: 30
+      activities:
+        - "Negotiate offer"
+        - "Inspection coordination"
+        - "Appraisal coordination"
+        - "Repair negotiations"
+        - "Closing preparation"
+    
+    - stage: "Closed"
+      duration_days: 1
+      activities:
+        - "Final walkthrough"
+        - "Closing attendance"
+        - "Commission disbursement"
+        - "Post-close follow-up"
+  
+  performance_metrics:
+    - metric: "Average Days on Market"
+      target: "< market average"
+    
+    - metric: "List-to-Sale Price Ratio"
+      target: "> 97%"
+    
+    - metric: "Close Rate"
+      target: "> 90%"
+    
+    - metric: "Client Satisfaction"
+      target: "> 4.5/5.0"
+
+# ============================================================================
+# COMPETITIVE POSITIONING
+# ============================================================================
+
+competitive_positioning:
+  unique_selling_propositions:
+    - "Strategy-specific expertise (buy & hold, fix & flip, owner occupant)"
+    - "Data-driven market analysis (US_BEST_MARKETS_REPORT)"
+    - "Pre-qualified buyer networks"
+    - "Fast close capability (7-14 days for investors)"
+    - "Professional marketing (photos, video, virtual tours)"
+    - "Transaction coordination + support"
+  
+  target_competitors:
+    - type: "Traditional agents"
+      weakness: "Lack investor buyer network"
+      our_advantage: "Cash buyer pool + fast close"
+    
+    - type: "Discount brokers"
+      weakness: "Limited marketing + support"
+      our_advantage: "Full-service marketing + transaction coordination"
+    
+    - type: "iBuyers (Opendoor, Offerpad)"
+      weakness: "Low offers (typically 70-80% of market value)"
+      our_advantage: "Market-rate pricing + competitive bidding"
+
+# ============================================================================
+# AUTOMATION & WORKFLOWS
+# ============================================================================
+
+automation:
+  triggers:
+    - event: "listing_signed"
+      action: "create_listing_checklist"
+      next: "schedule_photo_shoot"
+    
+    - event: "photos_uploaded"
+      action: "create_virtual_tour"
+      next: "prepare_mls_entry"
+    
+    - event: "mls_activated"
+      action: "send_email_blast"
+      next: "schedule_open_house"
+    
+    - event: "offer_received"
+      action: "notify_seller"
+      next: "prepare_counter_offer"
+    
+    - event: "contract_signed"
+      action: "create_transaction_timeline"
+      next: "coordinate_inspection"
+    
+    - event: "closing_scheduled"
+      action: "send_closing_checklist"
+      next: "prepare_final_walkthrough"
+
+# ============================================================================
+# MONITORING & ALERTS
+# ============================================================================
+
+monitoring:
+  kpi_dashboard_refresh: "daily"
+  
+  alert_conditions:
+    - metric: "days_on_market"
+      threshold: "> 45 days"
+      action: "Review pricing, adjust marketing strategy"
+    
+    - metric: "showing_count"
+      threshold: "< 2 per week"
+      action: "Increase marketing, consider price adjustment"
+    
+    - metric: "list_to_sale_ratio"
+      threshold: "< 95%"
+      action: "Review pricing strategy, improve negotiation"
+    
+    - metric: "close_rate"
+      threshold: "< 85%"
+      action: "Improve buyer qualification, address inspection issues"
+
+# ============================================================================
+# END OF LISTING_STRATEGY.yaml
+# ============================================================================

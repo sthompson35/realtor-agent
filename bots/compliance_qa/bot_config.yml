@@ -1,0 +1,67 @@
+# Compliance QA Bot Configuration
+# Handles fair housing, anti-spam, ToS, and document checks
+
+enabled: true
+
+# Fair Housing Compliance
+fair_housing:
+  check_enabled: true
+  protected_classes: ["race", "color", "religion", "national_origin", "sex", "familial_status", "disability"]
+  prohibited_language: ["family", "children", "handicap", "minority", "ethnic"]
+  targeting_prohibited: true
+
+# Anti-Spam Compliance
+anti_spam:
+  check_enabled: true
+  tcpacan: true  # Telephone Consumer Protection Act
+  can_spam: true
+  dnc_respect: true
+  consent_required: true
+  opt_out_handling: true
+
+# Terms of Service Compliance
+tos_compliance:
+  check_enabled: true
+  sources:
+    - "zillow_tos"
+    - "realtor_tos"
+    - "mls_rules"
+  scraping_prohibited: true
+  api_preferred: true
+
+# Document Completeness
+document_qa:
+  check_enabled: true
+  required_sections:
+    - "parties_identified"
+    - "property_description"
+    - "price_terms"
+    - "closing_conditions"
+    - "signatures"
+    - "attorney_review_stamp"
+  disclaimer_check: true
+
+# Licensing Compliance
+licensing:
+  check_enabled: true
+  real_estate_license: true
+  state_specific: true
+  attorney_review: true
+
+# Audit Logging
+audit:
+  log_file: "../outputs/compliance_log.csv"
+  fields: ["timestamp", "check_type", "result", "details", "escalation"]
+  retention_days: 2555  # 7 years
+
+# Escalation Rules
+escalation:
+  immediate: ["fair_housing_violation", "dnc_violation", "tos_breach"]
+  urgent: ["document_incomplete", "license_issue"]
+  standard: ["minor_language_issue"]
+
+# Output
+output:
+  report_file: "../outputs/compliance_report.md"
+  summary: true
+  recommendations: true

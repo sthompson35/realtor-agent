@@ -1,0 +1,67 @@
+
+{% extends "base.html" %}
+
+{% block title %}Real Estate Investment Toolkit Dashboard{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Toolkit Dashboard</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .metric-card { background: #f0f0f0; padding: 15px; margin: 10px; border-radius: 5px; display: inline-block; min-width: 200px; }
+    .state-card { background: #e6f3ff; padding: 10px; margin: 5px; border-radius: 3px; }
+    .hot-market { border-left: 5px solid #ff6600; }
+    .growing-market { border-left: 5px solid #66cc00; }
+    .formula-item { background: #fff2e6; padding: 10px; margin: 5px 0; border-radius: 3px; }
+    .tip-item { background: #e6ffe6; padding: 10px; margin: 5px 0; border-radius: 3px; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <h2>Market Intelligence Dashboard</h2>
+    <div class="metric-card">
+        <h3>Total States Covered: {{ market_data.total_states }}</h3>
+    </div>
+    <div class="metric-card">
+        <h3>Hot Markets: {{ market_data.hot_markets }}</h3>
+    </div>
+    <div class="metric-card">
+        <h3>Growing Markets: {{ market_data.growing_markets }}</h3>
+    </div>
+    <div class="metric-card">
+        <h3>Contact Database: {{ contact_count }}</h3>
+    </div>
+
+    <h2>State Framework</h2>
+    {% for state in states %}
+    <div class="state-card {{ 'hot-market' if state.status == 'Hot' else 'growing-market' if state.status == 'Growing' else '' }}">
+        <h4>{{ state.name }} - {{ state.status }}</h4>
+        <p><strong>Key Counties:</strong> {{ state.counties }}</p>
+        <p><strong>Investment Focus:</strong> {{ state.investment_focus }}</p>
+    </div>
+    {% endfor %}
+
+    <h2>Investment Formulas</h2>
+    {% for formula in formulas %}
+    <div class="formula-item">
+        <h4>{{ formula.name }}</h4>
+        <p><strong>Formula:</strong> {{ formula.formula }}</p>
+        <p><strong>Description:</strong> {{ formula.description }}</p>
+    </div>
+    {% endfor %}
+
+    <h2>Pro Tips & Secrets</h2>
+    {% for tip in tips %}
+    <div class="tip-item">
+        <h4>{{ tip.category }} - {{ tip.impact }} Impact</h4>
+        <p>{{ tip.tip }}</p>
+    </div>
+    {% endfor %}
+{% endblock %}

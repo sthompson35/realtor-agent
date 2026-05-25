@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}Common Pitfalls - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">Common Pitfalls</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Common Pitfalls</h1>
+        <p class="text-muted mb-0">Avoid These Common Mistakes That Can Derail Your Investments</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide/pro-tips" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Previous
+        </a>
+        <a href="/master-guide" class="btn btn-primary">
+            Back to Guide <i class="fas fa-home ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Critical Mistakes to Avoid
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="pitfalls-list">
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">1</span>
+                            <h6>Buying Without Proper Due Diligence</h6>
+                        </div>
+                        <p>Rushing into a purchase without thorough inspection, market analysis, and financial review. This is the #1 reason investors lose money.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Follow a systematic due diligence checklist and never skip steps, no matter how good the deal seems.
+                        </div>
+                    </div>
+
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">2</span>
+                            <h6>Overpaying for Properties</h6>
+                        </div>
+                        <p>Getting emotionally attached to a property or letting ego drive purchase decisions. Competition can drive prices irrationally high.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Always know your maximum allowable offer based on financial analysis, and walk away if exceeded.
+                        </div>
+                    </div>
+
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">3</span>
+                            <h6>Poor Tenant Selection</h6>
+                        </div>
+                        <p>Renting to unqualified tenants leads to eviction costs, property damage, and lost rental income that can destroy cash flow.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Implement rigorous tenant screening processes and never rent to friends/family without proper agreements.
+                        </div>
+                    </div>
+
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">4</span>
+                            <h6>Inadequate Reserves</h6>
+                        </div>
+                        <p>Not maintaining sufficient cash reserves for repairs, vacancies, and emergencies. Properties always need maintenance.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Keep 6-12 months of expenses in reserves and budget for 1% of property value annually for repairs.
+                        </div>
+                    </div>
+
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">5</span>
+                            <h6>Neglecting Property Management</h6>
+                        </div>
+                        <p>Thinking you can manage properties yourself while working full-time, leading to poor maintenance and unhappy tenants.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Hire professional property management or limit portfolio to manageable size for self-management.
+                        </div>
+                    </div>
+
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">6</span>
+                            <h6>Financing Mistakes</h6>
+                        </div>
+                        <p>Taking loans with unfavorable terms, not shopping rates, or using interest-only loans that reset at higher rates.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Work with multiple lenders, understand all loan terms, and stress-test payments at higher rates.
+                        </div>
+                    </div>
+
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">7</span>
+                            <h6>Tax Planning Oversights</h6>
+                        </div>
+                        <p>Not understanding depreciation, 1031 exchanges, or proper entity structure, leading to higher tax burdens.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Consult with tax professionals specializing in real estate and plan tax strategy before investing.
+                        </div>
+                    </div>
+
+                    <div class="pitfall-item">
+                        <div class="pitfall-header">
+                            <span class="pitfall-number">8</span>
+                            <h6>Market Timing Errors</h6>
+                        </div>
+                        <p>Trying to time market peaks/valleys or getting scared out of good markets during temporary downturns.</p>
+                        <div class="pitfall-solution">
+                            <strong>Solution:</strong> Focus on fundamentals and long-term holding periods rather than short-term market timing.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recovery Strategies</h5>
+            </div>
+            <div class="card-body">
+                <div class="recovery-tips">
+                    <h6>If You Make a Mistake:</h6>
+                    <ul>
+                        <li><strong>Stop the Bleeding:</strong> Address problems immediately before they worsen</li>
+                        <li><strong>Get Professional Help:</strong> Consult experts rather than hoping problems resolve themselves</li>
+                        <li><strong>Learn from It:</strong> Document what went wrong and how to prevent it in the future</li>
+                        <li><strong>Cut Losses if Necessary:</strong> Sometimes selling at a loss is better than continuing to lose money</li>
+                        <li><strong>Adjust Your Strategy:</strong> Use the experience to refine your investment approach</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Risk Assessment</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-danger" onclick="assessRisk()">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Assess Deal Risk
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="reviewChecklist()">
+                        <i class="fas fa-clipboard-check me-2"></i>Review Checklist
+                    </button>
+                    <button class="btn btn-outline-info" onclick="getMentorship()">
+                        <i class="fas fa-user-friends me-2"></i>Get Mentorship
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Warning Signs</h5>
+            </div>
+            <div class="card-body">
+                <div class="warning-signs">
+                    <div class="warning-item">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <small>Feeling pressured to act quickly</small>
+                    </div>
+                    <div class="warning-item">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <small>Skipping due diligence steps</small>
+                    </div>
+                    <div class="warning-item">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <small>Investing more than you can afford to lose</small>
+                    </div>
+                    <div class="warning-item">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <small>Not understanding the numbers</small>
+                    </div>
+                    <div class="warning-item">
+                        <i class="fas fa-times-circle text-danger me-2"></i>
+                        <small>Following hot tips without verification</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Success Rate Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <span class="stat-label">Proper Due Diligence:</span>
+                        <span class="stat-value">85%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Good Tenant Screening:</span>
+                        <span class="stat-value">78%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Adequate Reserves:</span>
+                        <span class="stat-value">92%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Professional Management:</span>
+                        <span class="stat-value">88%</span>
+                    </div>
+                </div>
+                <small class="text-muted">* Success rates for avoiding major pitfalls</small>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/pro-tips" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Previous Section
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.pitfalls-list {
+    display: grid;
+    gap: 20px;
+}
+
+.pitfall-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #dc3545;
+}
+
+.pitfall-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.pitfall-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dc3545;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.pitfall-header h6 {
+    color: #495057;
+    margin: 0;
+}
+
+.pitfall-solution {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e9ecef;
+    font-size: 0.9rem;
+    color: #28a745;
+}
+
+.recovery-tips ul {
+    padding-left: 1.5rem;
+}
+
+.recovery-tips li {
+    margin-bottom: 8px;
+}
+
+.warning-signs {
+    padding: 0;
+}
+
+.warning-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.warning-item:last-child {
+    border-bottom: none;
+}
+
+.warning-item small {
+    color: #6c757d;
+}
+
+.stats-list {
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-weight: bold;
+    color: #28a745;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function assessRisk() {
+    alert('Risk assessment tool will be implemented');
+}
+
+function reviewChecklist() {
+    alert('Checklist review will be implemented');
+}
+
+function getMentorship() {
+    alert('Mentorship matching will be implemented');
+}
+</script>
+{% endblock %}

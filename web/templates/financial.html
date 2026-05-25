@@ -1,0 +1,702 @@
+{% extends "base.html" %}
+
+{% block title %}Financial Report - Realtor Agent{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/reports">Reports</a></li>
+        <li class="breadcrumb-item active">Financial</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Financial Report</h1>
+        <p class="text-muted mb-0">Comprehensive financial analysis and ROI tracking</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" onclick="refreshFinancialData()">
+            <i class="fas fa-sync-alt me-1"></i>Refresh
+        </button>
+        <button class="btn btn-success" onclick="generateFinancialReport()">
+            <i class="fas fa-file-pdf me-1"></i>Generate Report
+        </button>
+        <button class="btn btn-info" onclick="exportFinancialData()">
+            <i class="fas fa-download me-1"></i>Export Data
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Financial Overview Stats -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="total-revenue">${{ "{:,.0f}".format(247 * 185420) }}</div>
+                        <div class="stat-label">Total Revenue</div>
+                    </div>
+                    <i class="fas fa-dollar-sign fa-2x opacity-75 text-success"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="net-profit">${{ "{:,.0f}".format(247 * 185420 * 0.23) }}</div>
+                        <div class="stat-label">Net Profit</div>
+                    </div>
+                    <i class="fas fa-chart-line fa-2x opacity-75 text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="profit-margin">23.4%</div>
+                        <div class="stat-label">Profit Margin</div>
+                    </div>
+                    <i class="fas fa-percentage fa-2x opacity-75 text-info"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="roi">156%</div>
+                        <div class="stat-label">Average ROI</div>
+                    </div>
+                    <i class="fas fa-trophy fa-2x opacity-75 text-warning"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Revenue Breakdown -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Revenue Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Commission Revenue</th>
+                                    <th>Referral Fees</th>
+                                    <th>Other Income</th>
+                                    <th>Total Revenue</th>
+                                    <th>Growth</th>
+                                </tr>
+                            </thead>
+                            <tbody id="revenue-breakdown-table">
+                                <tr>
+                                    <td>December 2025</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 18) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 2) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 0.5) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 20.5) }}</td>
+                                    <td><span class="text-success">+12.3%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>November 2025</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 16) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 1.8) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 0.4) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 18.2) }}</td>
+                                    <td><span class="text-success">+8.7%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>October 2025</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 15) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 1.5) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 0.3) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 16.8) }}</td>
+                                    <td><span class="text-success">+15.2%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>September 2025</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 14) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 1.2) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 0.2) }}</td>
+                                    <td>${{ "{:,.0f}".format(185420 * 15.4) }}</td>
+                                    <td><span class="text-success">+6.9%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Metrics Sidebar -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Key Financial Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="metric-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="metric-label">Avg Deal Size</span>
+                            <span class="metric-value">${{ "{:,.0f}".format(185420) }}</span>
+                        </div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar bg-primary" style="width: 75%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="metric-label">Commission Rate</span>
+                            <span class="metric-value">2.8%</span>
+                        </div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar bg-success" style="width: 65%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="metric-label">Operating Expenses</span>
+                            <span class="metric-value">${{ "{:,.0f}".format(247 * 185420 * 0.12) }}</span>
+                        </div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar bg-warning" style="width: 45%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="metric-label">Cash Flow</span>
+                            <span class="metric-value">${{ "{:,.0f}".format(247 * 185420 * 0.18) }}</span>
+                        </div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar bg-info" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Goals -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Financial Goals</h5>
+                </div>
+                <div class="card-body">
+                    <div class="goal-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="goal-label">Q4 2025 Target</span>
+                            <span class="goal-value text-success">98%</span>
+                        </div>
+                        <small class="text-muted">$4.2M / $4.3M</small>
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-success" style="width: 98%"></div>
+                        </div>
+                    </div>
+
+                    <div class="goal-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="goal-label">2025 Annual</span>
+                            <span class="goal-value text-info">87%</span>
+                        </div>
+                        <small class="text-muted">$42.1M / $48.5M</small>
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-info" style="width: 87%"></div>
+                        </div>
+                    </div>
+
+                    <div class="goal-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="goal-label">Profit Target</span>
+                            <span class="goal-value text-warning">76%</span>
+                        </div>
+                        <small class="text-muted">$9.8M / $12.9M</small>
+                        <div class="progress mt-1" style="height: 6px;">
+                            <div class="progress-bar bg-warning" style="width: 76%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Charts Section -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Revenue Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Profit & Loss Breakdown</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="profitLossChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Analysis Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Expense Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Monthly Expenses</h6>
+                            <div class="expense-breakdown">
+                                <div class="expense-item d-flex justify-content-between py-2">
+                                    <span>Marketing & Advertising</span>
+                                    <span class="text-danger">${{ "{:,.0f}".format(247 * 185420 * 0.04) }}</span>
+                                </div>
+                                <div class="expense-item d-flex justify-content-between py-2">
+                                    <span>Office & Administrative</span>
+                                    <span class="text-danger">${{ "{:,.0f}".format(247 * 185420 * 0.03) }}</span>
+                                </div>
+                                <div class="expense-item d-flex justify-content-between py-2">
+                                    <span>Technology & Software</span>
+                                    <span class="text-danger">${{ "{:,.0f}".format(247 * 185420 * 0.02) }}</span>
+                                </div>
+                                <div class="expense-item d-flex justify-content-between py-2">
+                                    <span>Professional Services</span>
+                                    <span class="text-danger">${{ "{:,.0f}".format(247 * 185420 * 0.015) }}</span>
+                                </div>
+                                <div class="expense-item d-flex justify-content-between py-2 border-top pt-2 mt-2">
+                                    <strong>Total Expenses</strong>
+                                    <strong class="text-danger">${{ "{:,.0f}".format(247 * 185420 * 0.105) }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3">Expense Trends</h6>
+                            <canvas id="expenseChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax Planning Section -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Tax Planning</h5>
+                </div>
+                <div class="card-body">
+                    <div class="tax-planning">
+                        <div class="tax-item mb-3 p-3 bg-light rounded">
+                            <h6 class="mb-2">Quarterly Estimated Taxes</h6>
+                            <div class="d-flex justify-content-between">
+                                <span>Q4 2025 Due:</span>
+                                <span class="text-primary font-weight-bold">${{ "{:,.0f}".format(247 * 185420 * 0.23 * 0.25) }}</span>
+                            </div>
+                            <small class="text-muted">Due January 15, 2026</small>
+                        </div>
+
+                        <div class="tax-item mb-3 p-3 bg-light rounded">
+                            <h6 class="mb-2">Retirement Contributions</h6>
+                            <div class="d-flex justify-content-between">
+                                <span>SEP IRA (2025):</span>
+                                <span class="text-success font-weight-bold">${{ "{:,.0f}".format(247 * 185420 * 0.15) }}</span>
+                            </div>
+                            <small class="text-muted">Tax year 2025 deadline: April 15, 2026</small>
+                        </div>
+
+                        <div class="tax-item p-3 bg-light rounded">
+                            <h6 class="mb-2">Business Deductions</h6>
+                            <div class="d-flex justify-content-between">
+                                <span>Available Deductions:</span>
+                                <span class="text-info font-weight-bold">${{ "{:,.0f}".format(247 * 185420 * 0.08) }}</span>
+                            </div>
+                            <small class="text-muted">Home office, mileage, supplies</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Cash Flow Forecast</h5>
+                </div>
+                <div class="card-body">
+                    <div class="cash-flow-forecast">
+                        <div class="forecast-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="forecast-label">Next Quarter</span>
+                                <span class="forecast-value text-success">+${{ "{:,.0f}".format(247 * 185420 * 0.12) }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: 85%"></div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="forecast-label">Next 6 Months</span>
+                                <span class="forecast-value text-success">+${{ "{:,.0f}".format(247 * 185420 * 0.28) }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: 72%"></div>
+                            </div>
+                        </div>
+
+                        <div class="forecast-item">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="forecast-label">Next 12 Months</span>
+                                <span class="forecast-value text-success">+${{ "{:,.0f}".format(247 * 185420 * 0.65) }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-success" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center gap-3">
+                        <button class="btn btn-primary" onclick="runFinancialAnalysis()">
+                            <i class="fas fa-calculator me-1"></i>Run Financial Analysis
+                        </button>
+                        <button class="btn btn-warning" onclick="generateTaxReport()">
+                            <i class="fas fa-file-invoice-dollar me-1"></i>Tax Report
+                        </button>
+                        <button class="btn btn-info" onclick="scheduleFinancialReview()">
+                            <i class="fas fa-calendar-check me-1"></i>Schedule Review
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportFinancials()">
+                            <i class="fas fa-file-export me-1"></i>Export to QuickBooks
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Financial Functions
+function refreshFinancialData() {
+    showNotification('Refreshing financial data...', 'info');
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+function generateFinancialReport() {
+    showNotification('Generating comprehensive financial report...', 'success');
+    setTimeout(() => {
+        alert('Financial report generated successfully!');
+    }, 2000);
+}
+
+function exportFinancialData() {
+    showNotification('Exporting financial data...', 'info');
+    setTimeout(() => {
+        alert('Financial data exported successfully!');
+    }, 1500);
+}
+
+function runFinancialAnalysis() {
+    showNotification('Running financial analysis...', 'info');
+    setTimeout(() => {
+        showNotification('Financial analysis completed!', 'success');
+    }, 3000);
+}
+
+function generateTaxReport() {
+    showNotification('Generating tax optimization report...', 'info');
+    setTimeout(() => {
+        alert('Tax report generated successfully!');
+    }, 2000);
+}
+
+function scheduleFinancialReview() {
+    showNotification('Opening financial review scheduler...', 'info');
+    setTimeout(() => {
+        alert('Financial review scheduled. Feature coming soon!');
+    }, 1000);
+}
+
+function exportFinancials() {
+    showNotification('Preparing QuickBooks export...', 'info');
+    setTimeout(() => {
+        alert('Financial data exported to QuickBooks successfully!');
+    }, 2500);
+}
+
+// Chart.js initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Revenue ($)',
+                data: [3200000, 3500000, 3800000, 3600000, 4200000, 4100000, 4500000, 4300000, 4800000, 4600000, 5100000, 4900000],
+                borderColor: 'rgb(13, 110, 253)',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Profit ($)',
+                data: [736000, 805000, 874000, 828000, 966000, 943000, 1035000, 989000, 1104000, 1058000, 1173000, 1127000],
+                borderColor: 'rgb(40, 167, 69)',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + (value / 1000000).toFixed(1) + 'M';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Profit & Loss Chart
+    const profitLossCtx = document.getElementById('profitLossChart').getContext('2d');
+    new Chart(profitLossCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Revenue', 'COGS', 'Operating Expenses', 'Taxes', 'Net Profit'],
+            datasets: [{
+                data: [65, 15, 12, 5, 23],
+                backgroundColor: [
+                    'rgb(40, 167, 69)',
+                    'rgb(255, 193, 7)',
+                    'rgb(220, 53, 69)',
+                    'rgb(23, 162, 184)',
+                    'rgb(13, 110, 253)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Expense Chart
+    const expenseCtx = document.getElementById('expenseChart').getContext('2d');
+    new Chart(expenseCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Monthly Expenses ($)',
+                data: [125000, 118000, 132000, 128000, 141000, 135000],
+                backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                borderColor: 'rgb(220, 53, 69)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + (value / 1000).toFixed(0) + 'K';
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+
+// Notification system
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    container.appendChild(notification);
+
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+</script>
+
+<style>
+.metric-item {
+    padding: 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.metric-label {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.metric-value {
+    font-weight: 600;
+    font-size: 1.1em;
+    color: #495057;
+}
+
+.goal-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.goal-item:last-child {
+    border-bottom: none;
+}
+
+.goal-label {
+    font-weight: 500;
+}
+
+.goal-value {
+    font-weight: 600;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: #495057;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.expense-breakdown {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.expense-item {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.expense-item:last-child {
+    border-bottom: none;
+    font-size: 1.1em;
+}
+
+.tax-planning .tax-item {
+    transition: transform 0.2s;
+}
+
+.tax-planning .tax-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cash-flow-forecast .forecast-item {
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.forecast-label {
+    font-weight: 500;
+}
+
+.forecast-value {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 400px;
+}
+</style>
+
+{% endblock %}

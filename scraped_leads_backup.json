@@ -1,0 +1,116 @@
+{
+  "scraped_at": "2026-01-06T20:44:15.395492",
+  "total_leads": 10,
+  "leads": [
+    {
+      "Owner Name": "Property Owner 1",
+      "Mailing Address": "4314 Sample St, Tampa, FL 48954",
+      "Property Address/APN": "5716 Pine Ave, Tampa, FL",
+      "Phone": "(907)-212-1176",
+      "Email": "owner1@tampa.email",
+      "Market": "Tampa, FL",
+      "Source (List)": "MLS",
+      "Estimated Value": "696711",
+      "Notes": "Property found on Realtor.com. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 2",
+      "Mailing Address": "5021 Sample St, Tampa, FL 12584",
+      "Property Address/APN": "4161 Pine Ave, Tampa, FL",
+      "Phone": "(731)-556-7363",
+      "Email": "owner2@tampa.email",
+      "Market": "Tampa, FL",
+      "Source (List)": "Redfin",
+      "Estimated Value": "811773",
+      "Notes": "Property found on MLS. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 1",
+      "Mailing Address": "1953 Sample St, Dallas, TX 97768",
+      "Property Address/APN": "5729 Maple Ave, Dallas, TX",
+      "Phone": "(508)-400-4941",
+      "Email": "owner1@dallas.email",
+      "Market": "Dallas, TX",
+      "Source (List)": "Off Market",
+      "Estimated Value": "449900",
+      "Notes": "Property found on MLS. Interested in selling. Generated test lead. (Expired listing - potential motivated seller)"
+    },
+    {
+      "Owner Name": "Property Owner 2",
+      "Mailing Address": "8748 Sample St, Dallas, TX 80507",
+      "Property Address/APN": "5250 Pine Ave, Dallas, TX",
+      "Phone": "(224)-290-3949",
+      "Email": "owner2@dallas.email",
+      "Market": "Dallas, TX",
+      "Source (List)": "MLS",
+      "Estimated Value": "612522",
+      "Notes": "Property found on MLS. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 1",
+      "Mailing Address": "5804 Sample St, Austin, TX 44895",
+      "Property Address/APN": "9068 Pine Ave, Austin, TX",
+      "Phone": "(527)-479-9041",
+      "Email": "owner1@austin.email",
+      "Market": "Austin, TX",
+      "Source (List)": "Zillow",
+      "Estimated Value": "288661",
+      "Notes": "Property found on FSBO. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Property Owner 2",
+      "Mailing Address": "9340 Sample St, Austin, TX 50960",
+      "Property Address/APN": "7188 Maple Ave, Austin, TX",
+      "Phone": "(292)-470-6858",
+      "Email": "owner2@austin.email",
+      "Market": "Austin, TX",
+      "Source (List)": "FSBO",
+      "Estimated Value": "320969",
+      "Notes": "Property found on Realtor.com. Interested in selling. Generated test lead."
+    },
+    {
+      "Owner Name": "Jane Williams",
+      "Mailing Address": "455 Cedar Ln, Austin, TX 32966",
+      "Property Address/APN": "2362 Oak Ave, Austin, TX",
+      "Phone": "(770)-583-7681",
+      "Email": "contact793@gmail.com",
+      "Market": "Austin, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "280454",
+      "Notes": "Active listing found on Realtor.com. Recently renovated."
+    },
+    {
+      "Owner Name": "John Jones",
+      "Mailing Address": "2084 Oak Ave, Austin, TX 57519",
+      "Property Address/APN": "274 Main St, Austin, TX",
+      "Phone": "(634)-446-2584",
+      "Email": "contact355@gmail.com",
+      "Market": "Austin, TX",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "1058816",
+      "Notes": "Active listing found on Realtor.com. Fix and flip potential."
+    },
+    {
+      "Owner Name": "Sarah Jones",
+      "Mailing Address": "4400 Broadway, Orlando, FL 60994",
+      "Property Address/APN": "2570 Elm St, Orlando, FL",
+      "Phone": "(897)-227-5086",
+      "Email": "contact267@gmail.com",
+      "Market": "Orlando, FL",
+      "Source (List)": "Expired Listing",
+      "Estimated Value": "668544",
+      "Notes": "Active listing found on Realtor.com. Recently renovated. (Expired listing - potential motivated seller)"
+    },
+    {
+      "Owner Name": "Lisa Brown",
+      "Mailing Address": "4986 Pine Rd, Orlando, FL 98158",
+      "Property Address/APN": "7213 Main St, Orlando, FL",
+      "Phone": "(813)-253-5529",
+      "Email": "contact689@gmail.com",
+      "Market": "Orlando, FL",
+      "Source (List)": "Realtor.com",
+      "Estimated Value": "489018",
+      "Notes": "Active listing found on Realtor.com. Motivated seller."
+    }
+  ]
+}

@@ -1,0 +1,1849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found - Realtor Agent</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+/* Error-themed color scheme */
+:root {
+    --error-primary: #dc2626;
+    --error-success: #059669;
+    --error-warning: #d97706;
+    --error-info: #0891b2;
+    --error-secondary: #6b7280;
+    --error-dark: #1f2937;
+    --error-light: #f9fafb;
+    --error-gradient: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    --error-accent: #f87171;
+}
+
+/* Enhanced error page styling */
+.error-hero {
+    background: var(--error-gradient);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(220, 38, 38, 0.2);
+    color: white;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+.error-hero .card-body {
+    position: relative;
+    z-index: 2;
+    padding: 3rem 2rem;
+}
+
+.error-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
+
+.error-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.error-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+/* Enhanced stats cards with error theme */
+.stats-card {
+    background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+    border: 2px solid #fecaca;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(220, 38, 38, 0.15);
+}
+
+.stats-card .card-body {
+    padding: 2rem 1.5rem;
+}
+
+.stats-card .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--error-primary);
+}
+
+.stats-card .display-4 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--error-dark);
+}
+
+.stats-card .metric-change {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.stats-card .metric-change.success {
+    color: #10b981;
+}
+
+.stats-card .metric-change.warning {
+    color: #f59e0b;
+}
+
+.stats-card .metric-change.danger {
+    color: #ef4444;
+}
+
+/* Chart containers enhancement */
+.chart-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.08);
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #ffffff 0%, #fef2f2 100%);
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.12);
+}
+
+.chart-card .card-header {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    border-bottom: 1px solid #fca5a5;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.chart-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Sidebar enhancements */
+.sidebar {
+    background: linear-gradient(180deg, #1f2937 0%, #374151 100%);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border: none;
+}
+
+.sidebar .sidebar-header {
+    background: rgba(220, 38, 38, 0.1);
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.sidebar .sidebar-content {
+    padding: 1.5rem;
+}
+
+.activity-feed {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--error-primary);
+    transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(2px);
+}
+
+.activity-item.success {
+    border-left-color: var(--error-success);
+}
+
+.activity-item.warning {
+    border-left-color: var(--error-warning);
+}
+
+.activity-item.error {
+    border-left-color: var(--error-primary);
+}
+
+/* Modal enhancements */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(220, 38, 38, 0.2);
+}
+
+.modal-header {
+    background: var(--error-gradient);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+    padding: 1.5rem 2rem;
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Table enhancements */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.05);
+}
+
+.table thead th {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    border-bottom: 2px solid #fca5a5;
+    font-weight: 600;
+    color: #374151;
+}
+
+.table tbody tr:hover {
+    background-color: #fef2f2;
+}
+
+/* Progress bars */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #fecaca;
+}
+
+.progress-bar {
+    background: var(--error-gradient);
+    border-radius: 4px;
+}
+
+/* Button enhancements */
+.btn-error-primary {
+    background: var(--error-gradient);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-error-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+}
+
+/* Efficiency metrics cards */
+.efficiency-card {
+    text-align: center;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.08);
+    transition: all 0.3s ease;
+}
+
+.efficiency-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.12);
+}
+
+.efficiency-card .card-header {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    border-bottom: 1px solid #fca5a5;
+    padding: 1rem 1.5rem;
+}
+
+.efficiency-card .display-4 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* Notification system */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.15);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+/* Loading animations */
+.spinner-border {
+    border-color: var(--error-primary);
+    border-right-color: transparent;
+}
+
+/* Custom reports section */
+.custom-reports-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.08);
+}
+
+.custom-reports-card .card-header {
+    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+    border-bottom: 1px solid #fca5a5;
+    padding: 1.5rem;
+}
+
+.custom-reports-card .btn {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-card .card-body {
+        padding: 1.5rem 1rem;
+    }
+
+    .sidebar {
+        margin-top: 2rem;
+    }
+
+    .modal-dialog {
+        margin: 1rem;
+    }
+
+    .chart-card .card-body {
+        padding: 1rem;
+    }
+
+    .error-hero .card-body {
+        padding: 2rem 1.5rem;
+    }
+
+    .error-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Time range selector enhancement */
+#time-range {
+    border-radius: 8px;
+    border: 2px solid #fca5a5;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+}
+
+#time-range:focus {
+    border-color: var(--error-primary);
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+}
+
+/* Error page specific animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Glitch effect for 404 */
+.glitch {
+    position: relative;
+    color: white;
+    font-size: 6rem;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.glitch::before,
+.glitch::after {
+    content: '404';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    animation: glitch-1 0.5s infinite;
+    color: #ff6b6b;
+    z-index: -1;
+}
+
+.glitch::after {
+    animation: glitch-2 0.5s infinite;
+    color: #4ecdc4;
+    z-index: -2;
+}
+
+@keyframes glitch-1 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(2px, -2px); }
+    40% { transform: translate(2px, 2px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(-2px, 2px); }
+}
+
+/* Search functionality */
+.search-container {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.search-input {
+    background: rgba(255,255,255,0.9);
+    border: 2px solid #fca5a5;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+.search-input:focus {
+    border-color: var(--error-primary);
+    box-shadow: 0 0 0 0.2rem rgba(220, 38, 38, 0.25);
+}
+
+/* Suggested pages */
+.suggested-pages {
+    background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.08);
+}
+
+.page-link {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    margin: 0.25rem;
+    background: var(--error-gradient);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.page-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+    color: white;
+}
+</style>
+</head>
+<body class="bg-light">
+    <div class="container-fluid py-4">
+        <!-- Header with controls -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">Error Analytics Dashboard</h1>
+                <p class="text-muted mb-0">Monitor and analyze system errors and page not found incidents</p>
+            </div>
+            <div class="d-flex gap-2">
+                <select class="form-select" id="time-range" style="width: auto;">
+                    <option value="1h">Last Hour</option>
+                    <option value="24h" selected>Last 24 Hours</option>
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d">Last 30 Days</option>
+                </select>
+                <button class="btn btn-error-primary" id="export-errors">
+                    <i class="fas fa-download me-1"></i>Export Errors
+                </button>
+                <button class="btn btn-outline-secondary" id="auto-refresh-toggle" data-auto-refresh="false">
+                    <i class="fas fa-clock me-1"></i>Auto Refresh: OFF
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Error Hero Section -->
+                <div class="card error-hero fade-in-up">
+                    <div class="card-body text-center">
+                        <div class="glitch error-icon">404</div>
+                        <h1 class="error-title">Page Not Found</h1>
+                        <p class="error-subtitle">
+                            The page you're looking for doesn't exist or has been moved.
+                            <br>But don't worry - we've got you covered with comprehensive error analytics!
+                        </p>
+                        <div class="d-flex gap-2 justify-content-center flex-wrap">
+                            <a href="/" class="btn btn-light btn-lg">
+                                <i class="fas fa-home me-2"></i>Go to Dashboard
+                            </a>
+                            <button onclick="history.back()" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>Go Back
+                            </button>
+                            <button class="btn btn-outline-light btn-lg" onclick="RealtorAgent.showErrorSearch()">
+                                <i class="fas fa-search me-2"></i>Search Pages
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Functionality -->
+                <div class="search-container fade-in-up" id="error-search" style="display: none;">
+                    <h5 class="text-white mb-3">
+                        <i class="fas fa-search me-2"></i>Find What You're Looking For
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control search-input" id="page-search" placeholder="Search for pages, features, or content...">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-error-primary w-100" onclick="RealtorAgent.performSearch()">
+                                <i class="fas fa-search me-1"></i>Search
+                            </button>
+                        </div>
+                    </div>
+                    <div id="search-results" class="mt-3" style="display: none;">
+                        <div class="alert alert-light">
+                            <h6>Search Results:</h6>
+                            <div id="search-results-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Suggested Pages -->
+                <div class="suggested-pages fade-in-up">
+                    <h5 class="mb-3">
+                        <i class="fas fa-lightbulb me-2 text-danger"></i>Popular Pages You Might Be Looking For
+                    </h5>
+                    <div class="d-flex flex-wrap">
+                        <a href="/" class="page-link">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                        <a href="/analytics" class="page-link">
+                            <i class="fas fa-chart-bar me-1"></i>Analytics
+                        </a>
+                        <a href="/deals" class="page-link">
+                            <i class="fas fa-handshake me-1"></i>Deals
+                        </a>
+                        <a href="/bots" class="page-link">
+                            <i class="fas fa-robot me-1"></i>AI Bots
+                        </a>
+                        <a href="/land_flip_guide" class="page-link">
+                            <i class="fas fa-home me-1"></i>Land Flipping Guide
+                        </a>
+                        <a href="/reports" class="page-link">
+                            <i class="fas fa-file-alt me-1"></i>Reports
+                        </a>
+                        <a href="/settings" class="page-link">
+                            <i class="fas fa-cog me-1"></i>Settings
+                        </a>
+                        <a href="/sync" class="page-link">
+                            <i class="fas fa-sync me-1"></i>Data Sync
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Error Analytics Row -->
+                <div class="row mb-4" id="error-stats-row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title">Total 404 Errors</h6>
+                                        <div class="display-4" id="total-404s">1,247</div>
+                                        <div class="metric-change warning">
+                                            <i class="fas fa-arrow-up me-1"></i>+15% from last week
+                                        </div>
+                                    </div>
+                                    <div class="text-danger">
+                                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title">Most Requested</h6>
+                                        <div class="display-4" id="most-requested">/old-api</div>
+                                        <div class="metric-change danger">
+                                            <i class="fas fa-arrow-up me-1"></i>234 requests
+                                        </div>
+                                    </div>
+                                    <div class="text-danger">
+                                        <i class="fas fa-chart-line fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title">Recovery Rate</h6>
+                                        <div class="display-4" id="recovery-rate">68%</div>
+                                        <div class="metric-change success">
+                                            <i class="fas fa-arrow-up me-1"></i>+5% from last week
+                                        </div>
+                                    </div>
+                                    <div class="text-danger">
+                                        <i class="fas fa-redo fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title">Avg Response Time</h6>
+                                        <div class="display-4" id="avg-response">142ms</div>
+                                        <div class="metric-change success">
+                                            <i class="fas fa-arrow-down me-1"></i>-12ms from last week
+                                        </div>
+                                    </div>
+                                    <div class="text-danger">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Charts Row -->
+                <div class="row mb-4">
+                    <div class="col-lg-8 mb-4">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-line me-2 text-danger"></i>404 Errors Over Time
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="errorTrendChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-chart-pie me-2 text-warning"></i>Error Types Distribution
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="errorTypesChart" height="300"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Analysis -->
+                <div class="row mb-4">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-globe me-2 text-info"></i>Top 404 URLs
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>URL</th>
+                                                <th>Hits</th>
+                                                <th>% of Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="top-404-urls">
+                                            <tr>
+                                                <td><code>/old-api/v1/users</code></td>
+                                                <td>234</td>
+                                                <td><span class="badge bg-danger">18.8%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>/legacy/dashboard</code></td>
+                                                <td>189</td>
+                                                <td><span class="badge bg-warning">15.2%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>/api/v2/deprecated</code></td>
+                                                <td>156</td>
+                                                <td><span class="badge bg-info">12.5%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>/old-reports</code></td>
+                                                <td>98</td>
+                                                <td><span class="badge bg-secondary">7.9%</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><code>/legacy-admin</code></td>
+                                                <td>76</td>
+                                                <td><span class="badge bg-light text-dark">6.1%</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-clock me-2 text-success"></i>Error Response Times
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="responseTimeChart" height="250"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Recovery Section -->
+                <div class="row mb-4">
+                    <div class="col-lg-4 mb-4">
+                        <div class="card efficiency-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-search me-2 text-danger"></i>Search Recovery
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="display-4 text-danger mb-2" id="search-recovery">73%</div>
+                                <p class="text-muted mb-3">Users find what they need</p>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar bg-danger" style="width: 73%"></div>
+                                </div>
+                                <small class="text-muted">Target: 80%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card efficiency-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-undo me-2 text-warning"></i>Bounce Recovery
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="display-4 text-warning mb-2" id="bounce-recovery">45%</div>
+                                <p class="text-muted mb-3">Users return after 404</p>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar bg-warning" style="width: 45%"></div>
+                                </div>
+                                <small class="text-muted">Target: 60%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="card efficiency-card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-route me-2 text-info"></i>Redirect Effectiveness
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="display-4 text-info mb-2" id="redirect-effectiveness">89%</div>
+                                <p class="text-muted mb-3">Auto-redirects work</p>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar bg-info" style="width: 89%"></div>
+                                </div>
+                                <small class="text-muted">Target: 95%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Management Tools -->
+                <div class="card custom-reports-card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-tools me-2 text-danger"></i>Error Management & Analysis Tools
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <button class="btn btn-outline-danger w-100" onclick="RealtorAgent.generateErrorReport('404-analysis')">
+                                    <i class="fas fa-file-alt me-2"></i>404 Analysis
+                                </button>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button class="btn btn-outline-danger w-100" onclick="RealtorAgent.generateErrorReport('broken-links')">
+                                    <i class="fas fa-unlink me-2"></i>Broken Links
+                                </button>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button class="btn btn-outline-danger w-100" onclick="RealtorAgent.generateErrorReport('user-journey')">
+                                    <i class="fas fa-route me-2"></i>User Journey
+                                </button>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <button class="btn btn-outline-danger w-100" onclick="RealtorAgent.generateErrorReport('seo-impact')">
+                                    <i class="fas fa-search me-2"></i>SEO Impact
+                                </button>
+                            </div>
+                        </div>
+                        <div id="error-report-status" class="mt-3" style="display: none;">
+                            <div class="alert alert-danger">
+                                <i class="fas fa-spinner fa-spin me-2"></i>Generating error analysis report...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar">
+                    <div class="sidebar-header">
+                        <h5 class="mb-0 text-white">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Error Hub
+                        </h5>
+                    </div>
+                    <div class="sidebar-content">
+                        <!-- Error Activity Feed -->
+                        <div class="mb-4">
+                            <h6 class="text-white mb-3">
+                                <i class="fas fa-history me-1"></i>Error Activity Feed
+                            </h6>
+                            <div class="activity-feed" id="error-activity-feed">
+                                <div class="activity-item error">
+                                    <small class="text-white-50">2 min ago</small>
+                                    <div class="text-white">404 error logged: /old-api/v1/users</div>
+                                </div>
+                                <div class="activity-item warning">
+                                    <small class="text-white-50">5 min ago</small>
+                                    <div class="text-white">Broken link detected: /legacy/dashboard</div>
+                                </div>
+                                <div class="activity-item success">
+                                    <small class="text-white-50">8 min ago</small>
+                                    <div class="text-white">User recovered via search: redirected to /analytics</div>
+                                </div>
+                                <div class="activity-item error">
+                                    <small class="text-white-50">12 min ago</small>
+                                    <div class="text-white">404 error logged: /api/v2/deprecated</div>
+                                </div>
+                                <div class="activity-item info">
+                                    <small class="text-white-50">15 min ago</small>
+                                    <div class="text-white">Error analysis report generated</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Error Actions -->
+                        <div class="mb-4">
+                            <h6 class="text-white mb-3">
+                                <i class="fas fa-bolt me-1"></i>Quick Actions
+                            </h6>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showErrorAnalysisModal()">
+                                    <i class="fas fa-chart-bar me-1"></i>Deep Analysis
+                                </button>
+                                <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showErrorRecoveryModal()">
+                                    <i class="fas fa-redo me-1"></i>Recovery Tools
+                                </button>
+                                <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.createRedirect()">
+                                    <i class="fas fa-directions me-1"></i>Create Redirect
+                                </button>
+                                <button class="btn btn-outline-light btn-sm" onclick="RealtorAgent.showErrorGuide()">
+                                    <i class="fas fa-graduation-cap me-1"></i>Error Guide
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Error System Status -->
+                        <div class="mb-4">
+                            <h6 class="text-white mb-3">
+                                <i class="fas fa-server me-1"></i>System Status
+                            </h6>
+                            <div class="text-center">
+                                <div class="mb-2">
+                                    <span class="badge bg-success">All Systems Operational</span>
+                                </div>
+                                <small class="text-white-50">Last error check: Just now</small>
+                            </div>
+                        </div>
+
+                        <!-- Error Performance Indicators -->
+                        <div>
+                            <h6 class="text-white mb-3">
+                                <i class="fas fa-tachometer-alt me-1"></i>Error Metrics
+                            </h6>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="h6 mb-1 text-white">99.2%</div>
+                                    <small class="text-white-50">Uptime</small>
+                                </div>
+                                <div class="col-6">
+                                    <div class="h6 mb-1 text-white">1.4s</div>
+                                    <small class="text-white-50">Avg Response</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Analysis Modal -->
+    <div class="modal fade" id="errorAnalysisModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-chart-bar me-2"></i>Deep Error Analysis
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="errorAnalysisForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="errorAnalysisType" class="form-label">Analysis Type</label>
+                                    <select class="form-select" id="errorAnalysisType" required>
+                                        <option value="">Choose analysis type...</option>
+                                        <option value="404-patterns">404 Patterns Analysis</option>
+                                        <option value="broken-links">Broken Links Detection</option>
+                                        <option value="user-behavior">User Behavior Analysis</option>
+                                        <option value="seo-impact">SEO Impact Assessment</option>
+                                        <option value="recovery-optimization">Recovery Optimization</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="errorTimeframe" class="form-label">Time Frame</label>
+                                    <select class="form-select" id="errorTimeframe" required>
+                                        <option value="1h">Last Hour</option>
+                                        <option value="24h">Last 24 Hours</option>
+                                        <option value="7d">Last 7 Days</option>
+                                        <option value="30d">Last 30 Days</option>
+                                        <option value="custom">Custom Range</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Analysis Dimensions</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="errorDimensionURL" checked>
+                                        <label class="form-check-label" for="errorDimensionURL">URL Patterns</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="errorDimensionReferrer" checked>
+                                        <label class="form-check-label" for="errorDimensionReferrer">Referrer Analysis</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="errorDimensionUserAgent">
+                                        <label class="form-check-label" for="errorDimensionUserAgent">User Agent</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="errorDimensionGeographic">
+                                        <label class="form-check-label" for="errorDimensionGeographic">Geographic Data</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="errorAnalysisResults" class="mt-4" style="display: none;">
+                        <h6>Error Analysis Results</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Key Findings</h6>
+                                        <ul class="list-unstyled" id="errorAnalysisInsights">
+                                            <li class="mb-2"><i class="fas fa-exclamation-triangle text-danger me-2"></i>API endpoints account for 45% of 404s</li>
+                                            <li class="mb-2"><i class="fas fa-link text-warning me-2"></i>Legacy URLs need redirects</li>
+                                            <li class="mb-2"><i class="fas fa-users text-info me-2"></i>User search behavior improving</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Recommendations</h6>
+                                        <ul class="list-unstyled" id="errorAnalysisRecommendations">
+                                            <li class="mb-2"><i class="fas fa-directions text-primary me-2"></i>Implement bulk redirects for legacy URLs</li>
+                                            <li class="mb-2"><i class="fas fa-search text-success me-2"></i>Enhance search functionality</li>
+                                            <li class="mb-2"><i class="fas fa-sitemap text-info me-2"></i>Create comprehensive sitemap</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-error-primary" onclick="RealtorAgent.runErrorAnalysis()">
+                        <i class="fas fa-play me-1"></i>Run Error Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Recovery Modal -->
+    <div class="modal fade" id="errorRecoveryModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-redo me-2"></i>Error Recovery Tools
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="recoveryAction" class="form-label">Recovery Action</label>
+                        <select class="form-select" id="recoveryAction">
+                            <option value="redirect">Create Redirect</option>
+                            <option value="search">Enhanced Search</option>
+                            <option value="sitemap">Generate Sitemap</option>
+                            <option value="crawl">Crawl for Broken Links</option>
+                        </select>
+                    </div>
+
+                    <div id="redirectSection">
+                        <div class="mb-3">
+                            <label for="sourceURL" class="form-label">Source URL (404 URL)</label>
+                            <input type="text" class="form-control" id="sourceURL" placeholder="/old-page">
+                        </div>
+                        <div class="mb-3">
+                            <label for="targetURL" class="form-label">Target URL</label>
+                            <input type="text" class="form-control" id="targetURL" placeholder="/new-page">
+                        </div>
+                        <div class="mb-3">
+                            <label for="redirectType" class="form-label">Redirect Type</label>
+                            <select class="form-select" id="redirectType">
+                                <option value="301">301 Permanent</option>
+                                <option value="302">302 Temporary</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="searchEnhancementSection" style="display: none;">
+                        <h6>Search Enhancement Options</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="enableFuzzySearch" checked>
+                            <label class="form-check-label" for="enableFuzzySearch">Enable fuzzy search</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="enableAutoSuggest" checked>
+                            <label class="form-check-label" for="enableAutoSuggest">Enable auto-suggestions</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="enableSynonyms">
+                            <label class="form-check-label" for="enableSynonyms">Enable synonym matching</label>
+                        </div>
+                    </div>
+
+                    <div id="recoveryResults" class="mt-4" style="display: none;">
+                        <div class="alert alert-success">
+                            <h6>Recovery Action Completed</h6>
+                            <div id="recoveryResultsContent"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-error-primary" onclick="RealtorAgent.executeRecoveryAction()">
+                        <i class="fas fa-play me-1"></i>Execute Recovery
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- RealtorAgent Error Management Namespace -->
+    <script>
+// RealtorAgent Error Management Namespace
+const RealtorAgent = {
+    // Configuration
+    config: {
+        autoRefreshInterval: 30000, // 30 seconds for error monitoring
+        maxActivityItems: 20,
+        apiBaseUrl: '/api/errors',
+        chartColors: {
+            primary: '#dc2626',
+            success: '#059669',
+            warning: '#d97706',
+            danger: '#dc2626',
+            info: '#0891b2'
+        }
+    },
+
+    // State management
+    state: {
+        autoRefreshEnabled: false,
+        autoRefreshTimer: null,
+        currentTimeRange: '24h',
+        errorData: {},
+        activityFeed: [],
+        charts: {}
+    },
+
+    // Initialize the error management system
+    init: function() {
+        console.log('Initializing RealtorAgent Error Management System...');
+
+        this.setupEventListeners();
+        this.initializeCharts();
+        this.loadInitialData();
+        this.initializeAutoRefresh();
+        this.setupTooltips();
+
+        console.log('Error Management System initialized successfully');
+    },
+
+    // Setup event listeners
+    setupEventListeners: function() {
+        // Time range selector
+        document.getElementById('time-range').addEventListener('change', (e) => {
+            this.state.currentTimeRange = e.target.value;
+            this.updateErrorAnalytics();
+        });
+
+        // Export button
+        document.getElementById('export-errors').addEventListener('click', () => this.exportErrorData());
+
+        // Auto refresh toggle
+        document.getElementById('auto-refresh-toggle').addEventListener('click', () => this.toggleAutoRefresh());
+
+        // Recovery action selector
+        document.getElementById('recoveryAction').addEventListener('change', (e) => {
+            this.toggleRecoverySections(e.target.value);
+        });
+
+        // Setup modal triggers
+        this.setupModalTriggers();
+    },
+
+    // Setup modal triggers
+    setupModalTriggers: function() {
+        // Error analysis modal
+        document.getElementById('errorAnalysisModal').addEventListener('show.bs.modal', () => {
+            // Reset form
+            document.getElementById('errorAnalysisForm').reset();
+            document.getElementById('errorAnalysisResults').style.display = 'none';
+        });
+
+        // Error recovery modal
+        document.getElementById('errorRecoveryModal').addEventListener('show.bs.modal', () => {
+            // Reset form
+            document.getElementById('recoveryAction').value = 'redirect';
+            this.toggleRecoverySections('redirect');
+            document.getElementById('recoveryResults').style.display = 'none';
+        });
+    },
+
+    // Toggle recovery sections
+    toggleRecoverySections: function(action) {
+        document.getElementById('redirectSection').style.display = action === 'redirect' ? 'block' : 'none';
+        document.getElementById('searchEnhancementSection').style.display = action === 'search' ? 'block' : 'none';
+    },
+
+    // Initialize charts
+    initializeCharts: function() {
+        this.initializeErrorTrendChart();
+        this.initializeErrorTypesChart();
+        this.initializeResponseTimeChart();
+    },
+
+    // Initialize error trend chart
+    initializeErrorTrendChart: function() {
+        const ctx = document.getElementById('errorTrendChart').getContext('2d');
+        this.state.charts.errorTrend = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '404 Errors',
+                    data: [],
+                    borderColor: this.config.chartColors.primary,
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Other Errors',
+                    data: [],
+                    borderColor: this.config.chartColors.warning,
+                    backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    },
+
+    // Initialize error types chart
+    initializeErrorTypesChart: function() {
+        const ctx = document.getElementById('errorTypesChart').getContext('2d');
+        this.state.charts.errorTypes = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['404 Not Found', '403 Forbidden', '500 Server Error', 'Other'],
+                datasets: [{
+                    data: [65, 15, 12, 8],
+                    backgroundColor: [
+                        this.config.chartColors.primary,
+                        this.config.chartColors.warning,
+                        this.config.chartColors.danger,
+                        this.config.chartColors.info
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+    },
+
+    // Initialize response time chart
+    initializeResponseTimeChart: function() {
+        const ctx = document.getElementById('responseTimeChart').getContext('2d');
+        this.state.charts.responseTime = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['< 100ms', '100-500ms', '500ms-1s', '1s-2s', '> 2s'],
+                datasets: [{
+                    label: 'Error Responses',
+                    data: [25, 35, 20, 12, 8],
+                    backgroundColor: this.config.chartColors.primary,
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    },
+
+    // Load initial data
+    loadInitialData: function() {
+        this.loadErrorData();
+        this.loadErrorActivityFeed();
+        this.updateErrorAnalytics();
+    },
+
+    // Load error data
+    loadErrorData: function() {
+        // Simulate loading error data
+        this.state.errorData = {
+            total404s: 1247,
+            mostRequested: '/old-api',
+            recoveryRate: 68,
+            avgResponse: 142,
+            searchRecovery: 73,
+            bounceRecovery: 45,
+            redirectEffectiveness: 89
+        };
+    },
+
+    // Update error analytics display
+    updateErrorAnalytics: function() {
+        const timeRange = this.state.currentTimeRange;
+        const data = this.getErrorDataForTimeRange(timeRange);
+
+        // Update metrics
+        this.updateErrorMetricsDisplay(data);
+        this.updateErrorChartsWithData(data);
+        this.updateErrorEfficiencyMetrics(data);
+
+        this.addErrorActivityItem(`Error analytics updated for ${this.formatTimeRange(timeRange)}`, 'info');
+    },
+
+    // Get error data for specific time range
+    getErrorDataForTimeRange: function(timeRange) {
+        const dataSets = {
+            '1h': {
+                total404s: 23,
+                mostRequested: '/api/test',
+                recoveryRate: 65,
+                avgResponse: 135,
+                searchRecovery: 70,
+                bounceRecovery: 40,
+                redirectEffectiveness: 85,
+                errorTrendData: {
+                    labels: ['50m ago', '40m ago', '30m ago', '20m ago', '10m ago', 'Now'],
+                    error404s: [2, 3, 1, 4, 6, 2],
+                    otherErrors: [1, 2, 0, 1, 3, 1]
+                }
+            },
+            '24h': {
+                total404s: 1247,
+                mostRequested: '/old-api',
+                recoveryRate: 68,
+                avgResponse: 142,
+                searchRecovery: 73,
+                bounceRecovery: 45,
+                redirectEffectiveness: 89,
+                errorTrendData: {
+                    labels: ['24h ago', '18h ago', '12h ago', '6h ago', 'Now'],
+                    error404s: [45, 52, 48, 41, 38],
+                    otherErrors: [12, 18, 15, 9, 11]
+                }
+            },
+            '7d': {
+                total404s: 8734,
+                mostRequested: '/old-api',
+                recoveryRate: 71,
+                avgResponse: 148,
+                searchRecovery: 76,
+                bounceRecovery: 48,
+                redirectEffectiveness: 91,
+                errorTrendData: {
+                    labels: ['7d ago', '5d ago', '3d ago', '1d ago', 'Now'],
+                    error404s: [1200, 1450, 1350, 1280, 1247],
+                    otherErrors: [234, 345, 298, 267, 245]
+                }
+            },
+            '30d': {
+                total404s: 37421,
+                mostRequested: '/legacy-system',
+                recoveryRate: 74,
+                avgResponse: 152,
+                searchRecovery: 78,
+                bounceRecovery: 52,
+                redirectEffectiveness: 93,
+                errorTrendData: {
+                    labels: ['30d ago', '20d ago', '10d ago', 'Now'],
+                    error404s: [8500, 11200, 13400, 12470],
+                    otherErrors: [1200, 1650, 1890, 1780]
+                }
+            }
+        };
+
+        return dataSets[timeRange];
+    },
+
+    // Update error metrics display
+    updateErrorMetricsDisplay: function(data) {
+        document.getElementById('total-404s').textContent = data.total404s.toLocaleString();
+        document.getElementById('most-requested').textContent = data.mostRequested;
+        document.getElementById('recovery-rate').textContent = data.recoveryRate + '%';
+        document.getElementById('avg-response').textContent = data.avgResponse + 'ms';
+    },
+
+    // Update error charts with data
+    updateErrorChartsWithData: function(data) {
+        // Update error trend chart
+        this.state.charts.errorTrend.data.labels = data.errorTrendData.labels;
+        this.state.charts.errorTrend.data.datasets[0].data = data.errorTrendData.error404s;
+        this.state.charts.errorTrend.data.datasets[1].data = data.errorTrendData.otherErrors;
+        this.state.charts.errorTrend.update();
+
+        // Update other charts with simulated data based on time range
+        this.updateErrorChartDataBasedOnTimeRange(data);
+    },
+
+    // Update error chart data based on time range
+    updateErrorChartDataBasedOnTimeRange: function(data) {
+        // Simulate different chart data based on time range
+        const timeRange = this.state.currentTimeRange;
+
+        if (timeRange === '1h') {
+            this.state.charts.errorTypes.data.datasets[0].data = [15, 3, 2, 1];
+            this.state.charts.responseTime.data.datasets[0].data = [8, 12, 6, 3, 1];
+        } else if (timeRange === '7d') {
+            this.state.charts.errorTypes.data.datasets[0].data = [450, 67, 45, 32];
+            this.state.charts.responseTime.data.datasets[0].data = [180, 250, 140, 89, 45];
+        } else if (timeRange === '30d') {
+            this.state.charts.errorTypes.data.datasets[0].data = [1800, 267, 189, 134];
+            this.state.charts.responseTime.data.datasets[0].data = [780, 1120, 650, 345, 167];
+        }
+
+        // Update all charts
+        Object.values(this.state.charts).forEach(chart => chart.update());
+    },
+
+    // Update error efficiency metrics
+    updateErrorEfficiencyMetrics: function(data) {
+        document.getElementById('search-recovery').textContent = data.searchRecovery + '%';
+        document.getElementById('bounce-recovery').textContent = data.bounceRecovery + '%';
+        document.getElementById('redirect-effectiveness').textContent = data.redirectEffectiveness + '%';
+
+        // Update progress bars
+        this.updateErrorProgressBars(data);
+    },
+
+    // Update error progress bars
+    updateErrorProgressBars: function(data) {
+        const searchProgress = data.searchRecovery;
+        const bounceProgress = data.bounceRecovery;
+        const redirectProgress = data.redirectEffectiveness;
+
+        document.querySelector('#search-recovery').closest('.card-body').querySelector('.progress-bar').style.width = searchProgress + '%';
+        document.querySelector('#bounce-recovery').closest('.card-body').querySelector('.progress-bar').style.width = bounceProgress + '%';
+        document.querySelector('#redirect-effectiveness').closest('.card-body').querySelector('.progress-bar').style.width = redirectProgress + '%';
+    },
+
+    // Auto refresh functionality
+    initializeAutoRefresh: function() {
+        // Auto refresh is initially disabled
+    },
+
+    toggleAutoRefresh: function() {
+        const button = document.getElementById('auto-refresh-toggle');
+        this.state.autoRefreshEnabled = !this.state.autoRefreshEnabled;
+
+        if (this.state.autoRefreshEnabled) {
+            button.innerHTML = '<i class="fas fa-clock me-1"></i>Auto Refresh: ON';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-success');
+            this.startAutoRefresh();
+            this.addErrorActivityItem('Auto refresh enabled', 'success');
+        } else {
+            button.innerHTML = '<i class="fas fa-clock me-1"></i>Auto Refresh: OFF';
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-secondary');
+            this.stopAutoRefresh();
+            this.addErrorActivityItem('Auto refresh disabled', 'warning');
+        }
+    },
+
+    startAutoRefresh: function() {
+        this.stopAutoRefresh();
+        this.state.autoRefreshTimer = setInterval(() => {
+            this.updateErrorAnalytics();
+        }, this.config.autoRefreshInterval);
+    },
+
+    stopAutoRefresh: function() {
+        if (this.state.autoRefreshTimer) {
+            clearInterval(this.state.autoRefreshTimer);
+            this.state.autoRefreshTimer = null;
+        }
+    },
+
+    // Export error data
+    exportErrorData: function() {
+        const button = document.getElementById('export-errors');
+        const originalText = button.innerHTML;
+
+        button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Exporting...';
+        button.disabled = true;
+
+        this.addErrorActivityItem('Error data export started', 'info');
+
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.disabled = false;
+
+            this.showAlert('Error analytics data exported successfully to Excel format', 'success');
+            this.addErrorActivityItem('Error data export completed', 'success');
+        }, 2000);
+    },
+
+    // Generate error report
+    generateErrorReport: function(reportType) {
+        const statusDiv = document.getElementById('error-report-status');
+        statusDiv.style.display = 'block';
+
+        this.addErrorActivityItem(`${this.formatErrorReportName(reportType)} report generation started`, 'info');
+
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+            this.showAlert(`${this.formatErrorReportName(reportType)} report generated successfully`, 'success');
+            this.addErrorActivityItem(`${this.formatErrorReportName(reportType)} report completed`, 'success');
+        }, 3000);
+    },
+
+    // Show error search
+    showErrorSearch: function() {
+        const searchContainer = document.getElementById('error-search');
+        searchContainer.style.display = searchContainer.style.display === 'none' ? 'block' : 'none';
+    },
+
+    // Perform search
+    performSearch: function() {
+        const query = document.getElementById('page-search').value.trim();
+        if (!query) {
+            this.showAlert('Please enter a search query', 'warning');
+            return;
+        }
+
+        const resultsDiv = document.getElementById('search-results');
+        const resultsContent = document.getElementById('search-results-content');
+
+        // Simulate search results
+        const mockResults = [
+            { title: 'Analytics Dashboard', url: '/analytics', description: 'Comprehensive analytics and reporting' },
+            { title: 'Deal Management', url: '/deals', description: 'Manage and track real estate deals' },
+            { title: 'AI Bot Management', url: '/bots', description: 'Configure and monitor AI bots' }
+        ].filter(result =>
+            result.title.toLowerCase().includes(query.toLowerCase()) ||
+            result.description.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (mockResults.length > 0) {
+            resultsContent.innerHTML = mockResults.map(result =>
+                `<div class="mb-2">
+                    <a href="${result.url}" class="text-decoration-none">
+                        <strong>${result.title}</strong>
+                    </a><br>
+                    <small class="text-muted">${result.description}</small>
+                </div>`
+            ).join('');
+            resultsDiv.style.display = 'block';
+            this.addErrorActivityItem(`Search performed for "${query}" - ${mockResults.length} results found`, 'success');
+        } else {
+            resultsContent.innerHTML = '<div class="text-muted">No results found. Try different keywords.</div>';
+            resultsDiv.style.display = 'block';
+            this.addErrorActivityItem(`Search performed for "${query}" - no results found`, 'warning');
+        }
+    },
+
+    // Show error analysis modal
+    showErrorAnalysisModal: function() {
+        const modal = new bootstrap.Modal(document.getElementById('errorAnalysisModal'));
+        modal.show();
+    },
+
+    // Run error analysis
+    runErrorAnalysis: function() {
+        const analysisType = document.getElementById('errorAnalysisType').value;
+        const timeframe = document.getElementById('errorTimeframe').value;
+
+        if (!analysisType) {
+            this.showAlert('Please select an analysis type', 'warning');
+            return;
+        }
+
+        const runButton = event.target;
+        const originalText = runButton.innerHTML;
+        runButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
+        runButton.disabled = true;
+
+        this.addErrorActivityItem(`Error analysis started: ${this.formatErrorAnalysisName(analysisType)}`, 'info');
+
+        setTimeout(() => {
+            runButton.innerHTML = originalText;
+            runButton.disabled = false;
+
+            document.getElementById('errorAnalysisResults').style.display = 'block';
+            this.showAlert('Error analysis completed successfully', 'success');
+            this.addErrorActivityItem(`Error analysis completed: ${this.formatErrorAnalysisName(analysisType)}`, 'success');
+        }, 4000);
+    },
+
+    // Show error recovery modal
+    showErrorRecoveryModal: function() {
+        const modal = new bootstrap.Modal(document.getElementById('errorRecoveryModal'));
+        modal.show();
+    },
+
+    // Execute recovery action
+    executeRecoveryAction: function() {
+        const action = document.getElementById('recoveryAction').value;
+        let resultMessage = '';
+
+        if (action === 'redirect') {
+            const sourceURL = document.getElementById('sourceURL').value;
+            const targetURL = document.getElementById('targetURL').value;
+            if (!sourceURL || !targetURL) {
+                this.showAlert('Please fill in both source and target URLs', 'warning');
+                return;
+            }
+            resultMessage = `Redirect created: ${sourceURL} → ${targetURL}`;
+        } else if (action === 'search') {
+            resultMessage = 'Search enhancements applied successfully';
+        } else {
+            resultMessage = `${action.replace('-', ' ')} action completed`;
+        }
+
+        document.getElementById('recoveryResultsContent').textContent = resultMessage;
+        document.getElementById('recoveryResults').style.display = 'block';
+
+        this.showAlert('Recovery action executed successfully', 'success');
+        this.addErrorActivityItem(`Recovery action executed: ${action}`, 'success');
+    },
+
+    // Create redirect
+    createRedirect: function() {
+        this.showErrorRecoveryModal();
+        document.getElementById('recoveryAction').value = 'redirect';
+        this.toggleRecoverySections('redirect');
+    },
+
+    // Show error guide
+    showErrorGuide: function() {
+        window.open('/static/docs/error-management-guide.pdf', '_blank');
+        this.addErrorActivityItem('Error management guide opened', 'info');
+    },
+
+    // Error activity feed management
+    loadErrorActivityFeed: function() {
+        this.state.activityFeed = [
+            { time: '2 min ago', message: '404 error logged: /old-api/v1/users', type: 'error' },
+            { time: '5 min ago', message: 'Broken link detected: /legacy/dashboard', type: 'warning' },
+            { time: '8 min ago', message: 'User recovered via search: redirected to /analytics', type: 'success' },
+            { time: '12 min ago', message: '404 error logged: /api/v2/deprecated', type: 'error' },
+            { time: '15 min ago', message: 'Error analysis report generated', type: 'info' }
+        ];
+    },
+
+    addErrorActivityItem: function(message, type = 'info') {
+        const activityFeed = document.getElementById('error-activity-feed');
+        const item = document.createElement('div');
+        item.className = `activity-item ${type}`;
+        item.innerHTML = `
+            <small class="text-white-50">Just now</small>
+            <div class="text-white">${message}</div>
+        `;
+
+        activityFeed.insertBefore(item, activityFeed.firstChild);
+
+        while (activityFeed.children.length > this.config.maxActivityItems) {
+            activityFeed.removeChild(activityFeed.lastChild);
+        }
+
+        this.state.activityFeed.unshift({
+            time: 'Just now',
+            message: message,
+            type: type
+        });
+    },
+
+    // Notification system
+    showAlert: function(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="fas ${this.getAlertIcon(type)} me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.remove();
+            }
+        }, 5000);
+    },
+
+    getAlertIcon: function(type) {
+        const icons = {
+            success: 'fa-check-circle',
+            error: 'fa-exclamation-triangle',
+            warning: 'fa-exclamation-circle',
+            info: 'fa-info-circle'
+        };
+        return icons[type] || 'fa-info-circle';
+    },
+
+    // Setup tooltips
+    setupTooltips: function() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    },
+
+    // Utility functions
+    formatTimeRange: function(timeRange) {
+        const ranges = {
+            '1h': 'Last Hour',
+            '24h': 'Last 24 Hours',
+            '7d': 'Last 7 Days',
+            '30d': 'Last 30 Days'
+        };
+        return ranges[timeRange] || timeRange;
+    },
+
+    formatErrorReportName: function(reportType) {
+        return reportType.split('-').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    },
+
+    formatErrorAnalysisName: function(analysisType) {
+        return analysisType.split('-').map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    }
+};
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    RealtorAgent.init();
+});
+</script>
+</body>
+</html>

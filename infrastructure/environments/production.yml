@@ -1,0 +1,110 @@
+# Production Environment Configuration
+# Live production environment - HIGH SECURITY
+
+environment: production
+
+# Database Configuration
+database:
+  host: "${DB_HOST}"  # Required environment variable
+  port: 5432
+  name: realtor_agent_prod
+  user: "${DB_USER}"
+  password: "${DB_PASSWORD}"
+  ssl_mode: verify-full
+  connection_pool_size: 20
+  connection_timeout: 30
+  ssl_cert: "${DB_SSL_CERT}"
+  ssl_key: "${DB_SSL_KEY}"
+  ssl_root_cert: "${DB_SSL_ROOT_CERT}"
+
+# API Keys (Production Keys - HIGHLY SENSITIVE)
+api_keys:
+  zillow:  # DEPRECATED - Zillow API discontinued
+    api_key: "DEPRECATED_ZILLOW_API_NO_LONGER_AVAILABLE"
+    rate_limit: 1000  # requests per minute
+  realtor:
+    api_key: "${REALTOR_API_KEY}"
+    rate_limit: 500
+  homes:
+    api_key: "${HOMES_API_KEY}"
+    rate_limit: 200
+  land:
+    api_key: "${LAND_API_KEY}"
+    rate_limit: 100
+  discountlots:
+    api_key: "${DISCOUNTLOTS_API_KEY}"
+    rate_limit: 50
+  twilio:
+    account_sid: "${TWILIO_ACCOUNT_SID}"
+    auth_token: "${TWILIO_AUTH_TOKEN}"
+    from_number: "${TWILIO_FROM_NUMBER}"
+  sendgrid:
+    api_key: "${SENDGRID_API_KEY}"
+    from_email: "noreply@realtoragent.com"
+
+# Logging Configuration
+logging:
+  level: WARNING
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "/var/log/realtor_agent/prod.log"
+  max_file_size: 1073741824  # 1GB
+  backup_count: 30
+  syslog_server: "${SYSLOG_SERVER}"
+  logstash_host: "${LOGSTASH_HOST}"
+
+# Security Configuration
+security:
+  secret_key: "${SECRET_KEY}"  # Must be 32+ characters
+  jwt_expiration: 1800  # 30 minutes
+  password_min_length: 16
+  encryption_key: "${ENCRYPTION_KEY}"  # 32-character encryption key
+  cors_origins: ["https://app.realtoragent.com", "https://api.realtoragent.com"]
+  rate_limit_requests: 1000
+  rate_limit_window: 3600  # 1 hour
+  ip_whitelist: "${IP_WHITELIST}"  # Comma-separated IPs
+
+# Feature Flags
+features:
+  enable_audit_logging: true
+  enable_compliance_checks: true
+  enable_email_notifications: true
+  enable_sms_notifications: true
+  enable_api_rate_limiting: true
+  enable_data_encryption: true
+  enable_two_factor_auth: true
+  enable_sso_integration: false
+
+# External Services
+external_services:
+  dnc_api: "https://api.dnc.com/check"
+  flood_data_api: "https://api.flood.com/lookup"
+  property_tax_api: "https://api.tax.com/lookup"
+  attorney_api: "${ATTORNEY_API_URL}"  # For attorney review integration
+
+# Monitoring
+monitoring:
+  enabled: true
+  metrics_port: 9090
+  health_check_endpoint: "/health"
+  datadog_api_key: "${DATADOG_API_KEY}"
+  new_relic_license_key: "${NEW_RELIC_LICENSE_KEY}"
+  sentry_dsn: "${SENTRY_DSN}"
+  prometheus_endpoint: "/metrics"
+
+# Compliance
+compliance:
+  gdpr_compliance: true
+  ccpa_compliance: true
+  data_retention_years: 7
+  audit_log_retention_years: 10
+  attorney_review_required: true
+  license_verification_required: true
+
+# Production Specific
+production:
+  maintenance_mode: false
+  emergency_contact: "emergency@realtoragent.com"
+  backup_schedule: "0 2 * * *"  # Daily at 2 AM UTC
+  auto_scaling_enabled: true
+  circuit_breaker_enabled: true
+  graceful_shutdown_timeout: 30

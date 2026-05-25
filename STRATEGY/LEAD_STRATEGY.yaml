@@ -1,0 +1,747 @@
+# LEAD_STRATEGY.yaml
+# Owner: Strategy Layer (L0.5: S-LEADS)
+# Last Updated: 2026-01-02
+# Data Source: US_BEST_MARKETS_REPORT.json → MARKET_SHIFT_STRATEGY.md
+
+meta:
+  version: "1.0.0"
+  generated_at: "2026-01-02T19:30:00Z"
+  refresh_frequency: "weekly"
+  owner: "S-LEADS Strategy Engine"
+
+# ============================================================================
+# LEAD GENERATION PRIORITIES BY STRATEGY
+# ============================================================================
+
+lead_generation:
+  
+  # --------------------------------------------------------------------------
+  # BUY & HOLD LEAD TARGETS
+  # --------------------------------------------------------------------------
+  buy_and_hold:
+    description: "Target landlords, property managers, and distressed owners in high-yield markets"
+    total_monthly_target: 2000
+    
+    geo_priorities:
+      - geo_id: "US-IN-Indianapolis-46220"
+        market_name: "Indianapolis, IN 46220"
+        priority: 1
+        strategy_score: 0.90
+        target_contacts_monthly: 300
+        channels:
+          - type: "direct_mail"
+            budget: 450
+            expected_response_rate: 0.03
+          - type: "cold_call"
+            budget: 200
+            expected_response_rate: 0.05
+          - type: "door_knock"
+            budget: 150
+            expected_response_rate: 0.08
+        
+        target_personas:
+          - "Tired landlords (10+ years ownership)"
+          - "Out-of-state owners"
+          - "Inherited properties"
+          - "Code violation owners"
+        
+        messaging_themes:
+          - "Cash offer, close in 14 days"
+          - "No repairs needed, as-is purchase"
+          - "Eliminate tenant headaches"
+        
+        context_flags:
+          - "LANDLORD_FRIENDLY_STATE"
+        
+        kpis:
+          target_appointments: 9
+          target_contracts: 2
+          avg_deal_size: 265000
+      
+      - geo_id: "US-TN-Memphis-38104"
+        market_name: "Memphis, TN 38104"
+        priority: 2
+        strategy_score: 0.88
+        target_contacts_monthly: 250
+        channels:
+          - type: "direct_mail"
+            budget: 375
+            expected_response_rate: 0.035
+          - type: "sms"
+            budget: 150
+            expected_response_rate: 0.04
+        
+        target_personas:
+          - "Absentee landlords"
+          - "Estate executors"
+          - "Downsizing seniors"
+        
+        messaging_themes:
+          - "8.9% rental yield market"
+          - "Strong tenant demand"
+          - "Fast cash close"
+        
+        context_flags:
+          - "HIGH_RENTAL_DEMAND"
+        
+        kpis:
+          target_appointments: 8
+          target_contracts: 2
+          avg_deal_size: 195000
+      
+      - geo_id: "US-OH-Cleveland-44102"
+        market_name: "Cleveland, OH 44102"
+        priority: 3
+        strategy_score: 0.86
+        target_contacts_monthly: 200
+        channels:
+          - type: "direct_mail"
+            budget: 300
+            expected_response_rate: 0.04
+          - type: "networking_events"
+            budget: 100
+            expected_response_rate: 0.10
+        
+        target_personas:
+          - "Multi-unit owners"
+          - "Landlords with deferred maintenance"
+          - "Probate properties"
+        
+        messaging_themes:
+          - "9.1% gross yield opportunity"
+          - "Buy as-is, no contingencies"
+          - "Close in 2 weeks"
+        
+        context_flags:
+          - "OLDER_HOUSING_STOCK"
+        
+        kpis:
+          target_appointments: 8
+          target_contracts: 1
+          avg_deal_size: 165000
+      
+      - geo_id: "US-MO-KansasCity-64111"
+        market_name: "Kansas City, MO 64111"
+        priority: 4
+        strategy_score: 0.85
+        target_contacts_monthly: 150
+        channels:
+          - type: "direct_mail"
+            budget: 225
+            expected_response_rate: 0.03
+          - type: "online_ads"
+            budget: 175
+            expected_response_rate: 0.02
+        
+        target_personas:
+          - "Relocating owners"
+          - "Divorce situations"
+          - "Job loss/financial distress"
+        
+        messaging_themes:
+          - "Stable employment market"
+          - "8.3% rental returns"
+          - "No agent fees, direct purchase"
+        
+        context_flags:
+          - "STABLE_EMPLOYMENT"
+        
+        kpis:
+          target_appointments: 5
+          target_contracts: 1
+          avg_deal_size: 245000
+      
+      - geo_id: "US-AL-Birmingham-35205"
+        market_name: "Birmingham, AL 35205"
+        priority: 5
+        strategy_score: 0.84
+        target_contacts_monthly: 150
+        channels:
+          - type: "direct_mail"
+            budget: 225
+            expected_response_rate: 0.035
+          - type: "referral_network"
+            budget: 100
+            expected_response_rate: 0.12
+        
+        target_personas:
+          - "Tired landlords"
+          - "Property managers with listings"
+          - "Estate sales"
+        
+        messaging_themes:
+          - "Landlord-friendly state"
+          - "9.0% yield market"
+          - "Fast close, cash offer"
+        
+        context_flags:
+          - "LANDLORD_FRIENDLY_STATE"
+        
+        kpis:
+          target_appointments: 5
+          target_contracts: 1
+          avg_deal_size: 180000
+  
+  # --------------------------------------------------------------------------
+  # FIX & FLIP LEAD TARGETS
+  # --------------------------------------------------------------------------
+  fix_and_flip:
+    description: "Target distressed properties, foreclosures, and motivated sellers in high-discount markets"
+    total_monthly_target: 1200
+    
+    geo_priorities:
+      - geo_id: "US-OH-Cleveland"
+        market_name: "Cleveland, OH"
+        priority: 1
+        strategy_score: 0.92
+        target_contacts_monthly: 250
+        channels:
+          - type: "probate_lists"
+            budget: 300
+            expected_response_rate: 0.06
+          - type: "code_violations"
+            budget: 200
+            expected_response_rate: 0.08
+          - type: "foreclosure_lists"
+            budget: 250
+            expected_response_rate: 0.05
+        
+        target_personas:
+          - "Pre-foreclosure owners"
+          - "Estate executors"
+          - "Code violation owners"
+          - "Divorce situations"
+        
+        messaging_themes:
+          - "Stop foreclosure, sell fast"
+          - "Cash offer in 48 hours"
+          - "We handle repairs and code issues"
+        
+        context_flags:
+          - "HIGH_DISTRESSED_INVENTORY"
+        
+        deal_criteria:
+          min_discount_pct: 15
+          max_renovation_budget: 50000
+          target_arv_multiple: 1.30
+        
+        kpis:
+          target_appointments: 15
+          target_contracts: 3
+          avg_purchase_price: 145000
+          avg_arv: 188500
+      
+      - geo_id: "US-MI-Detroit-48201"
+        market_name: "Detroit, MI 48201"
+        priority: 2
+        strategy_score: 0.89
+        target_contacts_monthly: 200
+        channels:
+          - type: "estate_sales"
+            budget: 250
+            expected_response_rate: 0.07
+          - type: "tax_liens"
+            budget: 200
+            expected_response_rate: 0.06
+          - type: "direct_mail"
+            budget: 150
+            expected_response_rate: 0.04
+        
+        target_personas:
+          - "Tax lien properties"
+          - "Estate sales"
+          - "Vacant property owners"
+          - "Absentee owners"
+        
+        messaging_themes:
+          - "18-25% discount opportunities"
+          - "Fast cash close"
+          - "We buy ugly houses"
+        
+        context_flags:
+          - "RENOVATION_HEAVY"
+        
+        deal_criteria:
+          min_discount_pct: 18
+          max_renovation_budget: 60000
+          target_arv_multiple: 1.35
+        
+        kpis:
+          target_appointments: 14
+          target_contracts: 3
+          avg_purchase_price: 125000
+          avg_arv: 168750
+      
+      - geo_id: "US-MD-Baltimore-21201"
+        market_name: "Baltimore, MD 21201"
+        priority: 3
+        strategy_score: 0.87
+        target_contacts_monthly: 150
+        channels:
+          - type: "foreclosure_auctions"
+            budget: 200
+            expected_response_rate: 0.10
+          - type: "wholesaler_network"
+            budget: 150
+            expected_response_rate: 0.15
+        
+        target_personas:
+          - "Foreclosure properties"
+          - "Wholesaler deals"
+          - "Distressed sellers"
+        
+        messaging_themes:
+          - "Fast turnover market"
+          - "Cash close in 10 days"
+          - "No inspection contingencies"
+        
+        context_flags:
+          - "FAST_TURNOVER"
+        
+        deal_criteria:
+          min_discount_pct: 12
+          max_renovation_budget: 45000
+          target_arv_multiple: 1.28
+        
+        kpis:
+          target_appointments: 12
+          target_contracts: 2
+          avg_purchase_price: 185000
+          avg_arv: 236800
+      
+      - geo_id: "US-PA-Pittsburgh-15201"
+        market_name: "Pittsburgh, PA 15201"
+        priority: 4
+        strategy_score: 0.85
+        target_contacts_monthly: 120
+        channels:
+          - type: "mls_distressed"
+            budget: 150
+            expected_response_rate: 0.08
+          - type: "direct_mail"
+            budget: 120
+            expected_response_rate: 0.04
+        
+        target_personas:
+          - "Distressed MLS listings"
+          - "Expired listings"
+          - "FSBO properties"
+        
+        messaging_themes:
+          - "Strong buyer demand"
+          - "14-19% discount potential"
+          - "Quick flip market"
+        
+        context_flags:
+          - "STRONG_BUYER_DEMAND"
+        
+        deal_criteria:
+          min_discount_pct: 14
+          max_renovation_budget: 40000
+          target_arv_multiple: 1.30
+        
+        kpis:
+          target_appointments: 10
+          target_contracts: 2
+          avg_purchase_price: 165000
+          avg_arv: 214500
+      
+      - geo_id: "US-MO-StLouis-63101"
+        market_name: "St. Louis, MO 63101"
+        priority: 5
+        strategy_score: 0.84
+        target_contacts_monthly: 100
+        channels:
+          - type: "probate_lists"
+            budget: 120
+            expected_response_rate: 0.06
+          - type: "code_violations"
+            budget: 100
+            expected_response_rate: 0.07
+        
+        target_personas:
+          - "Probate properties"
+          - "Code violation owners"
+          - "Vacant properties"
+        
+        messaging_themes:
+          - "16-22% discount opportunities"
+          - "We handle permits and repairs"
+          - "Cash offer, fast close"
+        
+        context_flags:
+          - "PERMIT_DELAYS_POSSIBLE"
+        
+        deal_criteria:
+          min_discount_pct: 16
+          max_renovation_budget: 45000
+          target_arv_multiple: 1.32
+        
+        kpis:
+          target_appointments: 8
+          target_contracts: 1
+          avg_purchase_price: 155000
+          avg_arv: 204600
+  
+  # --------------------------------------------------------------------------
+  # OWNER OCCUPANT LEAD TARGETS
+  # --------------------------------------------------------------------------
+  owner_occupant:
+    description: "Target relocating professionals, first-time buyers, and upgraders in high-livability markets"
+    total_monthly_target: 1500
+    
+    geo_priorities:
+      - geo_id: "US-NC-Raleigh-27601"
+        market_name: "Raleigh, NC 27601"
+        priority: 1
+        strategy_score: 0.94
+        target_contacts_monthly: 250
+        channels:
+          - type: "online_ads"
+            budget: 400
+            expected_response_rate: 0.03
+          - type: "relocation_services"
+            budget: 300
+            expected_response_rate: 0.10
+          - type: "corporate_hr"
+            budget: 200
+            expected_response_rate: 0.08
+        
+        target_personas:
+          - "Tech professionals relocating"
+          - "First-time buyers"
+          - "Growing families"
+          - "Corporate transfers"
+        
+        messaging_themes:
+          - "Top-rated schools"
+          - "Tech hub with job growth"
+          - "6.5% annual appreciation"
+          - "Neighborhood guides & relocation support"
+        
+        context_flags:
+          - "TOP_SCHOOLS"
+          - "TECH_HUB"
+        
+        buyer_profile:
+          median_budget: 385000
+          typical_down_payment_pct: 20
+          preferred_property_types: ["single_family", "townhome"]
+        
+        kpis:
+          target_appointments: 15
+          target_contracts: 3
+          avg_sale_price: 385000
+          avg_commission: 11550
+      
+      - geo_id: "US-TX-Austin-78701"
+        market_name: "Austin, TX 78701"
+        priority: 2
+        strategy_score: 0.92
+        target_contacts_monthly: 200
+        channels:
+          - type: "online_ads"
+            budget: 350
+            expected_response_rate: 0.03
+          - type: "social_media"
+            budget: 250
+            expected_response_rate: 0.02
+          - type: "relocation_services"
+            budget: 200
+            expected_response_rate: 0.09
+        
+        target_personas:
+          - "California transplants"
+          - "Tech workers"
+          - "Young professionals"
+          - "Remote workers"
+        
+        messaging_themes:
+          - "No state income tax"
+          - "Vibrant culture & music scene"
+          - "7.2% appreciation"
+          - "Live music capital"
+        
+        context_flags:
+          - "NO_STATE_TAX"
+          - "CULTURE"
+        
+        buyer_profile:
+          median_budget: 495000
+          typical_down_payment_pct: 20
+          preferred_property_types: ["condo", "single_family"]
+        
+        kpis:
+          target_appointments: 12
+          target_contracts: 2
+          avg_sale_price: 495000
+          avg_commission: 14850
+      
+      - geo_id: "US-NC-Charlotte-28201"
+        market_name: "Charlotte, NC 28201"
+        priority: 3
+        strategy_score: 0.90
+        target_contacts_monthly: 150
+        channels:
+          - type: "online_ads"
+            budget: 300
+            expected_response_rate: 0.03
+          - type: "corporate_hr"
+            budget: 200
+            expected_response_rate: 0.08
+        
+        target_personas:
+          - "Banking professionals"
+          - "Corporate transfers"
+          - "First-time buyers"
+        
+        messaging_themes:
+          - "Banking hub with job security"
+          - "6.8% appreciation"
+          - "Affordable compared to NYC/SF"
+          - "Growing city with Southern charm"
+        
+        context_flags:
+          - "BANKING_HUB"
+          - "GROWTH"
+        
+        buyer_profile:
+          median_budget: 365000
+          typical_down_payment_pct: 15
+          preferred_property_types: ["single_family", "townhome"]
+        
+        kpis:
+          target_appointments: 10
+          target_contracts: 2
+          avg_sale_price: 365000
+          avg_commission: 10950
+      
+      - geo_id: "US-TN-Nashville-37201"
+        market_name: "Nashville, TN 37201"
+        priority: 4
+        strategy_score: 0.89
+        target_contacts_monthly: 150
+        channels:
+          - type: "online_ads"
+            budget: 300
+            expected_response_rate: 0.03
+          - type: "social_media"
+            budget: 200
+            expected_response_rate: 0.02
+        
+        target_personas:
+          - "Music industry professionals"
+          - "Healthcare workers"
+          - "Young families"
+        
+        messaging_themes:
+          - "Music City lifestyle"
+          - "8.1% appreciation"
+          - "No state income tax"
+          - "Hot job market"
+        
+        context_flags:
+          - "MUSIC_CITY"
+          - "JOBS"
+        
+        buyer_profile:
+          median_budget: 425000
+          typical_down_payment_pct: 20
+          preferred_property_types: ["single_family", "condo"]
+        
+        kpis:
+          target_appointments: 10
+          target_contracts: 2
+          avg_sale_price: 425000
+          avg_commission: 12750
+      
+      - geo_id: "US-CO-Denver-80201"
+        market_name: "Denver, CO 80201"
+        priority: 5
+        strategy_score: 0.87
+        target_contacts_monthly: 120
+        channels:
+          - type: "online_ads"
+            budget: 250
+            expected_response_rate: 0.025
+          - type: "outdoor_lifestyle_marketing"
+            budget: 200
+            expected_response_rate: 0.03
+        
+        target_personas:
+          - "Outdoor enthusiasts"
+          - "Tech professionals"
+          - "Remote workers"
+        
+        messaging_themes:
+          - "300 days of sunshine"
+          - "World-class skiing & hiking"
+          - "5.9% appreciation"
+          - "Healthy lifestyle"
+        
+        context_flags:
+          - "OUTDOOR_LIFESTYLE"
+        
+        buyer_profile:
+          median_budget: 545000
+          typical_down_payment_pct: 20
+          preferred_property_types: ["single_family", "townhome"]
+        
+        kpis:
+          target_appointments: 8
+          target_contracts: 1
+          avg_sale_price: 545000
+          avg_commission: 16350
+
+# ============================================================================
+# LEAD SCORING & QUALIFICATION
+# ============================================================================
+
+lead_scoring:
+  model_version: "1.0.0"
+  
+  scoring_factors:
+    - factor: "market_strategy_score"
+      weight: 0.30
+      description: "Market's score for the relevant strategy"
+    
+    - factor: "contact_quality"
+      weight: 0.25
+      description: "Data completeness, verified phone/email"
+    
+    - factor: "motivation_indicators"
+      weight: 0.20
+      description: "Probate, foreclosure, code violation, divorce, etc."
+    
+    - factor: "property_fit"
+      weight: 0.15
+      description: "Matches deal criteria (price, condition, type)"
+    
+    - factor: "response_likelihood"
+      weight: 0.10
+      description: "Channel response rate, prior engagement"
+  
+  qualification_tiers:
+    hot:
+      score_range: [0.80, 1.00]
+      action: "Call within 1 hour, priority follow-up"
+      expected_conversion: 0.25
+    
+    warm:
+      score_range: [0.60, 0.79]
+      action: "Call within 24 hours, standard follow-up"
+      expected_conversion: 0.12
+    
+    cold:
+      score_range: [0.40, 0.59]
+      action: "Email/SMS drip campaign, call in 3-5 days"
+      expected_conversion: 0.05
+    
+    disqualified:
+      score_range: [0.00, 0.39]
+      action: "Archive, no follow-up"
+      expected_conversion: 0.01
+
+# ============================================================================
+# BUDGET & ROI TRACKING
+# ============================================================================
+
+budget:
+  total_monthly_budget: 8000
+  
+  allocation_by_strategy:
+    buy_and_hold: 3500  # 43.75%
+    fix_and_flip: 2800  # 35.00%
+    owner_occupant: 1700  # 21.25%
+  
+  roi_targets:
+    cost_per_lead: 4.00
+    cost_per_appointment: 80.00
+    cost_per_contract: 800.00
+    
+    expected_monthly_contracts: 10
+    expected_monthly_revenue: 150000
+    expected_roi: 18.75  # 18.75x return
+
+# ============================================================================
+# AUTOMATION & WORKFLOWS
+# ============================================================================
+
+automation:
+  triggers:
+    - event: "new_lead_added"
+      action: "calculate_lead_score"
+      next: "assign_to_tier"
+    
+    - event: "lead_tier_assigned"
+      condition: "tier == 'hot'"
+      action: "send_sms_alert_to_agent"
+      next: "create_task_call_within_1hr"
+    
+    - event: "lead_tier_assigned"
+      condition: "tier == 'warm'"
+      action: "add_to_call_queue"
+      next: "schedule_follow_up_24hr"
+    
+    - event: "lead_tier_assigned"
+      condition: "tier == 'cold'"
+      action: "add_to_drip_campaign"
+      next: "schedule_call_5_days"
+    
+    - event: "appointment_set"
+      action: "send_calendar_invite"
+      next: "prepare_market_packet"
+    
+    - event: "appointment_completed"
+      action: "log_outcome"
+      next: "update_conversion_metrics"
+
+# ============================================================================
+# COMPLIANCE & ETHICS
+# ============================================================================
+
+compliance:
+  do_not_call_registry: true
+  can_spam_compliance: true
+  tcpa_compliance: true
+  fair_housing_training: required
+  
+  prohibited_practices:
+    - "Calling before 8am or after 9pm local time"
+    - "Misrepresenting property value or market conditions"
+    - "Discriminatory targeting based on protected classes"
+    - "Sending unsolicited faxes"
+    - "Using robocalls without prior consent"
+  
+  required_disclosures:
+    - "Licensed real estate agent disclosure"
+    - "Opt-out instructions in all marketing"
+    - "Fair Housing Equal Opportunity statement"
+
+# ============================================================================
+# MONITORING & ALERTS
+# ============================================================================
+
+monitoring:
+  kpi_dashboard_refresh: "daily"
+  
+  alert_conditions:
+    - metric: "cost_per_lead"
+      threshold: "> $6.00"
+      action: "Pause underperforming channels, review targeting"
+    
+    - metric: "lead_to_appointment_conversion"
+      threshold: "< 5%"
+      action: "Review scripts, improve qualification"
+    
+    - metric: "appointment_to_contract_conversion"
+      threshold: "< 15%"
+      action: "Improve value prop, adjust pricing strategy"
+    
+    - metric: "market_strategy_score_change"
+      threshold: "> 0.10 decrease"
+      action: "Re-evaluate geo priorities, shift budget"
+
+# ============================================================================
+# END OF LEAD_STRATEGY.yaml
+# ============================================================================

@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Pro Tips - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">Pro Tips</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Pro Tips</h1>
+        <p class="text-muted mb-0">Expert Insights and Professional Tips from Experienced Investors</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide/action-plans" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Previous
+        </a>
+        <a href="/master-guide/pitfalls" class="btn btn-primary">
+            Next: Common Pitfalls <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Acquisition Tips</h5>
+            </div>
+            <div class="card-body">
+                <div class="tips-list">
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            <h6>Always Have Multiple Offers Ready</h6>
+                        </div>
+                        <p>Never make just one offer. Prepare 3-5 different offer structures with varying terms, contingencies, and closing dates. This gives you negotiation leverage and shows sellers you're serious.</p>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            <h6>Get Seller Motivation First</h6>
+                        </div>
+                        <p>Before discussing price, understand why the seller is selling. Their motivation (divorce, relocation, financial distress) will determine how much flexibility they have on price and terms.</p>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            <h6>Use Contingencies Strategically</h6>
+                        </div>
+                        <p>Don't remove contingencies just to make your offer more attractive. Use them to protect yourself during due diligence. The right contingencies can actually strengthen your offer.</p>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            <h6>Focus on Terms Over Price</h6>
+                        </div>
+                        <p>Sometimes better terms (seller financing, flexible closing, included appliances) can be more valuable than a slightly lower price. Calculate the actual value of each term.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Due Diligence Tips</h5>
+            </div>
+            <div class="card-body">
+                <div class="tips-list">
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-search text-info me-2"></i>
+                            <h6>Hire Your Own Inspector</h6>
+                        </div>
+                        <p>Never rely on seller-provided inspection reports. Hire your own certified inspector who works for you, not the seller. Be present during the inspection.</p>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-search text-info me-2"></i>
+                            <h6>Check All Utilities</h6>
+                        </div>
+                        <p>Verify all utility accounts are in the seller's name and current. Check for any outstanding balances or disputed charges that could transfer to you.</p>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-search text-info me-2"></i>
+                            <h6>Research the Neighborhood</h6>
+                        </div>
+                        <p>Drive the neighborhood at different times. Check for nuisances, school quality, crime rates, and future development plans that could affect property values.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Management & Operations Tips</h5>
+            </div>
+            <div class="card-body">
+                <div class="tips-list">
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-cogs text-success me-2"></i>
+                            <h6>Screen Tenants Thoroughly</h6>
+                        </div>
+                        <p>Use comprehensive tenant screening: credit check, criminal background, employment verification, and references. A good tenant is worth their weight in gold.</p>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-cogs text-success me-2"></i>
+                            <h6>Keep Reserves for Repairs</h6>
+                        </div>
+                        <p>Always maintain 6-12 months of reserves for unexpected repairs and vacancies. Properties always need maintenance, and tenants always move eventually.</p>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-header">
+                            <i class="fas fa-cogs text-success me-2"></i>
+                            <h6>Document Everything</h6>
+                        </div>
+                        <p>Keep detailed records of all communications, repairs, and transactions. Good documentation protects you legally and helps with tax deductions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Tip Categories</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-warning active" onclick="showTips('acquisition')">
+                        <i class="fas fa-handshake me-2"></i>Acquisition
+                    </button>
+                    <button class="btn btn-outline-info" onclick="showTips('due-diligence')">
+                        <i class="fas fa-search me-2"></i>Due Diligence
+                    </button>
+                    <button class="btn btn-outline-success" onclick="showTips('management')">
+                        <i class="fas fa-cogs me-2"></i>Management
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="showTips('financing')">
+                        <i class="fas fa-dollar-sign me-2"></i>Financing
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Expert Quotes</h5>
+            </div>
+            <div class="card-body">
+                <div class="expert-quote">
+                    <blockquote class="blockquote">
+                        <p class="mb-2">"The best deals are the ones where the seller doesn't know it's a good deal."</p>
+                        <footer class="blockquote-footer">Warren Buffett</footer>
+                    </blockquote>
+                </div>
+                <hr>
+                <div class="expert-quote">
+                    <blockquote class="blockquote">
+                        <p class="mb-2">"Real estate cannot be lost or stolen, nor can it be carried away. Purchased with common sense, paid for in full, and managed with reasonable care, it is about the safest investment in the world."</p>
+                        <footer class="blockquote-footer">Franklin D. Roosevelt</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/pitfalls" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Next Section
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.tips-list {
+    display: grid;
+    gap: 20px;
+}
+
+.tip-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+}
+
+.tip-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.tip-header h6 {
+    color: #495057;
+    margin: 0;
+}
+
+.expert-quote {
+    margin-bottom: 15px;
+}
+
+.expert-quote:last-child {
+    margin-bottom: 0;
+}
+
+.blockquote {
+    border-left: 4px solid #007bff;
+    padding-left: 15px;
+    margin: 0;
+}
+
+.blockquote-footer {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTips(category) {
+    // Remove active class from all buttons
+    document.querySelectorAll('.btn-outline-warning, .btn-outline-info, .btn-outline-success, .btn-outline-danger').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // Add active class to clicked button
+    event.target.classList.add('active');
+
+    // Here you would filter and show tips based on category
+    alert(`Showing ${category} tips`);
+}
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+# Deal Desk Bot Configuration
+# Handles contract drafting and document management
+
+enabled: true
+
+# Contract Templates
+templates:
+  cash_offer:
+    file: "../deal_desk/contracts/cash_offer_template.docx"
+    key_terms: ["price", "inspection_period", "closing_date", "earnest_money"]
+  owner_finance:
+    file: "../deal_desk/contracts/owner_finance_template.docx"
+    key_terms: ["down_payment", "interest_rate", "amortization", "balloon", "escrow", "taxes_insurance", "default_remedies"]
+  lease_option:
+    file: "../deal_desk/contracts/lease_option_template.docx"
+    key_terms: ["option_fee", "rent_credit", "purchase_price", "term_length", "maintenance"]
+  subject_to:
+    file: "../deal_desk/contracts/subject_to_template.docx"
+    key_terms: ["mortgage_stays", "disclosure", "insurance", "servicing", "due_on_sale"]
+
+# Addenda Library
+addenda:
+  - "inspection_addendum"
+  - "appraisal_addendum"
+  - "title_addendum"
+  - "seller_disclosure"
+  - "lead_based_paint"
+  - "flood_disclosure"
+
+# Term Sheet Generation
+term_sheet:
+  format: "markdown"
+  sections: ["parties", "property", "price_terms", "closing", "contingencies", "signatures"]
+  auto_populate: true
+
+# Attorney Review
+attorney_review:
+  required: true
+  trigger_conditions: ["all_deals"]  # or ["high_value", "complex_terms"]
+  checklist:
+    - "license_verification"
+    - "state_law_compliance"
+    - "terms_review"
+    - "disclaimer_inclusion"
+
+# Document Management
+documents:
+  storage: "../deal_desk/outputs/"
+  naming: "[property_address]_[deal_type]_[date]"
+  versioning: true
+  pdf_conversion: true
+
+# Closing Coordination
+closing:
+  checklist:
+    - "title_search"
+    - "survey"
+    - "inspection"
+    - "appraisal"
+    - "lender_approval"
+    - "entity_setup"
+    - "wire_instructions"
+  timeline_days: 30
+  reminders: [7, 3, 1]  # Days before closing
+
+# Compliance Checks
+compliance:
+  document_complete: true
+  attorney_reviewed: true
+  fair_housing: true
+  licensing: true
+
+# Output
+output:
+  draft_folder: "../deal_desk/outputs/drafts/"
+  final_folder: "../deal_desk/outputs/finals/"
+  checklist_file: "../deal_desk/outputs/closing_checklist.md"

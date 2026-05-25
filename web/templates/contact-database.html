@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Database - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">Contact Database</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Contact Database</h1>
+        <p class="text-muted mb-0">Building and Managing Professional Networks in Real Estate</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide/formulas" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Previous
+        </a>
+        <a href="/master-guide/strategies" class="btn btn-primary">
+            Next: Implementation Strategies <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Essential Contact Categories</h5>
+            </div>
+            <div class="card-body">
+                <div class="contact-categories">
+                    <div class="contact-category">
+                        <div class="category-header">
+                            <i class="fas fa-user-tie text-primary me-2"></i>
+                            <h6 class="mb-0">Real Estate Professionals</h6>
+                        </div>
+                        <ul class="category-list">
+                            <li>Buyer's agents and listing agents</li>
+                            <li>Commercial real estate brokers</li>
+                            <li>Property managers</li>
+                            <li>Appraisers and inspectors</li>
+                        </ul>
+                    </div>
+
+                    <div class="contact-category">
+                        <div class="category-header">
+                            <i class="fas fa-gavel text-success me-2"></i>
+                            <h6 class="mb-0">Legal & Financial Advisors</h6>
+                        </div>
+                        <ul class="category-list">
+                            <li>Real estate attorneys</li>
+                            <li>CPAs and tax advisors</li>
+                            <li>Mortgage brokers and lenders</li>
+                            <li>Insurance agents</li>
+                        </ul>
+                    </div>
+
+                    <div class="contact-category">
+                        <div class="category-header">
+                            <i class="fas fa-tools text-info me-2"></i>
+                            <h6 class="mb-0">Service Providers</h6>
+                        </div>
+                        <ul class="category-list">
+                            <li>Contractors and remodelers</li>
+                            <li>Property maintenance companies</li>
+                            <li>Landscaping and pool services</li>
+                            <li>Cleaning and management services</li>
+                        </ul>
+                    </div>
+
+                    <div class="contact-category">
+                        <div class="category-header">
+                            <i class="fas fa-users text-warning me-2"></i>
+                            <h6 class="mb-0">Market Participants</h6>
+                        </div>
+                        <ul class="category-list">
+                            <li>Motivated sellers</li>
+                            <li>Other investors</li>
+                            <li>Wholesalers</li>
+                            <li>Property owners</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Database Management Best Practices</h5>
+            </div>
+            <div class="card-body">
+                <div class="practices-grid">
+                    <div class="practice-item">
+                        <h6>Organization</h6>
+                        <p>Maintain detailed contact information, specialties, and relationship history for each contact.</p>
+                    </div>
+
+                    <div class="practice-item">
+                        <h6>Regular Communication</h6>
+                        <p>Stay in touch regularly with value-adding communications, not just when you need something.</p>
+                    </div>
+
+                    <div class="practice-item">
+                        <h6>Relationship Building</h6>
+                        <p>Focus on building genuine relationships based on trust and mutual benefit.</p>
+                    </div>
+
+                    <div class="practice-item">
+                        <h6>Follow-Up Systems</h6>
+                        <p>Implement systematic follow-up processes to nurture and maintain relationships.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Database Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="addContact()">
+                        <i class="fas fa-plus me-2"></i>Add Contact
+                    </button>
+                    <button class="btn btn-outline-success" onclick="importContacts()">
+                        <i class="fas fa-upload me-2"></i>Import Contacts
+                    </button>
+                    <button class="btn btn-outline-info" onclick="exportContacts()">
+                        <i class="fas fa-download me-2"></i>Export Database
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="searchContacts()">
+                        <i class="fas fa-search me-2"></i>Search Contacts
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Contact Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Contacts:</span>
+                        <span class="stat-value">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Active Relationships:</span>
+                        <span class="stat-value">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Deals Closed:</span>
+                        <span class="stat-value">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Avg Response Time:</span>
+                        <span class="stat-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/strategies" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Next Section
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.contact-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.contact-category {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.category-header h6 {
+    color: #495057;
+}
+
+.category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.category-list li {
+    padding: 3px 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.category-list li::before {
+    content: '•';
+    color: #007bff;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.practices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.practice-item {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.practice-item h6 {
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+.practice-item p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.stats-list {
+    padding: 0;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #007bff;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function addContact() {
+    alert('Add contact functionality will be implemented');
+}
+
+function importContacts() {
+    alert('Import contacts functionality will be implemented');
+}
+
+function exportContacts() {
+    alert('Export database functionality will be implemented');
+}
+
+function searchContacts() {
+    alert('Search contacts functionality will be implemented');
+}
+</script>
+{% endblock %}

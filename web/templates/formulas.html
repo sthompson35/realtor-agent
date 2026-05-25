@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+
+{% block title %}Investment Formulas - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">Investment Formulas</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Investment Formulas</h1>
+        <p class="text-muted mb-0">Essential Financial Calculations for Real Estate Investing</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide/resource-framework" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Previous
+        </a>
+        <a href="/master-guide/contact-database" class="btn btn-primary">
+            Next: Contact Database <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Core Investment Metrics</h5>
+            </div>
+            <div class="card-body">
+                <div class="formulas-grid">
+                    <div class="formula-card">
+                        <h6>Capitalization Rate (Cap Rate)</h6>
+                        <div class="formula-equation">
+                            Cap Rate = (Net Operating Income ÷ Property Value) × 100
+                        </div>
+                        <p>Measures the rate of return on a real estate investment based on income generated.</p>
+                        <div class="formula-example">
+                            <strong>Example:</strong> NOI = $50,000, Value = $500,000<br>
+                            Cap Rate = ($50,000 ÷ $500,000) × 100 = 10%
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h6>Cash-on-Cash Return</h6>
+                        <div class="formula-equation">
+                            CoC Return = (Annual Cash Flow ÷ Initial Investment) × 100
+                        </div>
+                        <p>Shows the annual return on the actual cash invested in the property.</p>
+                        <div class="formula-example">
+                            <strong>Example:</strong> Cash Flow = $25,000, Investment = $200,000<br>
+                            CoC = ($25,000 ÷ $200,000) × 100 = 12.5%
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h6>Internal Rate of Return (IRR)</h6>
+                        <div class="formula-equation">
+                            IRR = Rate where NPV = 0
+                        </div>
+                        <p>The discount rate that makes the net present value of all cash flows equal to zero.</p>
+                        <div class="formula-example">
+                            <strong>Complex calculation requiring financial software</strong>
+                        </div>
+                    </div>
+
+                    <div class="formula-card">
+                        <h6>Debt Service Coverage Ratio (DSCR)</h6>
+                        <div class="formula-equation">
+                            DSCR = Net Operating Income ÷ Annual Debt Service
+                        </div>
+                        <p>Measures the property's ability to pay its debt obligations.</p>
+                        <div class="formula-example">
+                            <strong>Example:</strong> NOI = $60,000, Debt Service = $45,000<br>
+                            DSCR = $60,000 ÷ $45,000 = 1.33
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Advanced Calculations</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="formulasAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#breakEven">
+                                Break-Even Ratio
+                            </button>
+                        </h2>
+                        <div id="breakEven" class="accordion-collapse collapse show" data-bs-parent="#formulasAccordion">
+                            <div class="accordion-body">
+                                <div class="formula-equation">
+                                    Break-Even Ratio = (Operating Expenses + Debt Service) ÷ Gross Operating Income
+                                </div>
+                                <p>Shows what percentage of gross income goes toward operating expenses and debt service.</p>
+                                <div class="alert alert-info">
+                                    <strong>Rule of Thumb:</strong> Break-even ratio should be under 85% for investment properties.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#grossRent">
+                                Gross Rent Multiplier (GRM)
+                            </button>
+                        </h2>
+                        <div id="grossRent" class="accordion-collapse collapse" data-bs-parent="#formulasAccordion">
+                            <div class="accordion-body">
+                                <div class="formula-equation">
+                                    GRM = Property Price ÷ Gross Annual Rent
+                                </div>
+                                <p>Quick way to compare rental properties. Lower GRM indicates better value.</p>
+                                <div class="alert alert-info">
+                                    <strong>Typical Range:</strong> 8-12 for investment properties (lower is better).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Calculator Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="showCalculator('capRate')">
+                        <i class="fas fa-calculator me-2"></i>Cap Rate Calculator
+                    </button>
+                    <button class="btn btn-outline-success" onclick="showCalculator('cashOnCash')">
+                        <i class="fas fa-dollar-sign me-2"></i>Cash-on-Cash Calculator
+                    </button>
+                    <button class="btn btn-outline-info" onclick="showCalculator('irr')">
+                        <i class="fas fa-chart-line me-2"></i>IRR Calculator
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="showCalculator('dscr')">
+                        <i class="fas fa-balance-scale me-2"></i>DSCR Calculator
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Key Benchmarks</h5>
+            </div>
+            <div class="card-body">
+                <div class="benchmarks-list">
+                    <div class="benchmark-item">
+                        <span class="benchmark-label">Cap Rate:</span>
+                        <span class="benchmark-value">6-10%</span>
+                        <span class="benchmark-note">Investment grade</span>
+                    </div>
+                    <div class="benchmark-item">
+                        <span class="benchmark-label">Cash-on-Cash:</span>
+                        <span class="benchmark-value">8-12%</span>
+                        <span class="benchmark-note">Strong returns</span>
+                    </div>
+                    <div class="benchmark-item">
+                        <span class="benchmark-label">DSCR:</span>
+                        <span class="benchmark-value">1.25+</span>
+                        <span class="benchmark-note">Lending minimum</span>
+                    </div>
+                    <div class="benchmark-item">
+                        <span class="benchmark-label">IRR:</span>
+                        <span class="benchmark-value">12-18%</span>
+                        <span class="benchmark-note">Target returns</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/contact-database" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Next Section
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.formulas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.formula-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.formula-card h6 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.formula-equation {
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.formula-example {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 10px;
+}
+
+.benchmarks-list {
+    padding: 0;
+}
+
+.benchmark-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.benchmark-item:last-child {
+    border-bottom: none;
+}
+
+.benchmark-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.benchmark-value {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.benchmark-note {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showCalculator(type) {
+    const calculators = {
+        capRate: 'Cap Rate Calculator',
+        cashOnCash: 'Cash-on-Cash Return Calculator',
+        irr: 'Internal Rate of Return Calculator',
+        dscr: 'Debt Service Coverage Ratio Calculator'
+    };
+    alert(`${calculators[type]} will be implemented`);
+}
+</script>
+{% endblock %}

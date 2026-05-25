@@ -1,0 +1,66 @@
+# Web Scout Bot Configuration
+# Handles listing intake from permitted sources
+
+enabled: true
+
+# Listing Sources (available APIs - Zillow deprecated)
+sources:
+  - name: "realtor"
+    api_key: ""  # Get from Realtor.com developer portal
+    endpoint: "https://www.realtor.com/developers/"
+    rate_limit: 500
+  - name: "homes"
+    api_key: ""  # Contact Homes.com for API access
+    endpoint: "https://www.homes.com/api/"
+    rate_limit: 200
+  - name: "land"
+    api_key: ""  # LandWatch or similar service
+    endpoint: "https://www.landwatch.com/api/"
+    rate_limit: 100
+  - name: "zillow"  # DISABLED - Zillow API discontinued
+    enabled: false
+    api_key: "DEPRECATED"
+    endpoint: "https://api.zillow.com/webservice/"
+    rate_limit: 0
+  - name: "land"
+    api_key: ""
+    endpoint: "https://www.land.com/api/"
+    rate_limit: 100
+  - name: "discountlots"
+    api_key: ""
+    endpoint: "https://www.discountlots.com/api/"
+    rate_limit: 50
+
+# Search Filters
+filters:
+  property_types: ["land", "single_family", "duplex", "fourplex"]
+  min_price: 25000
+  max_price: 1000000
+  min_acreage: 0.1
+  max_acreage: 100
+  locations:
+    - state: "TX"
+      counties: ["Harris", "Fort Bend", "Montgomery"]
+    - state: "FL"
+      counties: ["Orange", "Seminole"]
+
+# Data Capture Rules
+capture:
+  metadata: ["address", "city", "state", "zip", "price", "acreage", "beds", "baths", "sqft", "year_built"]
+  photos: false  # Only if permitted
+  notes: true
+  source_url: true
+  timestamp: true
+
+# Output Settings
+output:
+  format: "json"
+  file: "../outputs/raw_listings.json"
+  dedup: true
+  max_results: 100
+
+# Compliance
+compliance:
+  tos_check: true
+  robots_txt_respect: true
+  rate_limit_respect: true

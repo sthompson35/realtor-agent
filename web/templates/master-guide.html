@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Master Guide - Realtor Agent{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Master Guide</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Real Estate Investor's Master Guide</h1>
+        <p class="text-muted mb-0">Table of Contents - Comprehensive Guide to Real Estate Investment Success</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" onclick="window.print()">
+            <i class="fas fa-print me-1"></i>Print Guide
+        </button>
+        <button class="btn btn-success" onclick="downloadPDF()">
+            <i class="fas fa-download me-1"></i>Download PDF
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Guide Contents</h5>
+            </div>
+            <div class="card-body">
+                <div class="guide-toc">
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/executive-summary" class="text-decoration-none">
+                                <i class="fas fa-file-alt me-2 text-primary"></i>Executive Summary
+                            </a>
+                        </h6>
+                        <p class="toc-description">Overview of the real estate investment landscape and strategic approach</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/county-examples" class="text-decoration-none">
+                                <i class="fas fa-map-marked-alt me-2 text-success"></i>County Examples
+                            </a>
+                        </h6>
+                        <p class="toc-description">Detailed analysis of successful real estate markets across different counties</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/resource-framework" class="text-decoration-none">
+                                <i class="fas fa-search me-2 text-info"></i>Resource Framework
+                            </a>
+                        </h6>
+                        <p class="toc-description">Comprehensive framework for identifying and evaluating investment opportunities</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/formulas" class="text-decoration-none">
+                                <i class="fas fa-calculator me-2 text-warning"></i>Investment Formulas
+                            </a>
+                        </h6>
+                        <p class="toc-description">Essential financial calculations and formulas for real estate investing</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/contact-database" class="text-decoration-none">
+                                <i class="fas fa-address-book me-2 text-danger"></i>Contact Database
+                            </a>
+                        </h6>
+                        <p class="toc-description">Building and maintaining professional networks in real estate</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/strategies" class="text-decoration-none">
+                                <i class="fas fa-chess me-2 text-secondary"></i>Implementation Strategies
+                            </a>
+                        </h6>
+                        <p class="toc-description">Step-by-step strategies for successful real estate investments</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/action-plans" class="text-decoration-none">
+                                <i class="fas fa-tasks me-2 text-primary"></i>Action Plans
+                            </a>
+                        </h6>
+                        <p class="toc-description">Detailed action plans for immediate implementation</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/pro-tips" class="text-decoration-none">
+                                <i class="fas fa-lightbulb me-2 text-success"></i>Pro Tips
+                            </a>
+                        </h6>
+                        <p class="toc-description">Expert insights and professional tips from experienced investors</p>
+                    </div>
+
+                    <div class="toc-section">
+                        <h6 class="toc-title">
+                            <a href="/master-guide/pitfalls" class="text-decoration-none">
+                                <i class="fas fa-exclamation-triangle me-2 text-danger"></i>Common Pitfalls
+                            </a>
+                        </h6>
+                        <p class="toc-description">Avoid these common mistakes that can derail your investments</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Access</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide/executive-summary" class="btn btn-outline-primary">
+                        <i class="fas fa-rocket me-2"></i>Start Here
+                    </a>
+                    <a href="/master-guide/formulas" class="btn btn-outline-warning">
+                        <i class="fas fa-calculator me-2"></i>Formulas
+                    </a>
+                    <a href="/master-guide/action-plans" class="btn btn-outline-success">
+                        <i class="fas fa-play me-2"></i>Action Plans
+                    </a>
+                    <a href="/master-guide/pro-tips" class="btn btn-outline-info">
+                        <i class="fas fa-lightbulb me-2"></i>Pro Tips
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Guide Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Sections:</span>
+                        <span class="stat-value">9</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Last Updated:</span>
+                        <span class="stat-value">2024</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Version:</span>
+                        <span class="stat-value">2.0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.guide-toc {
+    max-width: 100%;
+}
+
+.toc-section {
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.toc-section:last-child {
+    border-bottom: none;
+}
+
+.toc-title {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.toc-title a {
+    color: #495057;
+    transition: color 0.2s;
+}
+
+.toc-title a:hover {
+    color: #007bff;
+}
+
+.toc-description {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.stats-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #007bff;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function downloadPDF() {
+    // Placeholder for PDF download functionality
+    alert('PDF download functionality will be implemented');
+}
+</script>
+{% endblock %}

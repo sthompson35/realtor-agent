@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+
+{% block title %}Action Plans - Master Guide{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/master-guide">Master Guide</a></li>
+        <li class="breadcrumb-item active">Action Plans</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Action Plans</h1>
+        <p class="text-muted mb-0">Detailed Action Plans for Immediate Implementation</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/master-guide/strategies" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Previous
+        </a>
+        <a href="/master-guide/pro-tips" class="btn btn-primary">
+            Next: Pro Tips <i class="fas fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">30-Day Action Plan</h5>
+            </div>
+            <div class="card-body">
+                <div class="action-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">1</div>
+                        <div class="timeline-content">
+                            <h6>Weeks 1-2: Foundation Building</h6>
+                            <ul>
+                                <li>Set up legal entity (LLC)</li>
+                                <li>Open business bank account</li>
+                                <li>Obtain EIN from IRS</li>
+                                <li>Set up accounting software</li>
+                                <li>Create investment criteria</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">2</div>
+                        <div class="timeline-content">
+                            <h6>Weeks 3-4: Market Research & Networking</h6>
+                            <ul>
+                                <li>Research target markets</li>
+                                <li>Attend local REIA meetings</li>
+                                <li>Join real estate forums</li>
+                                <li>Connect with local agents</li>
+                                <li>Build initial contact database</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">90-Day Action Plan</h5>
+            </div>
+            <div class="card-body">
+                <div class="action-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">1</div>
+                        <div class="timeline-content">
+                            <h6>Months 1-2: Education & Preparation</h6>
+                            <ul>
+                                <li>Complete real estate education</li>
+                                <li>Analyze 50+ potential markets</li>
+                                <li>Develop financial models</li>
+                                <li>Secure financing relationships</li>
+                                <li>Create marketing materials</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">2</div>
+                        <div class="timeline-content">
+                            <h6>Month 3: First Acquisition</h6>
+                            <ul>
+                                <li>Identify target property</li>
+                                <li>Complete due diligence</li>
+                                <li>Make offer and negotiate</li>
+                                <li>Close first deal</li>
+                                <li>Begin property management</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">6-Month Action Plan</h5>
+            </div>
+            <div class="card-body">
+                <div class="action-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-marker">1</div>
+                        <div class="timeline-content">
+                            <h6>Months 1-3: Portfolio Building</h6>
+                            <ul>
+                                <li>Acquire 2-3 properties</li>
+                                <li>Establish property management systems</li>
+                                <li>Build team of professionals</li>
+                                <li>Implement marketing campaigns</li>
+                                <li>Develop exit strategies</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-marker">2</div>
+                        <div class="timeline-content">
+                            <h6>Months 4-6: Optimization & Scaling</h6>
+                            <ul>
+                                <li>Analyze portfolio performance</li>
+                                <li>Refinance for cash-out</li>
+                                <li>Expand into new markets</li>
+                                <li>Consider syndication opportunities</li>
+                                <li>Plan for year 2 growth</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Action Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="createChecklist()">
+                        <i class="fas fa-clipboard-list me-2"></i>Create Checklist
+                    </button>
+                    <button class="btn btn-outline-success" onclick="setReminders()">
+                        <i class="fas fa-bell me-2"></i>Set Reminders
+                    </button>
+                    <button class="btn btn-outline-info" onclick="trackProgress()">
+                        <i class="fas fa-chart-bar me-2"></i>Track Progress
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="downloadPlan()">
+                        <i class="fas fa-download me-2"></i>Download Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Progress Tracking</h5>
+            </div>
+            <div class="card-body">
+                <div class="progress-tracker">
+                    <div class="progress-item">
+                        <span class="progress-label">Foundation:</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-item">
+                        <span class="progress-label">Education:</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-item">
+                        <span class="progress-label">First Deal:</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-percent">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Key Milestones</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <div class="d-flex">
+                            <i class="fas fa-flag text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>Week 1:</strong> Legal setup complete
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mb-3">
+                        <div class="d-flex">
+                            <i class="fas fa-flag text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>Month 1:</strong> First property under contract
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mb-3">
+                        <div class="d-flex">
+                            <i class="fas fa-flag text-success me-2 mt-1"></i>
+                            <div>
+                                <strong>Month 3:</strong> Positive cash flow achieved
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Navigation</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="/master-guide" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>Table of Contents
+                    </a>
+                    <a href="/master-guide/pro-tips" class="btn btn-primary">
+                        <i class="fas fa-arrow-right me-2"></i>Next Section
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+.action-timeline {
+    position: relative;
+    padding-left: 40px;
+}
+
+.action-timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #007bff;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.timeline-content h6 {
+    color: #495057;
+    margin-bottom: 10px;
+}
+
+.timeline-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.timeline-content li {
+    padding: 3px 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.timeline-content li::before {
+    content: '✓';
+    color: #28a745;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.progress-tracker {
+    padding: 0;
+}
+
+.progress-item {
+    margin-bottom: 15px;
+}
+
+.progress-item:last-child {
+    margin-bottom: 0;
+}
+
+.progress-label {
+    display: block;
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #007bff;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-percent {
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function createChecklist() {
+    alert('Checklist creation will be implemented');
+}
+
+function setReminders() {
+    alert('Reminder system will be implemented');
+}
+
+function trackProgress() {
+    alert('Progress tracking will be implemented');
+}
+
+function downloadPlan() {
+    alert('Plan download will be implemented');
+}
+</script>
+{% endblock %}

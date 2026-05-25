@@ -1,0 +1,654 @@
+{% extends "base.html" %}
+
+{% block title %}Market Analysis Report - Realtor Agent{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/reports">Reports</a></li>
+        <li class="breadcrumb-item active">Market Analysis</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block page_header %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Market Analysis Report</h1>
+        <p class="text-muted mb-0">Comprehensive market intelligence and geographic performance analysis</p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary" onclick="refreshMarketData()">
+            <i class="fas fa-sync-alt me-1"></i>Refresh
+        </button>
+        <button class="btn btn-success" onclick="generateMarketReport()">
+            <i class="fas fa-file-pdf me-1"></i>Generate Report
+        </button>
+        <button class="btn btn-info" onclick="exportMarketData()">
+            <i class="fas fa-download me-1"></i>Export Data
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
+
+    <!-- Market Overview Stats -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="total-markets">24</div>
+                        <div class="stat-label">Active Markets</div>
+                    </div>
+                    <i class="fas fa-map-marked-alt fa-2x opacity-75 text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="avg-price">$487K</div>
+                        <div class="stat-label">Average Price</div>
+                    </div>
+                    <i class="fas fa-dollar-sign fa-2x opacity-75 text-success"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="price-growth">+8.3%</div>
+                        <div class="stat-label">YoY Growth</div>
+                    </div>
+                    <i class="fas fa-chart-line fa-2x opacity-75 text-info"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="stat-value" id="hot-markets">6</div>
+                        <div class="stat-label">Hot Markets</div>
+                    </div>
+                    <i class="fas fa-fire fa-2x opacity-75 text-warning"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Market Performance Table -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Market Performance Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Market</th>
+                                    <th>Avg Price</th>
+                                    <th>YoY Change</th>
+                                    <th>Inventory</th>
+                                    <th>Days on Market</th>
+                                    <th>Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="market-performance-table">
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                            Irvine, CA
+                                        </div>
+                                    </td>
+                                    <td>$1,250,000</td>
+                                    <td><span class="text-success">+12.5%</span></td>
+                                    <td>89</td>
+                                    <td>24 days</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress me-2" style="width: 60px; height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 85%"></div>
+                                            </div>
+                                            <small class="text-muted">85</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="viewMarketDetails('irvine')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="generateMarketReport('irvine')">
+                                                <i class="fas fa-chart-bar"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                            Newport Beach, CA
+                                        </div>
+                                    </td>
+                                    <td>$2,100,000</td>
+                                    <td><span class="text-success">+9.8%</span></td>
+                                    <td>67</td>
+                                    <td>31 days</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress me-2" style="width: 60px; height: 6px;">
+                                                <div class="progress-bar bg-success" style="width: 78%"></div>
+                                            </div>
+                                            <small class="text-muted">78</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="viewMarketDetails('newport')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="generateMarketReport('newport')">
+                                                <i class="fas fa-chart-bar"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                            Mission Viejo, CA
+                                        </div>
+                                    </td>
+                                    <td>$875,000</td>
+                                    <td><span class="text-success">+6.2%</span></td>
+                                    <td>123</td>
+                                    <td>28 days</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress me-2" style="width: 60px; height: 6px;">
+                                                <div class="progress-bar bg-warning" style="width: 65%"></div>
+                                            </div>
+                                            <small class="text-muted">65</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="viewMarketDetails('mission')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="generateMarketReport('mission')">
+                                                <i class="fas fa-chart-bar"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                            Rancho Cucamonga, CA
+                                        </div>
+                                    </td>
+                                    <td>$650,000</td>
+                                    <td><span class="text-danger">-2.1%</span></td>
+                                    <td>156</td>
+                                    <td>45 days</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress me-2" style="width: 60px; height: 6px;">
+                                                <div class="progress-bar bg-danger" style="width: 35%"></div>
+                                            </div>
+                                            <small class="text-muted">35</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="viewMarketDetails('rancho')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="generateMarketReport('rancho')">
+                                                <i class="fas fa-chart-bar"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Insights Sidebar -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Market Insights</h5>
+                </div>
+                <div class="card-body">
+                    <div class="insight-item mb-3">
+                        <div class="d-flex align-items-start mb-2">
+                            <i class="fas fa-lightbulb text-warning me-2 mt-1"></i>
+                            <div>
+                                <h6 class="mb-1">Hot Market Alert</h6>
+                                <p class="text-muted small mb-0">Irvine showing 12.5% YoY growth with low inventory</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="insight-item mb-3">
+                        <div class="d-flex align-items-start mb-2">
+                            <i class="fas fa-chart-trend-up text-success me-2 mt-1"></i>
+                            <div>
+                                <h6 class="mb-1">Price Momentum</h6>
+                                <p class="text-muted small mb-0">Luxury segment up 15.2% in Q4</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="insight-item mb-3">
+                        <div class="d-flex align-items-start mb-2">
+                            <i class="fas fa-clock text-info me-2 mt-1"></i>
+                            <div>
+                                <h6 class="mb-1">Market Timing</h6>
+                                <p class="text-muted small mb-0">Spring selling season starts in 2 weeks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market Trends -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Key Trends</h5>
+                </div>
+                <div class="card-body">
+                    <div class="trend-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="trend-label">Interest Rates</span>
+                            <span class="trend-value text-danger">+0.25%</span>
+                        </div>
+                        <small class="text-muted">Federal Reserve action</small>
+                    </div>
+
+                    <div class="trend-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="trend-label">Housing Supply</span>
+                            <span class="trend-value text-danger">-8.3%</span>
+                        </div>
+                        <small class="text-muted">vs last year</small>
+                    </div>
+
+                    <div class="trend-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="trend-label">Buyer Demand</span>
+                            <span class="trend-value text-success">+12.1%</span>
+                        </div>
+                        <small class="text-muted">Search activity up</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Charts Section -->
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Price Trends by Market</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priceTrendsChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Market Performance Heatmap</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="marketHeatmapChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Comparison Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Market Comparison</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select class="form-select mb-3" id="market1-select">
+                                <option value="">Select Market 1</option>
+                                <option value="irvine">Irvine, CA</option>
+                                <option value="newport">Newport Beach, CA</option>
+                                <option value="mission">Mission Viejo, CA</option>
+                                <option value="rancho">Rancho Cucamonga, CA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select mb-3" id="market2-select">
+                                <option value="">Select Market 2</option>
+                                <option value="irvine">Irvine, CA</option>
+                                <option value="newport">Newport Beach, CA</option>
+                                <option value="mission">Mission Viejo, CA</option>
+                                <option value="rancho">Rancho Cucamonga, CA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary mb-3" onclick="compareMarkets()">
+                                <i class="fas fa-balance-scale me-1"></i>Compare Markets
+                            </button>
+                        </div>
+                    </div>
+                    <div id="comparison-results" class="comparison-results" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 id="market1-title">Market 1</h6>
+                                <div class="metric-comparison">
+                                    <div class="metric-item">Avg Price: <span id="market1-price">$0</span></div>
+                                    <div class="metric-item">YoY Change: <span id="market1-growth">0%</span></div>
+                                    <div class="metric-item">Inventory: <span id="market1-inventory">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 id="market2-title">Market 2</h6>
+                                <div class="metric-comparison">
+                                    <div class="metric-item">Avg Price: <span id="market2-price">$0</span></div>
+                                    <div class="metric-item">YoY Change: <span id="market2-growth">0%</span></div>
+                                    <div class="metric-item">Inventory: <span id="market2-inventory">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Market Analysis Functions
+function refreshMarketData() {
+    showNotification('Refreshing market data...', 'info');
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+}
+
+function generateMarketReport() {
+    showNotification('Generating market analysis report...', 'success');
+    setTimeout(() => {
+        alert('Market analysis report generated successfully!');
+    }, 2000);
+}
+
+function exportMarketData() {
+    showNotification('Exporting market data...', 'info');
+    setTimeout(() => {
+        alert('Market data exported successfully!');
+    }, 1500);
+}
+
+function viewMarketDetails(marketId) {
+    window.location.href = `/markets/${marketId}`;
+}
+
+function generateMarketReport(marketId) {
+    showNotification(`Generating report for ${marketId}...`, 'info');
+    setTimeout(() => {
+        alert(`Report for ${marketId} generated successfully!`);
+    }, 1500);
+}
+
+function compareMarkets() {
+    const market1 = document.getElementById('market1-select').value;
+    const market2 = document.getElementById('market2-select').value;
+
+    if (!market1 || !market2) {
+        showNotification('Please select both markets to compare', 'warning');
+        return;
+    }
+
+    if (market1 === market2) {
+        showNotification('Please select different markets to compare', 'warning');
+        return;
+    }
+
+    // Mock comparison data
+    const marketData = {
+        irvine: { price: '$1,250,000', growth: '+12.5%', inventory: '89' },
+        newport: { price: '$2,100,000', growth: '+9.8%', inventory: '67' },
+        mission: { price: '$875,000', growth: '+6.2%', inventory: '123' },
+        rancho: { price: '$650,000', growth: '-2.1%', inventory: '156' }
+    };
+
+    const marketNames = {
+        irvine: 'Irvine, CA',
+        newport: 'Newport Beach, CA',
+        mission: 'Mission Viejo, CA',
+        rancho: 'Rancho Cucamonga, CA'
+    };
+
+    document.getElementById('market1-title').textContent = marketNames[market1];
+    document.getElementById('market1-price').textContent = marketData[market1].price;
+    document.getElementById('market1-growth').textContent = marketData[market1].growth;
+    document.getElementById('market1-inventory').textContent = marketData[market1].inventory;
+
+    document.getElementById('market2-title').textContent = marketNames[market2];
+    document.getElementById('market2-price').textContent = marketData[market2].price;
+    document.getElementById('market2-growth').textContent = marketData[market2].growth;
+    document.getElementById('market2-inventory').textContent = marketData[market2].inventory;
+
+    document.getElementById('comparison-results').style.display = 'block';
+    showNotification('Market comparison completed', 'success');
+}
+
+// Chart.js initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Price Trends Chart
+    const priceCtx = document.getElementById('priceTrendsChart').getContext('2d');
+    new Chart(priceCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Irvine, CA',
+                data: [1180000, 1200000, 1220000, 1230000, 1240000, 1245000, 1250000, 1255000, 1260000, 1265000, 1270000, 1275000],
+                borderColor: 'rgb(13, 110, 253)',
+                backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                tension: 0.4
+            }, {
+                label: 'Newport Beach, CA',
+                data: [1950000, 1980000, 2010000, 2040000, 2070000, 2090000, 2100000, 2110000, 2120000, 2130000, 2140000, 2150000],
+                borderColor: 'rgb(40, 167, 69)',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + (value / 1000000).toFixed(1) + 'M';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Market Heatmap Chart (simplified as bar chart)
+    const heatmapCtx = document.getElementById('marketHeatmapChart').getContext('2d');
+    new Chart(heatmapCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Irvine', 'Newport Beach', 'Mission Viejo', 'Rancho Cucamonga'],
+            datasets: [{
+                label: 'Market Score',
+                data: [85, 78, 65, 35],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(40, 167, 69, 0.6)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(220, 53, 69, 0.8)'
+                ],
+                borderColor: [
+                    'rgb(40, 167, 69)',
+                    'rgb(40, 167, 69)',
+                    'rgb(255, 193, 7)',
+                    'rgb(220, 53, 69)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+});
+
+// Notification system
+function showNotification(message, type = 'info') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    container.appendChild(notification);
+
+    setTimeout(() => {
+        notification.remove();
+    }, 5000);
+}
+</script>
+
+<style>
+.insight-item {
+    padding: 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background: #f8f9fa;
+    margin-bottom: 12px;
+}
+
+.insight-item:last-child {
+    margin-bottom: 0;
+}
+
+.trend-item {
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.trend-item:last-child {
+    border-bottom: none;
+}
+
+.trend-label {
+    font-weight: 500;
+}
+
+.trend-value {
+    font-weight: 600;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: 700;
+    color: #495057;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-comparison {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.metric-item {
+    padding: 4px 0;
+    font-size: 0.9em;
+}
+
+.metric-item span {
+    font-weight: 600;
+}
+
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 400px;
+}
+</style>
+
+{% endblock %}
