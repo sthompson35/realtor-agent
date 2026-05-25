@@ -3,12 +3,13 @@
 {% block title %}Dashboard - Realtor Agent{% endblock %}
 
 {% block page_header %}
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
     <div>
-        <h1 class="h3 mb-1">Dashboard</h1>
-        <p class="text-muted mb-0">Real-time overview of your real estate acquisition pipeline</p>
+        <h1 class="h3 mb-1">Executive Dashboard</h1>
+        <p class="text-muted mb-0">Professional command center for your acquisition pipeline, bot operations, and deal performance</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex align-items-center gap-3">
+        <small class="text-muted">Updated <span id="dashboard-last-updated">just now</span></small>
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="auto-refresh-toggle" checked>
             <label class="form-check-label" for="auto-refresh-toggle">
@@ -135,7 +136,7 @@
 <!-- Recent Activity and Bot Status -->
 <div class="row">
     <!-- Recent Activity -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-xl-4 col-lg-6 mb-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">
@@ -162,7 +163,7 @@
     </div>
 
     <!-- Recent Deals -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-xl-4 col-lg-6 mb-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">
@@ -181,10 +182,9 @@
             </div>
         </div>
     </div>
-</div>
 
     <!-- Bot Status -->
-    <div class="col-lg-6 mb-4">
+    <div class="col-xl-4 col-lg-12 mb-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0">
@@ -388,39 +388,39 @@
             </div>
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-2-4 col-sm-6">
+                    <div class="col-xl-2 col-md-4 col-sm-6">
                         <button id="quick-new-deal" class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="create-deal">
                             <i class="fas fa-plus fa-2x mb-2"></i>
                             <span class="fw-bold">New Deal</span>
-                            <small class="text-muted">Add a new property</small>
+                            <small class="text-white-50">Add a new property</small>
                         </button>
                     </div>
-                    <div class="col-md-2-4 col-sm-6">
+                    <div class="col-xl-2 col-md-4 col-sm-6">
                         <button id="quick-scrape-leads" class="btn btn-danger w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="scrape-leads">
                             <i class="fas fa-spider fa-2x mb-2"></i>
                             <span class="fw-bold">Scrape Leads</span>
-                            <small class="text-muted">Get test leads online</small>
+                            <small class="text-white-50">Generate quality test leads</small>
                         </button>
                     </div>
-                    <div class="col-md-2-4 col-sm-6">
+                    <div class="col-xl-2 col-md-4 col-sm-6">
                         <button id="quick-run-bots" class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="run-all-bots">
                             <i class="fas fa-play fa-2x mb-2"></i>
                             <span class="fw-bold">Run Bots</span>
-                            <small class="text-muted">Execute acquisition cycle</small>
+                            <small class="text-white-50">Execute acquisition cycle</small>
                         </button>
                     </div>
-                    <div class="col-md-2-4 col-sm-6">
+                    <div class="col-xl-2 col-md-4 col-sm-6">
                         <button id="quick-view-analytics" class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="view-analytics">
                             <i class="fas fa-chart-bar fa-2x mb-2"></i>
                             <span class="fw-bold">View Analytics</span>
-                            <small class="text-muted">Performance analytics</small>
+                            <small class="text-white-50">Performance analytics</small>
                         </button>
                     </div>
-                    <div class="col-md-2-4 col-sm-6">
+                    <div class="col-xl-2 col-md-4 col-sm-6">
                         <button id="quick-add-lend" class="btn btn-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center p-4" data-action="add-lend">
                             <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
                             <span class="fw-bold">Add Lend</span>
-                            <small class="text-muted">Add lender financing</small>
+                            <small class="text-dark-emphasis">Add lender financing</small>
                         </button>
                     </div>
                 </div>
