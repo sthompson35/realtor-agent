@@ -85,6 +85,24 @@ The Realtor Agent orchestrates a multi-bot workflow to automate the real estate 
 - **Contract Generation**: Templates for various deal structures with attorney review flags
 - **Full Logging**: Everything tracked for audit and improvement
 
+## Authentication
+
+The dashboard and all API endpoints (except `/health`, `/login`, `/register`, and the `/api/auth/*` endpoints) are **protected by session-based authentication**.
+
+- Unauthenticated browser requests to dashboard pages are redirected to `/login`.
+- Unauthenticated API requests receive a `401 JSON` response.
+- Use `/api/auth/register` to create an account and `/api/auth/login` to obtain a session.
+
+### Required environment variable
+
+`SECRET_KEY` **must** be set to a long, random string before starting the server.  
+Render automatically generates this value (see `render.yaml`).  
+For local development only, you may set `FLASK_DEBUG=true` to use an insecure fallback (never do this in production).
+
+```bash
+export SECRET_KEY=$(python -c "import secrets; print(secrets.token_hex(32))")
+```
+
 ## Installation
 
 1. Clone the repository:
@@ -93,23 +111,28 @@ The Realtor Agent orchestrates a multi-bot workflow to automate the real estate 
    cd realtor_agent
    ```
 
-2. Install dependencies (if any):
+2. Install dependencies:
    ```bash
-   # Add installation commands here
+   pip install -r requirements.txt
    ```
 
-3. Configure your goals and markets in `realtor_agent/agent_config.yml`
+3. Set the required environment variable:
+   ```bash
+   export SECRET_KEY=$(python -c "import secrets; print(secrets.token_hex(32))")
+   ```
 
-4. Set up bot configurations in respective `bots/*/bot_config.yml` files
+4. Configure your goals and markets in `realtor_agent/agent_config.yml`
+
+5. Set up bot configurations in respective `bots/*/bot_config.yml` files
 
 ## Usage
 
-1. Define your acquisition goals in the agent config
-2. Run the orchestrator:
+1. Start the web server:
    ```bash
-   # Add run command here
+   python web_server.py
    ```
-3. Monitor deals in the CRM database
+2. Open `http://localhost:5000/login` and sign in (or register at `/register`)
+3. Monitor deals in the CRM dashboard
 4. Approve or escalate as needed
 
 ## Configuration

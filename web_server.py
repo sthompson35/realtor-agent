@@ -44,7 +44,22 @@ app = Flask(
     template_folder=str(BASE_DIR / "web" / "templates"),
     static_folder=str(BASE_DIR / "web" / "static"),
 )
-app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-prod")
+_secret_key = os.environ.get("SECRET_KEY")
+_flask_debug = os.environ.get("FLASK_DEBUG", "").lower() in ("true", "1", "yes")
+if _secret_key:
+    app.secret_key = _secret_key
+elif _flask_debug:
+    app.secret_key = "dev-secret-change-in-prod"
+    logger.warning(
+        "SECRET_KEY not set — using insecure development fallback. "
+        "Never use FLASK_DEBUG=true in production."
+    )
+else:
+    raise RuntimeError(
+        "SECRET_KEY environment variable is required. "
+        "Set SECRET_KEY to a long random string before starting the server. "
+        "(For local development only, set FLASK_DEBUG=true to use a dev fallback.)"
+    )
 
 # Init DB tables on startup (idempotent)
 with app.app_context():
@@ -105,6 +120,54 @@ def _sanitize(obj):
     if isinstance(obj, (list, tuple)):
         return [_sanitize(v) for v in obj]
     return obj
+
+
+# ---------------------------------------------------------------------------
+# Auth helpers
+# ---------------------------------------------------------------------------
+
+def _get_current_user():
+    """Return decoded token payload from Bearer header or session, or None."""
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:]
+        from realtor_agent.core.auth import auth_service
+        return auth_service.verify_token(token)
+    return session.get("user")
+
+
+# Routes that are always accessible without authentication
+_PUBLIC_PATHS = frozenset({
+    "/login",
+    "/register",
+    "/logout",
+    "/health",
+    "/api/auth/login",
+    "/api/auth/register",
+    "/api/auth/logout",
+})
+# Path prefixes that are always public (e.g. static assets)
+_PUBLIC_PREFIXES = ("/static/",)
+
+
+@app.before_request
+def _require_auth():
+    """Enforce authentication on all routes except explicitly public ones.
+
+    - Unauthenticated requests to HTML page routes → redirect to /login
+    - Unauthenticated requests to /api/* routes   → 401 JSON
+    - Public paths and static assets              → pass through
+    """
+    path = request.path
+    if path in _PUBLIC_PATHS:
+        return None
+    if any(path.startswith(p) for p in _PUBLIC_PREFIXES):
+        return None
+    if _get_current_user():
+        return None
+    if path.startswith("/api/"):
+        return _json_error("Authentication required", 401)
+    return redirect(url_for("login_page"))
 
 
 # ---------------------------------------------------------------------------
@@ -844,16 +907,8 @@ def api_schedule_list():
 # ---------------------------------------------------------------------------
 # Phase 4 — Auth  (POST /api/auth/*)
 # ---------------------------------------------------------------------------
-
-def _get_current_user():
-    """Return decoded token payload from Bearer header or session, or None."""
-    auth_header = request.headers.get("Authorization", "")
-    if auth_header.startswith("Bearer "):
-        token = auth_header[7:]
-        from realtor_agent.core.auth import auth_service
-        return auth_service.verify_token(token)
-    return session.get("user")
-
+# Note: _get_current_user() is defined early in this module (see "Auth helpers"
+# section above) and reused here.
 
 @app.route("/api/auth/register", methods=["POST"])
 def api_auth_register():
