@@ -2959,3 +2959,107 @@ footer::before {
         gap: 0.25rem;
     }
 }
+
+/* ============================================================================
+   PROFESSIONAL FIRST-DELIVERY LAYOUT OVERRIDES
+   ============================================================================ */
+
+.app-navbar {
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid var(--border-color);
+    backdrop-filter: blur(8px);
+}
+
+.app-layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr) 240px;
+    gap: 1.25rem;
+    padding-top: calc(var(--navbar-height) + 0.75rem);
+}
+
+.app-main {
+    min-width: 0;
+    margin: 0;
+}
+
+.sidebar-nav,
+.quick-actions-sidebar {
+    position: sticky;
+    top: calc(var(--navbar-height) + 0.75rem);
+    max-height: calc(100vh - var(--navbar-height) - 1.5rem);
+    overflow-y: auto;
+    border-radius: var(--radius-lg);
+}
+
+.sidebar-nav .activity-item {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.625rem;
+    margin-bottom: 0.5rem !important;
+}
+
+.quick-actions-sidebar .btn {
+    justify-content: flex-start;
+}
+
+.quick-actions-sidebar .btn-outline-light {
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+    background: white;
+}
+
+.quick-actions-sidebar .btn-outline-light:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+#alert-container .alert {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.dashboard-card {
+    text-align: left;
+}
+
+.dashboard-card .icon {
+    margin: 0 0 1rem;
+}
+
+@media (max-width: 1199.98px) {
+    .app-layout {
+        grid-template-columns: 240px minmax(0, 1fr);
+    }
+
+    .quick-actions-sidebar {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .app-layout {
+        grid-template-columns: 1fr;
+        padding-top: calc(var(--navbar-height) + 0.5rem);
+    }
+
+    .app-main {
+        padding-top: 0.25rem !important;
+    }
+
+    .sidebar-nav,
+    .quick-actions-sidebar {
+        display: none !important;
+    }
+}

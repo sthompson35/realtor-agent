@@ -86,17 +86,48 @@ function setupEventListeners() {
  */
 function setActiveNavigation() {
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-    const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+    const dropdownItems = document.querySelectorAll('.navbar-nav .dropdown-item');
+    const normalizedPath = currentPage === '/' ? '/' : currentPage.replace(/\/+$/, '');
 
     navLinks.forEach(link => {
-        if (link.getAttribute('href') === currentPage) {
+        link.classList.remove('active');
+    });
+    dropdownItems.forEach(item => {
+        item.classList.remove('active');
+    });
+
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href || href === '#') return;
+
+        const normalizedHref = href === '/' ? '/' : href.replace(/\/+$/, '');
+        const isMatch = normalizedPath === normalizedHref
+            || (normalizedHref !== '/' && normalizedPath.startsWith(`${normalizedHref}/`));
+
+        if (isMatch) {
             link.classList.add('active');
         }
     });
 
-    sidebarLinks.forEach(link => {
-        if (link.getAttribute('href') === currentPage) {
-            link.classList.add('active');
+    dropdownItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (!href || href === '#') return;
+
+        const normalizedHref = href === '/' ? '/' : href.replace(/\/+$/, '');
+        const isMatch = normalizedPath === normalizedHref
+            || (normalizedHref !== '/' && normalizedPath.startsWith(`${normalizedHref}/`));
+
+        if (isMatch) {
+            item.classList.add('active');
+        }
+    });
+
+    // Mark dropdown toggle as active when one of its items is active
+    document.querySelectorAll('.navbar-nav .dropdown').forEach(dropdown => {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const hasActiveChild = dropdown.querySelector('.dropdown-item.active');
+        if (toggle && hasActiveChild) {
+            toggle.classList.add('active');
         }
     });
 }
@@ -170,6 +201,7 @@ async function loadDashboardData() {
         updateExcelLeads(excelLeads);
         updateExcelContacts(excelContacts);
         updateExcelDevelopmentTimeline(excelTimeline);
+        updateDashboardTimestamp();
 
         // Hide loading state
         hideLoadingState();
@@ -178,6 +210,15 @@ async function loadDashboardData() {
         console.error('Error loading dashboard data:', error);
         showAlert('Failed to load dashboard data', 'danger');
         hideLoadingState();
+    }
+
+    function updateDashboardTimestamp() {
+        const timestamp = document.getElementById('dashboard-last-updated');
+        if (!timestamp) return;
+        timestamp.textContent = new Date().toLocaleTimeString([], {
+            hour: 'numeric',
+            minute: '2-digit'
+        });
     }
 }
 
@@ -493,7 +534,9 @@ function stopAutoRefresh() {
 function showLoadingState() {
     const loadingElements = document.querySelectorAll('.loading-placeholder');
     loadingElements.forEach(element => {
-        element.style.display = 'block';
+        element.style.display = '';
+        element.classList.add('opacity-75');
+        element.setAttribute('aria-busy', 'true');
     });
 }
 
@@ -503,7 +546,8 @@ function showLoadingState() {
 function hideLoadingState() {
     const loadingElements = document.querySelectorAll('.loading-placeholder');
     loadingElements.forEach(element => {
-        element.style.display = 'none';
+        element.classList.remove('opacity-75');
+        element.removeAttribute('aria-busy');
     });
 }
 
